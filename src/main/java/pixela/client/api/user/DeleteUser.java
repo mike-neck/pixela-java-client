@@ -81,7 +81,7 @@ public class DeleteUser implements Delete<Void>, Api<Void> {
   @NotNull
   @Override
   public String errorRequest() {
-    return "DELETE " + endpoint() + '\n' + "  token: " + "*****";
+    return "DELETE " + endpoint();
   }
 
   @Override
