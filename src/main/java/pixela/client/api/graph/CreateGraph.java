@@ -96,17 +96,16 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
     final Response<Void> response = httpClient.post(this);
     return response
         .toPublisher()
-        .map(
-            v ->
-                new NewGraph(
-                    httpClient,
-                    pixela,
-                    GraphId.of(id),
-                    GraphName.of(name),
-                    GraphUnit.of(unit),
-                    type,
-                    color,
-                    timezone));
+        .thenReturn(
+            new NewGraph(
+                httpClient,
+                pixela,
+                GraphId.of(id),
+                GraphName.of(name),
+                GraphUnit.of(unit),
+                type,
+                color,
+                timezone));
   }
 
   @NotNull
