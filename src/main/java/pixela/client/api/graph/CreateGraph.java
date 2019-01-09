@@ -66,6 +66,11 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
   }
 
   @NotNull
+  public String getName() {
+    return name;
+  }
+
+  @NotNull
   public String getUnit() {
     return unit;
   }
