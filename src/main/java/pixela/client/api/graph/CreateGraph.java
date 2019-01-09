@@ -107,7 +107,8 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
   @NotNull
   @Override
   public URI apiEndpoint(@NotNull final URI baseUrl) {
-    return pixela.usersUri(baseUrl).resolve(ENDPOINT_SUFFIX);
+    final String uri = pixela.usersUri(baseUrl) + NewGraph.PATH;
+    return URI.create(uri);
   }
 
   @NotNull
@@ -133,7 +134,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
   public String errorRequest() {
     return "POST "
         + pixela.usersUri()
-        + ENDPOINT_SUFFIX
+        + NewGraph.PATH
         + '\n'
         + "  id: "
         + id
