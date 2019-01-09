@@ -20,11 +20,10 @@ import java.time.ZoneId;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
 import pixela.client.http.HttpClient;
-import reactor.core.publisher.Mono;
 
 public class NewGraph implements Graph {
 
-  private static final String PATH = "/graphs";
+  static final String PATH = "/graphs";
 
   @NotNull private final HttpClient httpClient;
 
@@ -62,8 +61,8 @@ public class NewGraph implements Graph {
   }
 
   @Override
-  public Mono<Void> delete() {
-    throw new UnsupportedOperationException();
+  public DeleteGraph delete() {
+    return new DeleteGraph(httpClient, pixela, graphId);
   }
 
   @Override

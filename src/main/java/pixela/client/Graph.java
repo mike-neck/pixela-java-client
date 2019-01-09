@@ -20,11 +20,11 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import reactor.core.publisher.Mono;
+import pixela.client.api.graph.DeleteGraph;
 
 public interface Graph {
 
-  Mono<Void> delete();
+  DeleteGraph delete();
 
   URI viewUri();
 
