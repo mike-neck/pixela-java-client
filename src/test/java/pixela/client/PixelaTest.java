@@ -15,13 +15,16 @@
  */
 package pixela.client;
 
+import java.net.URI;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import pixela.client.api.graph.CreateGraph;
 import pixela.client.api.user.DeleteUser;
 import reactor.core.Disposable;
+import reactor.core.Disposables;
 import reactor.core.publisher.Mono;
 
 class PixelaTest {
@@ -49,22 +52,40 @@ class PixelaTest {
               .username(username)
               .agreeTermsOfService()
               .notMinor()
-              .call();
+              .call()
+              .log("user-creation");
+
+      final Mono<Graph> graphCreation =
+          pixela
+              .map(
+                  px ->
+                      px.createGraph()
+                          .id("test-graph")
+                          .name("テストグラフ")
+                          .unit("kilo")
+                          .floating()
+                          .ichou()
+                          .timezone("Asia/Tokyo"))
+              .log("graph-creation")
+              .flatMap(CreateGraph::call)
+              .log("new-graph");
+
+      final Mono<URI> viewUri = graphCreation.map(Graph::viewUri).log("view-graph");
 
       final Mono<Void> mono =
-          pixela
-              .log("create_user API")
+          viewUri
+              .then(pixela)
               .map(Pixela::deleteUser)
-              .log("delete_user")
+              .log("user-deletion")
               .flatMap(DeleteUser::call);
 
       final CountDownLatch latch = new CountDownLatch(1);
 
-      final Disposable disposable =
-          mono.doOnTerminate(latch::countDown).subscribe(System.out::println);
+      final Disposable disposable = mono.doOnTerminate(latch::countDown).subscribe();
 
       latch.await();
-      disposable.dispose();
+
+      Disposables.composite(disposable).dispose();
     }
   }
 }
