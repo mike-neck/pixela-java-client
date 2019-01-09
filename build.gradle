@@ -27,6 +27,7 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
     testImplementation group: 'io.projectreactor', name: 'reactor-test', version: reactorVersion
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.11.1'
+    testRuntimeClasspath group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
 }
 
 test {
