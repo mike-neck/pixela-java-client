@@ -16,6 +16,10 @@
 package pixela.client;
 
 import java.net.URI;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.SignStyle;
+import java.time.temporal.ChronoField;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import org.jetbrains.annotations.Contract;
@@ -23,6 +27,13 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.api.graph.DeleteGraph;
 
 public interface Graph {
+
+  DateTimeFormatter PIXEL_DATE_FORMAT =
+      new DateTimeFormatterBuilder()
+          .appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+          .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+          .appendValue(ChronoField.DAY_OF_MONTH, 2)
+          .toFormatter();
 
   DeleteGraph delete();
 
