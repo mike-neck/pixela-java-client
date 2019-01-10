@@ -17,8 +17,12 @@ package pixela.client.http;
 
 import java.net.URI;
 import org.jetbrains.annotations.NotNull;
+import reactor.core.publisher.Mono;
 
 public interface HttpClient extends AutoCloseable {
+
+  @NotNull
+  Mono<String> encodeJson(@NotNull Object object);
 
   @NotNull
   URI baseUri();

@@ -25,25 +25,36 @@ import reactor.core.publisher.Mono;
 class JdkRequestBuilder {
 
   @NotNull private final URI baseUri;
+  @NotNull private final JsonEncoder encoder;
   @NotNull private final JdkPostRequestBuilder postBuilder;
   @NotNull private final JdkDeleteRequestBuilder deleteBuilder;
 
   private JdkRequestBuilder(
       @NotNull final URI baseUri,
+      @NotNull final JsonEncoder encoder,
       @NotNull final JdkPostRequestBuilder postBuilder,
       @NotNull final JdkDeleteRequestBuilder deleteBuilder) {
     this.baseUri = baseUri;
+    this.encoder = encoder;
     this.postBuilder = postBuilder;
     this.deleteBuilder = deleteBuilder;
   }
 
   static JdkRequestBuilder create(@NotNull final URI baseUri, @NotNull final JsonEncoder encoder) {
     return new JdkRequestBuilder(
-        baseUri, JdkPostRequestBuilder.of(baseUri, encoder), JdkDeleteRequestBuilder.of(baseUri));
+        baseUri,
+        encoder,
+        JdkPostRequestBuilder.of(baseUri, encoder),
+        JdkDeleteRequestBuilder.of(baseUri));
   }
 
   URI baseUri() {
     return baseUri;
+  }
+
+  @NotNull
+  Mono<String> encodeJson(@NotNull final Object object) {
+    return encoder.encodeObject(object);
   }
 
   @NotNull

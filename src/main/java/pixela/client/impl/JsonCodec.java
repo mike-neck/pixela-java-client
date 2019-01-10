@@ -18,7 +18,6 @@ package pixela.client.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.ExecutorService;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.http.Request;
 import reactor.core.publisher.Mono;
 
 interface JsonCodec extends JsonDecoder, JsonEncoder {
@@ -38,8 +37,8 @@ interface JsonCodec extends JsonDecoder, JsonEncoder {
 
       @NotNull
       @Override
-      public Mono<String> encode(@NotNull final Request<?> request) {
-        return encoder.encode(request);
+      public Mono<String> encodeObject(@NotNull final Object object) {
+        return encoder.encodeObject(object);
       }
     };
   }
