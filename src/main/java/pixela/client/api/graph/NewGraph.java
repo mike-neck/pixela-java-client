@@ -25,11 +25,7 @@ public class NewGraph implements Graph {
 
   static final String PATH = "/graphs";
 
-  @NotNull private final HttpClient httpClient;
-
-  @NotNull private final Pixela pixela;
-
-  @NotNull private final GraphId graphId;
+  @NotNull private final SimpleGraph simpleGraph;
 
   @NotNull private final GraphName name;
 
@@ -50,9 +46,7 @@ public class NewGraph implements Graph {
       @NotNull final Type type,
       @NotNull final Color color,
       @NotNull final ZoneId timezone) {
-    this.httpClient = httpClient;
-    this.pixela = pixela;
-    this.graphId = graphId;
+    this.simpleGraph = new SimpleGraph(httpClient, pixela, graphId);
     this.name = name;
     this.unit = unit;
     this.type = type;
@@ -60,29 +54,41 @@ public class NewGraph implements Graph {
     this.timezone = timezone;
   }
 
+  @NotNull
   @Override
   public DeleteGraph delete() {
-    return new DeleteGraph(httpClient, pixela, graphId);
+    return simpleGraph.delete();
   }
 
+  @NotNull
   @Override
   public URI viewUri() {
-    final URI uri = httpClient.baseUri();
-    final URI usersUri = pixela.usersUri(uri);
-    final String string = usersUri.toASCIIString() + PATH + graphId.path() + ".html";
-    return URI.create(string);
+    return simpleGraph.viewUri();
+  }
+
+  @NotNull
+  @Override
+  public PostPixel.PixelDate postPixel() {
+    return simpleGraph;
+  }
+
+  @NotNull
+  @Override
+  public String subPath() {
+    return simpleGraph.subPath();
   }
 
   @Override
   public String toString() {
     @SuppressWarnings("StringBufferReplaceableByString")
-    final StringBuilder sb = new StringBuilder("NewGraph{");
-    sb.append("name=").append(name);
+    final StringBuilder sb = new StringBuilder("Graph[");
+    sb.append(simpleGraph.string());
+    sb.append(", name=").append(name);
     sb.append(", unit=").append(unit);
     sb.append(", type=").append(type);
     sb.append(", color=").append(color);
     sb.append(", timezone=").append(timezone);
-    sb.append('}');
+    sb.append(']');
     return sb.toString();
   }
 }

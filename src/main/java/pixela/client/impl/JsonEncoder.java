@@ -24,29 +24,35 @@ import pixela.client.http.Request;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+@FunctionalInterface
 interface JsonEncoder {
 
   @NotNull
-  Mono<String> encode(@NotNull final Request<?> request);
+  default Mono<String> encode(@NotNull final Request<?> request) {
+    if (request.hasBody()) {
+      return encodeObject(request);
+    } else {
+      return Mono.empty();
+    }
+  }
 
   @NotNull
   static JsonEncoder forJackson(
       @NotNull final ExecutorService executorService, @NotNull final ObjectMapper objectMapper) {
-    final Function<Request<?>, Mono<String>> toJson =
-        request -> {
+    final Function<Object, Mono<String>> toJson =
+        object -> {
           try {
-            if (request.hasBody()) {
-              final String json = objectMapper.writeValueAsString(request);
-              return Mono.just(json);
-            } else {
-              return Mono.empty();
-            }
+            final String json = objectMapper.writeValueAsString(object);
+            return Mono.just(json);
           } catch (final IOException e) {
             return Mono.error(e);
           }
         };
-    return request ->
-        Mono.defer(() -> toJson.apply(request))
+    return object ->
+        Mono.defer(() -> toJson.apply(object))
             .subscribeOn(Schedulers.fromExecutor(executorService));
   }
+
+  @NotNull
+  Mono<String> encodeObject(@NotNull final Object object);
 }

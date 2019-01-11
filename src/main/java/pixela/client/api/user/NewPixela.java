@@ -24,11 +24,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Properties;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.Pixela;
-import pixela.client.UserToken;
-import pixela.client.Username;
+import pixela.client.*;
 import pixela.client.api.graph.CreateGraph;
+import pixela.client.api.graph.PostPixel;
 import pixela.client.http.HttpClient;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -50,6 +50,8 @@ class NewPixela implements Pixela {
     this.username = username;
   }
 
+  @Contract("_, _, _ -> new")
+  @NotNull
   static NewPixela of(
       final HttpClient httpClient, final UserToken userToken, final Username username) {
     return new NewPixela(httpClient, userToken, username);
@@ -62,6 +64,7 @@ class NewPixela implements Pixela {
     return URI.create(string);
   }
 
+  @NotNull
   @Override
   public String usersUri() {
     return USERS_PATH + username.path();
@@ -73,8 +76,9 @@ class NewPixela implements Pixela {
     return userToken;
   }
 
+  @NotNull
   @Override
-  public Mono<Pixela> usingClient(final HttpClient client) {
+  public Mono<Pixela> usingClient(@NotNull final HttpClient client) {
     return Mono.fromCallable(
         () -> {
           try (httpClient) {
@@ -83,8 +87,9 @@ class NewPixela implements Pixela {
         });
   }
 
+  @NotNull
   @Override
-  public Mono<Void> persistAsFile(final Path file) {
+  public Mono<Void> persistAsFile(@NotNull final Path file) {
     return Mono.<Void>fromRunnable(
             () -> {
               final Properties properties = new Properties(2);
@@ -101,14 +106,22 @@ class NewPixela implements Pixela {
         .subscribeOn(Schedulers.elastic());
   }
 
+  @NotNull
   @Override
   public DeleteUser deleteUser() {
     return DeleteUser.of(httpClient, userToken, username);
   }
 
+  @NotNull
   @Override
   public CreateGraph.Id createGraph() {
     return CreateGraph.builder(httpClient, this);
+  }
+
+  @NotNull
+  @Override
+  public PostPixel.PixelDate postPixel(@NotNull final GraphId graphId) {
+    return Graph.simple(httpClient, this, graphId).postPixel();
   }
 
   @Override

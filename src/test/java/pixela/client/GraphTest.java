@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Shinya Mochida
+ * Copyright 2019 Shinya Mochida
  *
  * Licensed under the Apache License,Version2.0(the"License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client.http;
+package pixela.client;
 
-import java.net.URI;
-import org.jetbrains.annotations.NotNull;
-import reactor.core.publisher.Mono;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public interface HttpClient extends AutoCloseable {
+import java.time.LocalDate;
+import java.time.Month;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-  @NotNull
-  Mono<String> encodeJson(@NotNull Object object);
+class GraphTest {
 
-  @NotNull
-  URI baseUri();
+  @Nested
+  class DateFormatTest {
 
-  @NotNull
-  <T> Response<T> post(@NotNull final Post<T> postRequest);
-
-  @NotNull
-  <T> Response<T> delete(@NotNull final Delete<T> deleteRequest);
+    @Test
+    void monthPreviousOfOctober() {
+      final LocalDate date = LocalDate.of(2018, Month.SEPTEMBER, 1);
+      final String string = date.format(Graph.PIXEL_DATE_FORMAT);
+      assertThat(string).isEqualTo("20180901");
+    }
+  }
 }

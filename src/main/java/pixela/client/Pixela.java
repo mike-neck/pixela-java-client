@@ -20,27 +20,38 @@ import java.nio.file.Path;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.api.graph.CreateGraph;
+import pixela.client.api.graph.PostPixel;
 import pixela.client.api.user.DeleteUser;
 import pixela.client.http.HttpClient;
 import reactor.core.publisher.Mono;
 
 public interface Pixela {
 
+  @NotNull
   URI usersUri(final URI baseUri);
 
+  @NotNull
   String usersUri();
 
+  @NotNull
   UserToken token();
 
-  Mono<Pixela> usingClient(HttpClient client);
+  @NotNull
+  Mono<Pixela> usingClient(@NotNull final HttpClient client);
 
-  Mono<Void> persistAsFile(final Path file);
+  @NotNull
+  Mono<Void> persistAsFile(@NotNull final Path file);
 
+  @NotNull
   DeleteUser deleteUser();
 
+  @NotNull
   CreateGraph.Id createGraph();
 
-  PixelaClientConfig DEFAULT_CONFIG = PixelaClientConfig.builder().build();
+  @NotNull
+  PostPixel.PixelDate postPixel(@NotNull final GraphId graphId);
+
+  @NotNull PixelaClientConfig DEFAULT_CONFIG = PixelaClientConfig.builder().build();
 
   @NotNull
   static PixelaClient withDefaultJavaClient() {
