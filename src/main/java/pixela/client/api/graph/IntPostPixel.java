@@ -71,8 +71,8 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
     return date.format(Graph.PIXEL_DATE_FORMAT);
   }
 
-  public int getQuantity() {
-    return quantity;
+  public String getQuantity() {
+    return Integer.toString(quantity);
   }
 
   @Nullable
@@ -146,5 +146,10 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
   @Override
   public PostPixel noOptionData() {
     return this;
+  }
+
+  @Override
+  public String toString() {
+    return errorRequest();
   }
 }

@@ -16,12 +16,15 @@
 package pixela.client;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import pixela.client.api.graph.CreateGraph;
+import pixela.client.api.graph.PostPixel;
 import pixela.client.api.user.DeleteUser;
 import reactor.core.Disposable;
 import reactor.core.Disposables;
@@ -68,12 +71,38 @@ class PixelaTest {
                           .timezone("Asia/Tokyo"))
               .log("graph-creation")
               .flatMap(CreateGraph::call)
-              .log("new-graph");
+              .log("new-graph")
+              .cache()
+              .doOnError(
+                  e -> {
+                    throw new RuntimeException(e);
+                  });
 
       final Mono<URI> viewUri = graphCreation.map(Graph::viewUri).log("view-graph");
 
-      final Mono<Void> mono =
+      final Mono<Graph> postPixelViaGraph =
           viewUri
+              .then(graphCreation)
+              .map(graph -> graph.postPixel().date(LocalDate.of(2019, 1, 10)).quantity(10.25))
+              .log("post-pixel-1")
+              .flatMap(PostPixel::call)
+              .log("post-pixel-via-graph");
+
+      final Mono<Graph> postPixelViaPixela =
+          postPixelViaGraph
+              .then(pixela)
+              .flatMap(
+                  pix ->
+                      pix.postPixel(GraphId.of("test-graph"))
+                          .date(LocalDate.of(2019, 1, 9))
+                          .quantity(11.10)
+                          .optionData(Map.of("test", 20))
+                          .log("post-pixel-2"))
+              .flatMap(PostPixel::call)
+              .log("post-pixel-via-pixela");
+
+      final Mono<Void> mono =
+          postPixelViaPixela
               .then(pixela)
               .map(Pixela::deleteUser)
               .log("user-deletion")

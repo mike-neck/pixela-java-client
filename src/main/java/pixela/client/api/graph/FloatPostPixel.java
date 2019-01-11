@@ -71,8 +71,8 @@ public class FloatPostPixel implements PostPixel, PostPixel.OptionData {
     return date.format(Graph.PIXEL_DATE_FORMAT);
   }
 
-  public double getQuantity() {
-    return quantity;
+  public String getQuantity() {
+    return Double.toString(quantity);
   }
 
   @Nullable
@@ -146,5 +146,10 @@ public class FloatPostPixel implements PostPixel, PostPixel.OptionData {
   @Override
   public PostPixel noOptionData() {
     return this;
+  }
+
+  @Override
+  public String toString() {
+    return errorRequest();
   }
 }
