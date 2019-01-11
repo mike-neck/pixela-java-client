@@ -25,9 +25,13 @@ import java.util.NoSuchElementException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.api.graph.DeleteGraph;
+import pixela.client.api.graph.PostPixel;
+import pixela.client.api.graph.SimpleGraph;
+import pixela.client.http.HttpClient;
 
 public interface Graph {
 
+  @NotNull
   DateTimeFormatter PIXEL_DATE_FORMAT =
       new DateTimeFormatterBuilder()
           .appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
@@ -35,9 +39,27 @@ public interface Graph {
           .appendValue(ChronoField.DAY_OF_MONTH, 2)
           .toFormatter();
 
+  @NotNull String PATH = "/graphs";
+
+  @NotNull
   DeleteGraph delete();
 
+  @NotNull
   URI viewUri();
+
+  @NotNull
+  PostPixel.PixelDate postPixel();
+
+  @NotNull
+  String subPath();
+
+  @NotNull
+  static Graph simple(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final GraphId graphId) {
+    return SimpleGraph.of(httpClient, pixela, graphId);
+  }
 
   enum Type {
     INT("int"),

@@ -18,10 +18,7 @@ package pixela.client.api.graph;
 import java.net.URI;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.Api;
-import pixela.client.GraphId;
-import pixela.client.Pixela;
-import pixela.client.UserToken;
+import pixela.client.*;
 import pixela.client.http.Delete;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Response;
@@ -52,7 +49,7 @@ public class DeleteGraph implements Delete<Void>, Api<Void> {
   @NotNull
   @Override
   public URI apiEndpoint(@NotNull final URI baseUrl) {
-    final String uri = pixela.usersUri(baseUrl).toASCIIString() + NewGraph.PATH + graphId.path();
+    final String uri = pixela.usersUri(baseUrl).toASCIIString() + Graph.PATH + graphId.path();
     return URI.create(uri);
   }
 
@@ -71,7 +68,7 @@ public class DeleteGraph implements Delete<Void>, Api<Void> {
   @NotNull
   @Override
   public String errorRequest() {
-    return "DELETE " + pixela.usersUri() + NewGraph.PATH + graphId.path();
+    return "DELETE " + pixela.usersUri() + Graph.PATH + graphId.path();
   }
 
   @NotNull
