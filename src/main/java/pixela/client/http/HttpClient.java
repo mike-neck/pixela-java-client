@@ -31,6 +31,9 @@ public interface HttpClient extends AutoCloseable {
   URI baseUri();
 
   @NotNull
+  <T> Response<T> get(@NotNull final Get<T> getRequest);
+
+  @NotNull
   <T> Response<T> post(@NotNull final Post<T> postRequest);
 
   @NotNull

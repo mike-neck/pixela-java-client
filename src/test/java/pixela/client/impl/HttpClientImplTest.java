@@ -25,10 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import pixela.client.ApiException;
-import pixela.client.http.Delete;
-import pixela.client.http.HttpClient;
-import pixela.client.http.Post;
-import pixela.client.http.Response;
+import pixela.client.http.*;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -154,6 +151,66 @@ class HttpClientImplTest {
       @Test
       void then() {
         final Response<Void> response = httpClient.delete(deleteRequest);
+        StepVerifier.create(response.toPublisher())
+            .expectErrorSatisfies(
+                e ->
+                    assertAll(
+                        () -> assertThat(e).hasMessageContaining("building request"),
+                        () -> assertThat(e.getMessage()).doesNotContain("error-request")))
+            .verify();
+      }
+    }
+  }
+
+  @Nested
+  class GetTest {
+
+    private Get<Void> getRequest;
+    private HttpClient httpClient;
+
+    @SuppressWarnings("unchecked")
+    @BeforeEach
+    void setup() {
+      this.getRequest = mock(Get.class);
+      when(getRequest.errorRequest()).thenReturn("error-request");
+
+      this.httpClient = new HttpClientImpl(doNothing, jdkHttpClient, jdkRequestBuilder);
+    }
+
+    @Nested
+    class ApiExceptionWillBeCustomized {
+
+      @BeforeEach
+      void given() {
+        when(jdkRequestBuilder.get(getRequest))
+            .thenReturn(Mono.error(ApiException.of("building request")));
+      }
+
+      @Test
+      void then() {
+        final Response<Void> response = httpClient.get(getRequest);
+        StepVerifier.create(response.toPublisher())
+            .expectErrorSatisfies(
+                e ->
+                    assertThat(e)
+                        .hasMessageContaining("building request")
+                        .hasMessageContaining("error-request"))
+            .verify();
+      }
+    }
+
+    @Nested
+    class IOExceptionWontBeCustomized {
+
+      @BeforeEach
+      void given() {
+        when(jdkRequestBuilder.get(getRequest))
+            .thenReturn(Mono.error(new IOException("error-request")));
+      }
+
+      @Test
+      void then() {
+        final Response<Void> response = httpClient.get(getRequest);
         StepVerifier.create(response.toPublisher())
             .expectErrorSatisfies(
                 e ->
