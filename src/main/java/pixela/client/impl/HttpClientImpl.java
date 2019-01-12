@@ -74,6 +74,12 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
 
   @NotNull
   @Override
+  public <T> Mono<T> decodeJson(@NotNull final String json, @NotNull final Class<T> type) {
+    return httpClient.decodeJson(json, type);
+  }
+
+  @NotNull
+  @Override
   public URI baseUri() {
     return jdkRequestBuilder.baseUri();
   }

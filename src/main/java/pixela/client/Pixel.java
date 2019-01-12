@@ -15,12 +15,15 @@
  */
 package pixela.client;
 
+import java.time.LocalDate;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 public interface Pixel {
+
+  @NotNull
+  LocalDate date();
 
   @NotNull
   String quantity();
@@ -29,7 +32,7 @@ public interface Pixel {
   Optional<String> optionalData();
 
   @NotNull
-  <T> Mono<T> as(@NotNull final T type);
+  <T> Mono<T> as(@NotNull Class<T> type);
 
   // TODO Update Pixel via Pixel object
   // TODO Increment Pixel via Pixel object

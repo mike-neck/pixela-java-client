@@ -25,6 +25,9 @@ public interface HttpClient extends AutoCloseable {
   Mono<String> encodeJson(@NotNull Object object);
 
   @NotNull
+  <T> Mono<T> decodeJson(@NotNull String json, @NotNull final Class<T> type);
+
+  @NotNull
   URI baseUri();
 
   @NotNull
