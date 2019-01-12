@@ -205,7 +205,7 @@ class HttpClientImplTest {
       @BeforeEach
       void given() {
         when(jdkRequestBuilder.get(getRequest))
-            .thenReturn(Mono.error(new IOException("error-request")));
+            .thenReturn(Mono.error(new IOException("building request")));
       }
 
       @Test
