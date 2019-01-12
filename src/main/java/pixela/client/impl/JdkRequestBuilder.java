@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Delete;
+import pixela.client.http.Get;
 import pixela.client.http.Post;
 import reactor.core.publisher.Mono;
 
@@ -26,16 +27,19 @@ class JdkRequestBuilder {
 
   @NotNull private final URI baseUri;
   @NotNull private final JsonEncoder encoder;
+  @NotNull private final JdkGetRequestBuilder getBuilder;
   @NotNull private final JdkPostRequestBuilder postBuilder;
   @NotNull private final JdkDeleteRequestBuilder deleteBuilder;
 
   private JdkRequestBuilder(
       @NotNull final URI baseUri,
       @NotNull final JsonEncoder encoder,
+      @NotNull final JdkGetRequestBuilder getBuilder,
       @NotNull final JdkPostRequestBuilder postBuilder,
       @NotNull final JdkDeleteRequestBuilder deleteBuilder) {
     this.baseUri = baseUri;
     this.encoder = encoder;
+    this.getBuilder = getBuilder;
     this.postBuilder = postBuilder;
     this.deleteBuilder = deleteBuilder;
   }
@@ -44,6 +48,7 @@ class JdkRequestBuilder {
     return new JdkRequestBuilder(
         baseUri,
         encoder,
+        JdkGetRequestBuilder.of(baseUri),
         JdkPostRequestBuilder.of(baseUri, encoder),
         JdkDeleteRequestBuilder.of(baseUri));
   }
@@ -55,6 +60,11 @@ class JdkRequestBuilder {
   @NotNull
   Mono<String> encodeJson(@NotNull final Object object) {
     return encoder.encodeObject(object);
+  }
+
+  @NotNull
+  Mono<HttpRequest> get(@NotNull final Get<?> get) {
+    return getBuilder.apply(get);
   }
 
   @NotNull

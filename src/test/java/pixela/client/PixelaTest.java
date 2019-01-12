@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import pixela.client.api.graph.CreateGraph;
+import pixela.client.api.graph.GetPixel;
 import pixela.client.api.graph.PostPixel;
 import pixela.client.api.user.DeleteUser;
 import reactor.core.Disposable;
@@ -78,31 +79,51 @@ class PixelaTest {
                     throw new RuntimeException(e);
                   });
 
+      final GraphId testGraph = GraphId.of("test-graph");
+
       final Mono<URI> viewUri = graphCreation.map(Graph::viewUri).log("view-graph");
+
+      final LocalDate date10 = LocalDate.of(2019, 1, 10);
 
       final Mono<Graph> postPixelViaGraph =
           viewUri
               .then(graphCreation)
-              .map(graph -> graph.postPixel().date(LocalDate.of(2019, 1, 10)).quantity(10.25))
+              .map(graph -> graph.postPixel().date(date10).quantity(10.25))
               .log("post-pixel-1")
               .flatMap(PostPixel::call)
               .log("post-pixel-via-graph");
 
+      final Mono<Pixel> getPixelFromPixela = postPixelViaGraph
+              .then(pixela)
+              .map(px -> px.graph(testGraph))
+              .map(graph -> graph.getPixel(date10))
+              .flatMap(GetPixel::call)
+              .log("get-pixel-via-graph-id-from-Pixela");
+
+      final LocalDate date = LocalDate.of(2019, 1, 9);
+
       final Mono<Graph> postPixelViaPixela =
-          postPixelViaGraph
+          getPixelFromPixela
               .then(pixela)
               .flatMap(
                   pix ->
-                      pix.postPixel(GraphId.of("test-graph"))
-                          .date(LocalDate.of(2019, 1, 9))
+                      pix.postPixel(testGraph)
+                          .date(date)
                           .quantity(11.10)
                           .optionData(Map.of("test", 20))
                           .log("post-pixel-2"))
               .flatMap(PostPixel::call)
               .log("post-pixel-via-pixela");
 
-      final Mono<Void> mono =
+      final Mono<Pixel> getPixel =
           postPixelViaPixela
+              .then(graphCreation)
+              .map(graph -> graph.getPixel(date))
+              .flatMap(GetPixel::call)
+              .log("get-pixel");
+
+      final Mono<Void> mono =
+          getPixel
               .then(pixela)
               .map(Pixela::deleteUser)
               .log("user-deletion")

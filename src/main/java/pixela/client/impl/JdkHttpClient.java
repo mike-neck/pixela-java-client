@@ -51,6 +51,11 @@ class JdkHttpClient {
   }
 
   @NotNull
+  <T> Mono<T> decodeJson(@NotNull final String json, @NotNull final Class<T> type) {
+    return decoder.decode(json, type);
+  }
+
+  @NotNull
   static JdkHttpClient create(
       @NotNull final HttpClient httpClient, @NotNull final JsonDecoder decoder) {
     return new JdkHttpClient(httpClient, decoder);

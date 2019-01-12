@@ -16,6 +16,7 @@
 package pixela.client.api.graph;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
@@ -70,6 +71,12 @@ public class NewGraph implements Graph {
   @Override
   public PostPixel.PixelDate postPixel() {
     return simpleGraph;
+  }
+
+  @NotNull
+  @Override
+  public GetPixel getPixel(@NotNull final LocalDate date) {
+    return simpleGraph.pixel(date).apply(this);
   }
 
   @NotNull

@@ -51,6 +51,9 @@ public interface Pixela {
   @NotNull
   PostPixel.PixelDate postPixel(@NotNull final GraphId graphId);
 
+  @NotNull
+  Graph graph(@NotNull final GraphId graphId);
+
   @NotNull PixelaClientConfig DEFAULT_CONFIG = PixelaClientConfig.builder().build();
 
   @NotNull

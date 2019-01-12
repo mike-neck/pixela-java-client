@@ -124,6 +124,12 @@ class NewPixela implements Pixela {
     return Graph.simple(httpClient, this, graphId).postPixel();
   }
 
+  @NotNull
+  @Override
+  public Graph graph(@NotNull final GraphId graphId) {
+    return Graph.simple(httpClient, this, graphId);
+  }
+
   @Override
   public String toString() {
     @SuppressWarnings("StringBufferReplaceableByString")
