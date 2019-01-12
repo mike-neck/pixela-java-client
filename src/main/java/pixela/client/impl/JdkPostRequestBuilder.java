@@ -24,7 +24,7 @@ import pixela.client.http.Post;
 import pixela.client.http.Request;
 import reactor.core.publisher.Mono;
 
-class JdkPostRequestBuilder {
+class JdkPostRequestBuilder implements RequestBuilder<Post<?>> {
 
   @NotNull private final JsonEncoder encoder;
   @NotNull private final RequestConfigurer configurer;
@@ -44,8 +44,9 @@ class JdkPostRequestBuilder {
     return new JdkPostRequestBuilder(baseUri, encoder);
   }
 
+  @Override
   @NotNull
-  Mono<HttpRequest> apply(@NotNull final Post<?> post) {
+  public Mono<HttpRequest> apply(@NotNull final Post<?> post) {
     return encoder
         .encode(post)
         .map(payload -> HttpRequest.BodyPublishers.ofString(payload, StandardCharsets.UTF_8))
