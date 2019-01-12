@@ -30,12 +30,8 @@ public class PixelRaw {
 
   @Nullable private String optionalData;
 
+  @SuppressWarnings("unused")
   public PixelRaw() {}
-
-  public PixelRaw(@NotNull final String quantity, @NotNull final String optionalData) {
-    this.quantity = quantity;
-    this.optionalData = optionalData;
-  }
 
   @NotNull
   public String getQuantity() {
