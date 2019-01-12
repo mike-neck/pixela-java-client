@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import pixela.client.api.graph.CreateGraph;
+import pixela.client.api.graph.GetPixel;
 import pixela.client.api.graph.PostPixel;
 import pixela.client.api.user.DeleteUser;
 import reactor.core.Disposable;
@@ -88,21 +89,30 @@ class PixelaTest {
               .flatMap(PostPixel::call)
               .log("post-pixel-via-graph");
 
+      final LocalDate date = LocalDate.of(2019, 1, 9);
+
       final Mono<Graph> postPixelViaPixela =
           postPixelViaGraph
               .then(pixela)
               .flatMap(
                   pix ->
                       pix.postPixel(GraphId.of("test-graph"))
-                          .date(LocalDate.of(2019, 1, 9))
+                          .date(date)
                           .quantity(11.10)
                           .optionData(Map.of("test", 20))
                           .log("post-pixel-2"))
               .flatMap(PostPixel::call)
               .log("post-pixel-via-pixela");
 
-      final Mono<Void> mono =
+      final Mono<Pixel> getPixel =
           postPixelViaPixela
+              .then(graphCreation)
+              .map(graph -> graph.getPixel(date))
+              .flatMap(GetPixel::call)
+              .log("get-pixel");
+
+      final Mono<Void> mono =
+          getPixel
               .then(pixela)
               .map(Pixela::deleteUser)
               .log("user-deletion")
