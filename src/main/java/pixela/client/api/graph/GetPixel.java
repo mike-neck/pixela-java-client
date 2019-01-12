@@ -18,6 +18,8 @@ package pixela.client.api.graph;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Optional;
+
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
 import pixela.client.http.Get;
@@ -32,7 +34,7 @@ public class GetPixel implements Get<PixelRaw>, Api<Pixel> {
   @NotNull private final Graph graph;
   @NotNull private final LocalDate date;
 
-  GetPixel(
+  private GetPixel(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
@@ -41,6 +43,16 @@ public class GetPixel implements Get<PixelRaw>, Api<Pixel> {
     this.pixela = pixela;
     this.graph = graph;
     this.date = date;
+  }
+
+  @Contract("_, _, _, _ -> new")
+  @NotNull
+  static GetPixel of(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @NotNull final LocalDate date) {
+    return new GetPixel(httpClient, pixela, graph, date);
   }
 
   @NotNull

@@ -17,6 +17,7 @@ package pixela.client.api.graph;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.function.Function;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.ApiException;
@@ -70,6 +71,17 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
   @Override
   public PostPixel.PixelDate postPixel() {
     return this;
+  }
+
+  @NotNull
+  @Override
+  public GetPixel getPixel(@NotNull final LocalDate date) {
+    return pixel(date).apply(this);
+  }
+
+  @NotNull
+  Function<Graph, GetPixel> pixel(@NotNull final LocalDate date) {
+    return graph -> GetPixel.of(httpClient, pixela, graph, date);
   }
 
   @NotNull

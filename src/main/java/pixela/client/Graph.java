@@ -16,6 +16,7 @@
 package pixela.client;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
@@ -25,6 +26,7 @@ import java.util.NoSuchElementException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.api.graph.DeleteGraph;
+import pixela.client.api.graph.GetPixel;
 import pixela.client.api.graph.PostPixel;
 import pixela.client.api.graph.SimpleGraph;
 import pixela.client.http.HttpClient;
@@ -49,6 +51,9 @@ public interface Graph {
 
   @NotNull
   PostPixel.PixelDate postPixel();
+
+  @NotNull
+  GetPixel getPixel(@NotNull final LocalDate date);
 
   @NotNull
   String subPath();
