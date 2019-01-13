@@ -80,7 +80,7 @@ class JdkPostRequestBuilderTest {
     StepVerifier.create(request).expectNextCount(1L).verifyComplete();
   }
 
-  private static ByteBuffer concatBuffer(final List<ByteBuffer> buffers) {
+  static ByteBuffer concatBuffer(final List<ByteBuffer> buffers) {
     final int size = buffers.stream().mapToInt(ByteBuffer::remaining).sum();
     final ByteBuffer newBuffer = ByteBuffer.allocate(size);
     buffers.forEach(newBuffer::put);
