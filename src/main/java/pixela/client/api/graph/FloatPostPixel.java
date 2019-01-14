@@ -34,6 +34,7 @@ public class FloatPostPixel implements PostPixel, PostPixel.OptionData {
   @NotNull private final Graph graph;
 
   @NotNull private final LocalDate date;
+  // TODO use Quantity
   private final double quantity;
   @Nullable private final String optionalData;
 

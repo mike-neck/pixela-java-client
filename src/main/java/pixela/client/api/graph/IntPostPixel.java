@@ -42,6 +42,7 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
       @NotNull final LocalDate date,
+      // TODO use Quantity
       final int quantity,
       @NotNull final String optionalData) {
     this.httpClient = httpClient;
