@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import pixela.client.api.graph.CreateGraph;
 import pixela.client.api.graph.GetPixel;
 import pixela.client.api.graph.PostPixel;
+import pixela.client.api.graph.UpdatePixel;
 import pixela.client.api.user.DeleteUser;
 import reactor.core.Disposable;
 import reactor.core.Disposables;
@@ -49,6 +50,7 @@ class PixelaTest {
       final String username = "a" + Long.toHexString(most);
       System.out.println(username);
 
+      // Create User
       final Mono<Pixela> pixela =
           Pixela.withDefaultJavaClient()
               .createUser()
@@ -59,6 +61,7 @@ class PixelaTest {
               .call()
               .log("user-creation");
 
+      // Create Graph
       final Mono<Graph> graphCreation =
           pixela
               .map(
@@ -83,6 +86,7 @@ class PixelaTest {
 
       final Mono<URI> viewUri = graphCreation.map(Graph::viewUri).log("view-graph");
 
+      // Post Pixel
       final LocalDate date10 = LocalDate.of(2019, 1, 10);
 
       final Mono<Graph> postPixelViaGraph =
@@ -93,13 +97,15 @@ class PixelaTest {
               .flatMap(PostPixel::call)
               .log("post-pixel-via-graph");
 
-      final Mono<Pixel> getPixelFromPixela = postPixelViaGraph
+      final Mono<Pixel> getPixelFromPixela =
+          postPixelViaGraph
               .then(pixela)
               .map(px -> px.graph(testGraph))
               .map(graph -> graph.getPixel(date10))
               .flatMap(GetPixel::call)
               .log("get-pixel-via-graph-id-from-Pixela");
 
+      // Post Pixel
       final LocalDate date = LocalDate.of(2019, 1, 9);
 
       final Mono<Graph> postPixelViaPixela =
@@ -115,6 +121,7 @@ class PixelaTest {
               .flatMap(PostPixel::call)
               .log("post-pixel-via-pixela");
 
+      // Get Pixel
       final Mono<Pixel> getPixel =
           postPixelViaPixela
               .then(graphCreation)
@@ -122,8 +129,18 @@ class PixelaTest {
               .flatMap(GetPixel::call)
               .log("get-pixel");
 
-      final Mono<Void> mono =
+      // Update Pixel
+      final Mono<Pixel> updatePixel =
           getPixel
+              .map(Pixel::update)
+              .flatMap(update -> update.quantity(-4.57).optionalData(Map.of("test", "example")))
+              .log("update-pixel-api")
+              .flatMap(UpdatePixel::call)
+              .log("update-pixel");
+
+      // Delete User
+      final Mono<Void> mono =
+          updatePixel
               .then(pixela)
               .map(Pixela::deleteUser)
               .log("user-deletion")
