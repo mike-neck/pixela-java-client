@@ -26,10 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import pixela.client.ApiException;
 import pixela.client.PixelaClientConfig;
-import pixela.client.http.Delete;
-import pixela.client.http.Get;
-import pixela.client.http.Post;
-import pixela.client.http.Response;
+import pixela.client.http.*;
 import reactor.core.publisher.Mono;
 
 class HttpClientImpl implements pixela.client.http.HttpClient {
@@ -103,6 +100,16 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
     final Mono<JdkHttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
     final Mono<T> mono = response.flatMap(res -> res.readObject(postRequest));
     return () -> mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(postRequest)).cache();
+  }
+
+  @SuppressWarnings("Duplicates")
+  @NotNull
+  @Override
+  public <T> Response<T> put(@NotNull final Put<T> putRequest) {
+    final Mono<HttpRequest> httpRequest = jdkRequestBuilder.put(putRequest);
+    final Mono<JdkHttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
+    final Mono<T> mono = response.flatMap(res -> res.readObject(putRequest));
+    return () -> mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(putRequest)).cache();
   }
 
   @SuppressWarnings("Duplicates")

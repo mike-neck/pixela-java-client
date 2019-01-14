@@ -37,5 +37,8 @@ public interface HttpClient extends AutoCloseable {
   <T> Response<T> post(@NotNull final Post<T> postRequest);
 
   @NotNull
+  <T> Response<T> put(@NotNull final Put<T> putRequest);
+
+  @NotNull
   <T> Response<T> delete(@NotNull final Delete<T> deleteRequest);
 }

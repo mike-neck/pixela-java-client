@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Delete;
 import pixela.client.http.Get;
 import pixela.client.http.Post;
+import pixela.client.http.Put;
 import reactor.core.publisher.Mono;
 
 class JdkRequestBuilder {
@@ -29,6 +30,7 @@ class JdkRequestBuilder {
   @NotNull private final JsonEncoder encoder;
   @NotNull private final JdkGetRequestBuilder getBuilder;
   @NotNull private final JdkPostRequestBuilder postBuilder;
+  @NotNull private final JdkPutRequestBuilder putBuilder;
   @NotNull private final JdkDeleteRequestBuilder deleteBuilder;
 
   private JdkRequestBuilder(
@@ -36,11 +38,13 @@ class JdkRequestBuilder {
       @NotNull final JsonEncoder encoder,
       @NotNull final JdkGetRequestBuilder getBuilder,
       @NotNull final JdkPostRequestBuilder postBuilder,
+      @NotNull final JdkPutRequestBuilder putBuilder,
       @NotNull final JdkDeleteRequestBuilder deleteBuilder) {
     this.baseUri = baseUri;
     this.encoder = encoder;
     this.getBuilder = getBuilder;
     this.postBuilder = postBuilder;
+    this.putBuilder = putBuilder;
     this.deleteBuilder = deleteBuilder;
   }
 
@@ -50,6 +54,7 @@ class JdkRequestBuilder {
         encoder,
         JdkGetRequestBuilder.of(baseUri),
         JdkPostRequestBuilder.of(baseUri, encoder),
+        JdkPutRequestBuilder.of(baseUri, encoder),
         JdkDeleteRequestBuilder.of(baseUri));
   }
 
@@ -70,6 +75,11 @@ class JdkRequestBuilder {
   @NotNull
   Mono<HttpRequest> post(@NotNull final Post<?> post) {
     return postBuilder.apply(post);
+  }
+
+  @NotNull
+  <T> Mono<HttpRequest> put(@NotNull final Put<T> put) {
+    return putBuilder.apply(put);
   }
 
   @NotNull
