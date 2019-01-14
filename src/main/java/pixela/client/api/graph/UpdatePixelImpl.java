@@ -80,7 +80,7 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
     return response
         .toPublisher()
         .<pixela.client.Pixel>then(
-            Mono.defer(() -> Mono.just(new PixelImpl(this, httpClient, pixela, graph, date))))
+            Mono.defer(() -> Mono.just(new PixelImpl(httpClient, pixela, graph, date, this))))
         .cache();
   }
 

@@ -15,73 +15,87 @@
  */
 package pixela.client.api.graph;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
+import pixela.client.Api;
 import pixela.client.Graph;
+import pixela.client.Pixel;
 import pixela.client.Pixela;
+import pixela.client.UserToken;
 import pixela.client.http.HttpClient;
+import pixela.client.http.Put;
+import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
-class PixelImpl implements pixela.client.Pixel {
+public class IncrementPixel implements Put<Void>, Api<Pixel> {
 
-  @NotNull private final PixelDetail raw;
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
   @NotNull private final Graph graph;
   @NotNull private final LocalDate date;
+  @NotNull private final PixelDetail current;
 
-  PixelImpl(
+  IncrementPixel(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
       @NotNull final LocalDate date,
-      @NotNull final PixelDetail raw) {
-    this.raw = raw;
+      @NotNull final PixelDetail pixelDetail) {
     this.httpClient = httpClient;
     this.pixela = pixela;
     this.graph = graph;
     this.date = date;
+    this.current = pixelDetail;
   }
 
   @NotNull
   @Override
-  public LocalDate date() {
-    return date;
+  public Mono<Pixel> call() {
+    final Response<Void> response = httpClient.put(this);
+    return response
+        .toPublisher()
+        .<Pixel>then(
+            Mono.defer(
+                () ->
+                    Mono.just(new PixelImpl(httpClient, pixela, graph, date, current.increment()))))
+        .cache();
   }
 
   @NotNull
   @Override
-  public String quantity() {
-    return raw.quantity();
+  public URI apiEndpoint(@NotNull final URI baseUrl) {
+    final String users = pixela.usersUri(baseUrl).toASCIIString();
+    final String uri = users + graph.subPath() + "/increment";
+    return URI.create(uri);
   }
 
   @NotNull
   @Override
-  public Optional<String> optionalData() {
-    return raw.optionalData();
+  public Optional<UserToken> userToken() {
+    return Optional.of(pixela.token());
   }
 
   @NotNull
   @Override
-  public <T> Mono<T> as(@NotNull final Class<T> type) {
-    return Mono.justOrEmpty(raw.optionalData()).flatMap(json -> httpClient.decodeJson(json, type));
+  public WithBody withBody() {
+    return WithBody.FALSE;
   }
 
+  @NotNull
   @Override
-  public UpdatePixel.Quantity update() {
-    return quantity -> new UpdatePixelImpl(httpClient, pixela, graph, date, quantity);
+  public Class<? extends Void> responseType() {
+    return Void.class;
   }
 
+  @NotNull
   @Override
-  public String toString() {
-    return "Pixel["
-        + graph
-        + ",date="
+  public String errorRequest() {
+    return "PUT "
+        + pixela.usersUri()
+        + graph.subPath()
         + date.format(Graph.PIXEL_DATE_FORMAT)
-        + ",quantity="
-        + raw.quantity()
-        + (raw.optionalData().map(data -> ",optionalData=" + data).orElse(""))
-        + ']';
+        + "/increment";
   }
 }

@@ -61,7 +61,7 @@ public class PixelRaw implements PixelDetail {
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
       @NotNull final LocalDate date) {
-    return new PixelImpl(this, httpClient, pixela, graph, date);
+    return new PixelImpl(httpClient, pixela, graph, date, this);
   }
 
   @NotNull
