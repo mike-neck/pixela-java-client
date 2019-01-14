@@ -13,32 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client;
+package pixela.client.api.graph;
 
-import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.api.graph.UpdatePixel;
-import reactor.core.publisher.Mono;
+import org.jetbrains.annotations.Nullable;
 
-public interface Pixel {
-
-  @NotNull
-  LocalDate date();
+interface PixelDetail {
 
   @NotNull
   String quantity();
 
-  @NotNull
-  Optional<String> optionalData();
+  @Nullable
+  String optionalDataString();
 
   @NotNull
-  <T> Mono<T> as(@NotNull Class<T> type);
-
-  // TODO Update Pixel via Pixel object
-
-  UpdatePixel.Quantity update();
-
-  // TODO Increment Pixel via Pixel object
-  // TODO Decrement Pixel via Pixel object
+  default Optional<String> optionalData() {
+    return Optional.ofNullable(optionalDataString());
+  }
 }

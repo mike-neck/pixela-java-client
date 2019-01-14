@@ -13,32 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client;
+package pixela.client.http;
 
-import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.api.graph.UpdatePixel;
-import reactor.core.publisher.Mono;
 
-public interface Pixel {
+public interface Put<T> extends Request<T> {
 
   @NotNull
-  LocalDate date();
-
-  @NotNull
-  String quantity();
-
-  @NotNull
-  Optional<String> optionalData();
-
-  @NotNull
-  <T> Mono<T> as(@NotNull Class<T> type);
-
-  // TODO Update Pixel via Pixel object
-
-  UpdatePixel.Quantity update();
-
-  // TODO Increment Pixel via Pixel object
-  // TODO Decrement Pixel via Pixel object
+  @Override
+  default Optional<String> contentType() {
+    return Optional.of("application/json");
+  }
 }

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Get;
 import reactor.core.publisher.Mono;
 
-class JdkGetRequestBuilder {
+class JdkGetRequestBuilder implements RequestBuilder<Get<?>> {
 
   @NotNull private final URI baseUri;
 
@@ -33,8 +33,9 @@ class JdkGetRequestBuilder {
     return new JdkGetRequestBuilder(baseUri);
   }
 
+  @Override
   @NotNull
-  Mono<HttpRequest> apply(@NotNull final Get<?> get) {
+  public Mono<HttpRequest> apply(@NotNull final Get<?> get) {
     final URI uri = get.apiEndpoint(baseUri);
     final HttpRequest.Builder builder = HttpRequest.newBuilder(uri).GET();
     final HttpRequest request = UserTokenHeader.of(get).configure(builder).build();

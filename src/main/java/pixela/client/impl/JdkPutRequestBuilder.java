@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Shinya Mochida
+ * Copyright 2019 Shinya Mochida
  *
  * Licensed under the Apache License,Version2.0(the"License");
  * you may not use this file except in compliance with the License.
@@ -20,45 +20,42 @@ import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.http.Post;
+import pixela.client.http.Put;
 import pixela.client.http.Request;
 import reactor.core.publisher.Mono;
 
-class JdkPostRequestBuilder implements RequestBuilder<Post<?>> {
+class JdkPutRequestBuilder implements RequestBuilder<Put<?>> {
 
   @NotNull private final JsonEncoder encoder;
   @NotNull private final RequestConfigurer configurer;
 
-  private JdkPostRequestBuilder(@NotNull final URI baseUri, @NotNull final JsonEncoder encoder) {
-    this(encoder, new ReqConfigurer(baseUri));
-  }
-
-  JdkPostRequestBuilder(
+  JdkPutRequestBuilder(
       @NotNull final JsonEncoder encoder, @NotNull final RequestConfigurer configurer) {
-    this.configurer = configurer;
     this.encoder = encoder;
+    this.configurer = configurer;
   }
 
   @NotNull
-  static JdkPostRequestBuilder of(@NotNull final URI baseUri, @NotNull final JsonEncoder encoder) {
-    return new JdkPostRequestBuilder(baseUri, encoder);
+  static JdkPutRequestBuilder of(@NotNull final URI uri, @NotNull final JsonEncoder encoder) {
+    final RequestConfigurer configurer = new PutRequestConfigurer(uri);
+    return new JdkPutRequestBuilder(encoder, configurer);
   }
 
+  @NotNull
   @Override
-  @NotNull
-  public Mono<HttpRequest> apply(@NotNull final Post<?> post) {
+  public Mono<HttpRequest> apply(@NotNull final Put<?> request) {
     return encoder
-        .encode(post)
+        .encode(request)
         .map(payload -> HttpRequest.BodyPublishers.ofString(payload, StandardCharsets.UTF_8))
         .switchIfEmpty(Mono.just(HttpRequest.BodyPublishers.noBody()))
-        .map(pub -> configurer.configureRequest(post, pub));
+        .map(pub -> configurer.configureRequest(request, pub));
   }
 
-  static class ReqConfigurer implements RequestConfigurer {
+  static class PutRequestConfigurer implements RequestConfigurer {
 
-    @NotNull final URI baseUri;
+    private final URI baseUri;
 
-    ReqConfigurer(@NotNull final URI baseUri) {
+    PutRequestConfigurer(final URI baseUri) {
       this.baseUri = baseUri;
     }
 
@@ -67,7 +64,7 @@ class JdkPostRequestBuilder implements RequestBuilder<Post<?>> {
     public HttpRequest configureRequest(
         @NotNull final Request<?> request, @NotNull final HttpRequest.BodyPublisher bodyPublisher) {
       final URI endpoint = request.apiEndpoint(baseUri);
-      final HttpRequest.Builder builder = HttpRequest.newBuilder(endpoint).POST(bodyPublisher);
+      final HttpRequest.Builder builder = HttpRequest.newBuilder(endpoint).PUT(bodyPublisher);
       return Stream.of(UserTokenHeader.of(request), ContentTypeHeader.of(request))
           .reduce(builder, (b, h) -> h.configure(b), (l, r) -> l)
           .build();

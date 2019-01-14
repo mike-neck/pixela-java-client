@@ -20,30 +20,26 @@ import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pixela.client.Graph;
-import pixela.client.Pixela;
-import pixela.client.UserToken;
+import pixela.client.*;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
-class IntPostPixel implements PostPixel, PostPixel.OptionData {
+public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, PixelDetail {
 
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
   @NotNull private final Graph graph;
-
   @NotNull private final LocalDate date;
-  private final int quantity;
+  @NotNull private final pixela.client.Quantity quantity;
   @Nullable private final String optionalData;
 
-  private IntPostPixel(
+  private UpdatePixelImpl(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
       @NotNull final LocalDate date,
-      // TODO use Quantity
-      final int quantity,
+      @NotNull final pixela.client.Quantity quantity,
       @NotNull final String optionalData) {
     this.httpClient = httpClient;
     this.pixela = pixela;
@@ -53,12 +49,12 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
     this.optionalData = optionalData;
   }
 
-  IntPostPixel(
+  UpdatePixelImpl(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
       @NotNull final LocalDate date,
-      final int quantity) {
+      @NotNull final pixela.client.Quantity quantity) {
     this.httpClient = httpClient;
     this.pixela = pixela;
     this.graph = graph;
@@ -68,12 +64,8 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
   }
 
   @NotNull
-  public String getDate() {
-    return date.format(Graph.PIXEL_DATE_FORMAT);
-  }
-
   public String getQuantity() {
-    return Integer.toString(quantity);
+    return quantity.asString();
   }
 
   @Nullable
@@ -83,15 +75,23 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
 
   @NotNull
   @Override
-  public Mono<Graph> call() {
-    final Response<Void> response = httpClient.post(this);
-    return response.toPublisher().thenReturn(graph);
+  public Mono<pixela.client.Pixel> call() {
+    final Response<Void> response = httpClient.put(this);
+    return response
+        .toPublisher()
+        .<pixela.client.Pixel>then(
+            Mono.defer(() -> Mono.just(new PixelImpl(this, httpClient, pixela, graph, date))))
+        .cache();
   }
 
   @NotNull
   @Override
   public URI apiEndpoint(@NotNull final URI baseUrl) {
-    final String uri = pixela.usersUri(baseUrl).toASCIIString() + graph.subPath();
+    final String uri =
+        pixela.usersUri(baseUrl).toASCIIString()
+            + graph.subPath()
+            + '/'
+            + date.format(Graph.PIXEL_DATE_FORMAT);
     return URI.create(uri);
   }
 
@@ -116,41 +116,47 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
   @NotNull
   @Override
   public String errorRequest() {
-    return "POST "
+    return "PUT "
         + pixela.usersUri()
         + graph.subPath()
-        + '\n'
-        + "  date: "
+        + '/'
         + date.format(Graph.PIXEL_DATE_FORMAT)
         + '\n'
         + "  quantity: "
-        + quantity
         + '\n'
+        + quantity
         + "  optionalData: "
-        + (optionalData == null ? "[null]" : optionalData);
+        + optionalData;
   }
 
   @NotNull
   @Override
-  public Mono<PostPixel> optionData(@NotNull final Object pojo) {
-    final Mono<String> mono = httpClient.encodeJson(pojo);
-    return mono.map(this::optionDataJson);
+  public String quantity() {
+    return quantity.asString();
   }
 
-  @NotNull
+  @Nullable
   @Override
-  public PostPixel optionDataJson(@NotNull final String json) {
-    return new IntPostPixel(httpClient, pixela, graph, date, quantity, json);
-  }
-
-  @NotNull
-  @Override
-  public PostPixel noOptionData() {
-    return this;
+  public String optionalDataString() {
+    return optionalData;
   }
 
   @Override
   public String toString() {
     return errorRequest();
+  }
+
+  @NotNull
+  @Override
+  public UpdatePixel optionalDataString(@NotNull final String optionalData) {
+    return new UpdatePixelImpl(httpClient, pixela, graph, date, quantity, optionalData);
+  }
+
+  @NotNull
+  @Override
+  public Mono<UpdatePixel> optionalData(@NotNull final Object object) {
+    return httpClient
+        .encodeJson(object)
+        .map(opd -> new UpdatePixelImpl(httpClient, pixela, graph, date, quantity, opd));
   }
 }

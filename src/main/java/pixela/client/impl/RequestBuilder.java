@@ -15,31 +15,13 @@
  */
 package pixela.client.impl;
 
-import java.net.URI;
 import java.net.http.HttpRequest;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.http.Delete;
+import pixela.client.http.Request;
 import reactor.core.publisher.Mono;
 
-class JdkDeleteRequestBuilder implements RequestBuilder<Delete<?>> {
-
-  @NotNull private final URI baseUri;
-
-  private JdkDeleteRequestBuilder(@NotNull final URI baseUri) {
-    this.baseUri = baseUri;
-  }
+interface RequestBuilder<R extends Request<?>> {
 
   @NotNull
-  static JdkDeleteRequestBuilder of(@NotNull final URI baseUri) {
-    return new JdkDeleteRequestBuilder(baseUri);
-  }
-
-  @Override
-  @NotNull
-  public Mono<HttpRequest> apply(@NotNull final Delete<?> delete) {
-    final URI uri = delete.apiEndpoint(baseUri);
-    final HttpRequest.Builder builder = HttpRequest.newBuilder(uri).DELETE();
-    final HttpRequest request = UserTokenHeader.of(delete).configure(builder).build();
-    return Mono.just(request);
-  }
+  Mono<HttpRequest> apply(@NotNull final R request);
 }
