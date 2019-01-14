@@ -40,7 +40,7 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
       @NotNull final Graph graph,
       @NotNull final LocalDate date,
       @NotNull final pixela.client.Quantity quantity,
-      @NotNull final String optionalData) {
+      @Nullable final String optionalData) {
     this.httpClient = httpClient;
     this.pixela = pixela;
     this.graph = graph;
@@ -127,6 +127,12 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
         + quantity
         + "  optionalData: "
         + optionalData;
+  }
+
+  @NotNull
+  @Override
+  public PixelDetail increment() {
+    return new UpdatePixelImpl(httpClient, pixela, graph, date, quantity.increment(), optionalData);
   }
 
   @NotNull

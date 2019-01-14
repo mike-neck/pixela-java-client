@@ -15,6 +15,7 @@
  */
 package pixela.client;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,9 @@ public interface Quantity {
 
   @NotNull
   String asString();
+
+  @NotNull
+  Quantity increment();
 
   @Contract("_ -> new")
   @NotNull
@@ -55,6 +59,15 @@ public interface Quantity {
     public String asString() {
       return quantity;
     }
+
+    @NotNull
+    @Override
+    public Quantity increment() {
+      if (quantity.contains(".")) {
+        return new FloatQuantity(Double.parseDouble(quantity)).increment();
+      }
+      return new IntQuantity(Integer.parseInt(quantity)).increment();
+    }
   }
 
   class IntQuantity implements Quantity {
@@ -70,13 +83,37 @@ public interface Quantity {
       return Integer.toString(quantity);
     }
 
+    @NotNull
+    @Override
+    public Quantity increment() {
+      return new IntQuantity(quantity + 1);
+    }
+
     @Override
     public String toString() {
       return asString();
     }
+
+    @Override
+    public boolean equals(final Object object) {
+      if (this == object) return true;
+      if (!(object instanceof IntQuantity)) return false;
+
+      final IntQuantity that = (IntQuantity) object;
+
+      return quantity == that.quantity;
+    }
+
+    @Override
+    public int hashCode() {
+      return quantity;
+    }
   }
 
   class FloatQuantity implements Quantity {
+
+    private static final BigDecimal diff = new BigDecimal("0.01");
+
     private final double quantity;
 
     FloatQuantity(final double quantity) {
@@ -87,6 +124,14 @@ public interface Quantity {
     @Override
     public String asString() {
       return Double.toString(quantity);
+    }
+
+    @NotNull
+    @Override
+    public Quantity increment() {
+      final BigDecimal current = BigDecimal.valueOf(quantity);
+      final BigDecimal next = current.add(diff);
+      return new FloatQuantity(next.doubleValue());
     }
 
     @Override

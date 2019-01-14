@@ -22,6 +22,9 @@ import org.jetbrains.annotations.Nullable;
 interface PixelDetail {
 
   @NotNull
+  PixelDetail increment();
+
+  @NotNull
   String quantity();
 
   @Nullable

@@ -20,24 +20,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pixela.client.Graph;
 import pixela.client.Pixela;
+import pixela.client.Quantity;
 import pixela.client.http.HttpClient;
 
 public class PixelRaw implements PixelDetail {
 
-  @NotNull String quantity = "";
+  @NotNull private Quantity quantity = Quantity.integer(0);
 
   @Nullable private String optionalData;
 
   @SuppressWarnings("unused")
   public PixelRaw() {}
 
+  private PixelRaw(@NotNull final Quantity quantity, @Nullable final String optionalData) {
+    this.quantity = quantity;
+    this.optionalData = optionalData;
+  }
+
   @NotNull
   public String getQuantity() {
-    return quantity;
+    return quantity.asString();
   }
 
   public void setQuantity(@NotNull final String quantity) {
-    this.quantity = quantity;
+    this.quantity = Quantity.string(quantity);
   }
 
   @Nullable
@@ -60,8 +66,14 @@ public class PixelRaw implements PixelDetail {
 
   @NotNull
   @Override
+  public PixelDetail increment() {
+    return new PixelRaw(quantity.increment(), optionalData);
+  }
+
+  @NotNull
+  @Override
   public String quantity() {
-    return quantity;
+    return quantity.asString();
   }
 
   @Nullable
