@@ -23,10 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import pixela.client.api.graph.CreateGraph;
-import pixela.client.api.graph.GetPixel;
-import pixela.client.api.graph.PostPixel;
-import pixela.client.api.graph.UpdatePixel;
+import pixela.client.api.graph.*;
 import pixela.client.api.user.DeleteUser;
 import reactor.core.Disposable;
 import reactor.core.Disposables;
@@ -138,9 +135,13 @@ class PixelaTest {
               .flatMap(UpdatePixel::call)
               .log("update-pixel");
 
+      // Increment Pixel
+      final Mono<Pixel> incrementPixel =
+          updatePixel.map(Pixel::increment).flatMap(IncrementPixel::call).log("increment-pixel");
+
       // Delete User
       final Mono<Void> mono =
-          updatePixel
+          incrementPixel
               .then(pixela)
               .map(Pixela::deleteUser)
               .log("user-deletion")
