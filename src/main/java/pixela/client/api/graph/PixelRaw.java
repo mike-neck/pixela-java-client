@@ -16,17 +16,15 @@
 package pixela.client.api.graph;
 
 import java.time.LocalDate;
-import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pixela.client.Graph;
 import pixela.client.Pixela;
 import pixela.client.http.HttpClient;
-import reactor.core.publisher.Mono;
 
-public class PixelRaw {
+public class PixelRaw implements PixelDetail {
 
-  @NotNull private String quantity = "";
+  @NotNull String quantity = "";
 
   @Nullable private String optionalData;
 
@@ -57,61 +55,28 @@ public class PixelRaw {
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
       @NotNull final LocalDate date) {
-    return new Pixel(httpClient, pixela, graph, date);
+    return new PixelImpl(this, httpClient, pixela, graph, date);
   }
 
-  class Pixel implements pixela.client.Pixel {
+  @NotNull
+  @Override
+  public String quantity() {
+    return quantity;
+  }
 
-    @NotNull private final HttpClient httpClient;
-    @NotNull private final Pixela pixela;
-    @NotNull private final Graph graph;
-    @NotNull private final LocalDate date;
+  @Nullable
+  @Override
+  public String optionalDataString() {
+    return optionalData;
+  }
 
-    Pixel(
-        @NotNull final HttpClient httpClient,
-        @NotNull final Pixela pixela,
-        @NotNull final Graph graph,
-        @NotNull final LocalDate date) {
-      this.httpClient = httpClient;
-      this.pixela = pixela;
-      this.graph = graph;
-      this.date = date;
-    }
-
-    @NotNull
-    @Override
-    public LocalDate date() {
-      return date;
-    }
-
-    @NotNull
-    @Override
-    public String quantity() {
-      return PixelRaw.this.quantity;
-    }
-
-    @NotNull
-    @Override
-    public Optional<String> optionalData() {
-      return Optional.ofNullable(PixelRaw.this.optionalData);
-    }
-
-    @NotNull
-    @Override
-    public <T> Mono<T> as(@NotNull final Class<T> type) {
-      return Mono.justOrEmpty(optionalData).flatMap(json -> httpClient.decodeJson(json, type));
-    }
-
-    @Override
-    public String toString() {
-      return "Pixel["
-          + graph
-          + ",date="
-          + date.format(Graph.PIXEL_DATE_FORMAT)
-          + ",quantity="
-          + PixelRaw.this.quantity
-          + (optionalData == null ? "" : ",optionalData=" + optionalData)
-          + ']';
-    }
+  @Override
+  public String toString() {
+    @SuppressWarnings("StringBufferReplaceableByString")
+    final StringBuilder sb = new StringBuilder("PixelRaw{");
+    sb.append("quantity='").append(quantity).append('\'');
+    sb.append(", optionalData='").append(optionalData).append('\'');
+    sb.append('}');
+    return sb.toString();
   }
 }
