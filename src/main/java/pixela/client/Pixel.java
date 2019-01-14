@@ -18,6 +18,7 @@ package pixela.client;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
+import pixela.client.api.graph.IncrementPixel;
 import pixela.client.api.graph.UpdatePixel;
 import reactor.core.publisher.Mono;
 
@@ -35,9 +36,9 @@ public interface Pixel {
   @NotNull
   <T> Mono<T> as(@NotNull Class<T> type);
 
-  // TODO Update Pixel via Pixel object
-
   UpdatePixel.Quantity update();
+
+  IncrementPixel increment();
 
   // TODO Increment Pixel via Pixel object
   // TODO Decrement Pixel via Pixel object

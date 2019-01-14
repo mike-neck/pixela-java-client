@@ -18,6 +18,7 @@ package pixela.client.api.graph;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Optional;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.Api;
 import pixela.client.Graph;
@@ -37,7 +38,7 @@ public class IncrementPixel implements Put<Void>, Api<Pixel> {
   @NotNull private final LocalDate date;
   @NotNull private final PixelDetail current;
 
-  IncrementPixel(
+  private IncrementPixel(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
@@ -48,6 +49,17 @@ public class IncrementPixel implements Put<Void>, Api<Pixel> {
     this.graph = graph;
     this.date = date;
     this.current = pixelDetail;
+  }
+
+  @Contract("_, _, _, _, _ -> new")
+  @NotNull
+  static IncrementPixel of(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @NotNull final LocalDate date,
+      @NotNull final PixelDetail pixelDetail) {
+    return new IncrementPixel(httpClient, pixela, graph, date, pixelDetail);
   }
 
   @NotNull

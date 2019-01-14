@@ -25,11 +25,11 @@ import reactor.core.publisher.Mono;
 
 class PixelImpl implements pixela.client.Pixel {
 
-  @NotNull private final PixelDetail raw;
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
   @NotNull private final Graph graph;
   @NotNull private final LocalDate date;
+  @NotNull private final PixelDetail raw;
 
   PixelImpl(
       @NotNull final HttpClient httpClient,
@@ -71,6 +71,11 @@ class PixelImpl implements pixela.client.Pixel {
   @Override
   public UpdatePixel.Quantity update() {
     return quantity -> new UpdatePixelImpl(httpClient, pixela, graph, date, quantity);
+  }
+
+  @Override
+  public IncrementPixel increment() {
+    return IncrementPixel.of(httpClient, pixela, graph, date, raw);
   }
 
   @Override
