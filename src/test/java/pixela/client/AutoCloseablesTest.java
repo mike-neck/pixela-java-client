@@ -1,4 +1,4 @@
-package pixela.client.impl;
+package pixela.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

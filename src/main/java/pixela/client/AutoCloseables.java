@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client.impl;
+package pixela.client;
 
 import java.util.Arrays;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-interface AutoCloseables extends AutoCloseable {
+public interface AutoCloseables extends AutoCloseable {
 
   @NotNull
   AutoCloseables add(@NotNull final AutoCloseable autoCloseable);

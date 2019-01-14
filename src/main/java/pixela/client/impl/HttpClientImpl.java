@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import pixela.client.ApiException;
+import pixela.client.AutoCloseables;
 import pixela.client.PixelaClientConfig;
 import pixela.client.http.*;
 import reactor.core.publisher.Mono;
