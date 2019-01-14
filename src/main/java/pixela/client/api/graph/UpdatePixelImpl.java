@@ -64,6 +64,16 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
   }
 
   @NotNull
+  public String getQuantity() {
+    return quantity.asString();
+  }
+
+  @Nullable
+  public String getOptionalData() {
+    return optionalData;
+  }
+
+  @NotNull
   @Override
   public Mono<pixela.client.Pixel> call() {
     final Response<Void> response = httpClient.put(this);
@@ -88,7 +98,7 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
   @NotNull
   @Override
   public Optional<UserToken> userToken() {
-    return Optional.empty();
+    return Optional.of(pixela.token());
   }
 
   @NotNull
@@ -113,6 +123,7 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
         + date.format(Graph.PIXEL_DATE_FORMAT)
         + '\n'
         + "  quantity: "
+        + '\n'
         + quantity
         + "  optionalData: "
         + optionalData;
