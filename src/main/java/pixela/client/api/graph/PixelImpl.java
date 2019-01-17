@@ -79,6 +79,11 @@ class PixelImpl implements pixela.client.Pixel {
   }
 
   @Override
+  public DecrementPixel decrement() {
+    return DecrementPixel.of(httpClient, pixela, graph, date, raw);
+  }
+
+  @Override
   public String toString() {
     return "Pixel["
         + graph
