@@ -34,4 +34,7 @@ interface PixelDetail {
   default Optional<String> optionalData() {
     return Optional.ofNullable(optionalDataString());
   }
+
+  @NotNull
+  PixelDetail decrement();
 }

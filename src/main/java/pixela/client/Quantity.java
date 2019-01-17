@@ -28,6 +28,9 @@ public interface Quantity {
   @NotNull
   Quantity increment();
 
+  @NotNull
+  Quantity decrement();
+
   @Contract("_ -> new")
   @NotNull
   static Quantity string(@NotNull final String quantity) {
@@ -63,10 +66,22 @@ public interface Quantity {
     @NotNull
     @Override
     public Quantity increment() {
+      return toNumberBased().increment();
+    }
+
+    @NotNull
+    @Override
+    public Quantity decrement() {
+      return toNumberBased().decrement();
+    }
+
+    @NotNull
+    @Contract(" -> new")
+    private Quantity toNumberBased() {
       if (quantity.contains(".")) {
-        return new FloatQuantity(Double.parseDouble(quantity)).increment();
+        return new FloatQuantity(Double.parseDouble(quantity));
       }
-      return new IntQuantity(Integer.parseInt(quantity)).increment();
+      return new IntQuantity(Integer.parseInt(quantity));
     }
   }
 
@@ -87,6 +102,12 @@ public interface Quantity {
     @Override
     public Quantity increment() {
       return new IntQuantity(quantity + 1);
+    }
+
+    @NotNull
+    @Override
+    public Quantity decrement() {
+      return new IntQuantity(quantity - 1);
     }
 
     @Override
@@ -134,9 +155,33 @@ public interface Quantity {
       return new FloatQuantity(next.doubleValue());
     }
 
+    @NotNull
+    @Override
+    public Quantity decrement() {
+      final BigDecimal current = BigDecimal.valueOf(quantity);
+      final BigDecimal next = current.subtract(diff);
+      return new FloatQuantity(next.doubleValue());
+    }
+
     @Override
     public String toString() {
       return asString();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+      if (this == object) return true;
+      if (!(object instanceof FloatQuantity)) return false;
+
+      final FloatQuantity that = (FloatQuantity) object;
+
+      return Double.compare(that.quantity, quantity) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+      final long temp = Double.doubleToLongBits(quantity);
+      return (int) (temp ^ (temp >>> 32));
     }
   }
 }
