@@ -72,6 +72,12 @@ public class PixelRaw implements PixelDetail {
 
   @NotNull
   @Override
+  public PixelDetail decrement() {
+    return new PixelRaw(quantity.decrement(), optionalData);
+  }
+
+  @NotNull
+  @Override
   public String quantity() {
     return quantity.asString();
   }

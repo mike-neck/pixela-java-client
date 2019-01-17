@@ -67,7 +67,7 @@ public class DecrementPixel implements Put<Void>, Api<Pixel> {
         .<Pixel>then(
             Mono.defer(
                 () ->
-                    Mono.just(new PixelImpl(httpClient, pixela, graph, date, current.increment()))))
+                    Mono.just(new PixelImpl(httpClient, pixela, graph, date, current.decrement()))))
         .cache();
   }
 

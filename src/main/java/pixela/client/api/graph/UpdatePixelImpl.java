@@ -137,6 +137,12 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
 
   @NotNull
   @Override
+  public PixelDetail decrement() {
+    return new UpdatePixelImpl(httpClient, pixela, graph, date, quantity.decrement(), optionalData);
+  }
+
+  @NotNull
+  @Override
   public String quantity() {
     return quantity.asString();
   }

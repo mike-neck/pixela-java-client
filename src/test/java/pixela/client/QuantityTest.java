@@ -30,6 +30,12 @@ class QuantityTest {
       final Quantity quantity = Quantity.integer(-1);
       assertThat(quantity.increment()).isEqualTo(Quantity.integer(0));
     }
+
+    @Test
+    void decrementReturnsPreviousValue() {
+      final Quantity quantity = Quantity.integer(220);
+      assertThat(quantity.decrement()).isEqualTo(Quantity.integer(219));
+    }
   }
 
   @Nested
@@ -39,6 +45,12 @@ class QuantityTest {
     void incrementReturnsNextValue() {
       final Quantity quantity = Quantity.floating(0.375802);
       assertThat(quantity.increment().asString()).isEqualTo(Quantity.floating(0.385802).asString());
+    }
+
+    @Test
+    void decrementReturnsPreviousValue() {
+      final Quantity quantity = Quantity.floating(0.4017);
+      assertThat(quantity.decrement().asString()).isEqualTo(Quantity.floating(0.3917).asString());
     }
   }
 
@@ -52,9 +64,21 @@ class QuantityTest {
     }
 
     @Test
+    void decrementIntReturnsPreviousValue() {
+      final Quantity quantity = Quantity.string("-2");
+      assertThat(quantity.decrement()).isEqualTo(Quantity.integer(-3));
+    }
+
+    @Test
     void incrementFloatReturnsNextValue() {
       final Quantity quantity = Quantity.string("240.091");
       assertThat(quantity.increment().asString()).isEqualTo("240.101");
+    }
+
+    @Test
+    void decrementFloatReturnsPreviousValue() {
+      final Quantity quantity = Quantity.string("-39.393");
+      assertThat(quantity.decrement().asString()).isEqualTo(Quantity.floating(-39.403).asString());
     }
   }
 }
