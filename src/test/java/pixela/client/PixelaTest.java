@@ -148,13 +148,12 @@ class PixelaTest {
               decrementPixel.map(Pixel::delete).flatMap(DeletePixel::call).log("delete-pixel");
 
       // Delete Graph
-      final Mono<Void> deleteGraph =
+      final Mono<Pixela> deleteGraph =
               deletePixel.map(Graph::delete).flatMap(DeleteGraph::call).log("delete-graph");
 
       // Delete User
       final Mono<Void> mono =
           deleteGraph
-              .then(pixela)
               .map(Pixela::deleteUser)
               .log("user-deletion")
               .flatMap(DeleteUser::call);
