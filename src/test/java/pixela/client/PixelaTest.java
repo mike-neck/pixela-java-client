@@ -137,11 +137,20 @@ class PixelaTest {
 
       // Increment Pixel
       final Mono<Pixel> incrementPixel =
-          updatePixel.map(Pixel::increment).flatMap(IncrementPixel::call).log("increment-pixel");
+          updatePixel
+              .then(pixela)
+              .map(px -> px.graph(testGraph))
+              .map(Graph::incrementPixel)
+              .flatMap(IncrementPixel::call)
+              .log("increment-pixel");
 
       // Decrement Pixel
       final Mono<Pixel> decrementPixel =
-          incrementPixel.map(Pixel::decrement).flatMap(DecrementPixel::call).log("decrement-pixel");
+          incrementPixel
+              .then(graphCreation)
+              .map(Graph::decrementPixel)
+              .flatMap(DecrementPixel::call)
+              .log("decrement-pixel");
 
       // Delete Pixel
       final Mono<Graph> deletePixel =

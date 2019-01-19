@@ -16,7 +16,6 @@
 package pixela.client.api.graph;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -35,31 +34,23 @@ public class IncrementPixel implements Put<Void>, Api<Pixel> {
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
   @NotNull private final Graph graph;
-  @NotNull private final LocalDate date;
-  @NotNull private final PixelDetail current;
 
   private IncrementPixel(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
-      @NotNull final Graph graph,
-      @NotNull final LocalDate date,
-      @NotNull final PixelDetail pixelDetail) {
+      @NotNull final Graph graph) {
     this.httpClient = httpClient;
     this.pixela = pixela;
     this.graph = graph;
-    this.date = date;
-    this.current = pixelDetail;
   }
 
-  @Contract("_, _, _, _, _ -> new")
+  @Contract("_, _, _ -> new")
   @NotNull
   static IncrementPixel of(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
-      @NotNull final Graph graph,
-      @NotNull final LocalDate date,
-      @NotNull final PixelDetail pixelDetail) {
-    return new IncrementPixel(httpClient, pixela, graph, date, pixelDetail);
+      @NotNull final Graph graph) {
+    return new IncrementPixel(httpClient, pixela, graph);
   }
 
   @NotNull
@@ -69,9 +60,7 @@ public class IncrementPixel implements Put<Void>, Api<Pixel> {
     return response
         .toPublisher()
         .<Pixel>then(
-            Mono.defer(
-                () ->
-                    Mono.just(new PixelImpl(httpClient, pixela, graph, date, current.increment()))))
+            Mono.defer(() -> Mono.just(new PixelImpl(httpClient, pixela, graph, null, null))))
         .cache();
   }
 
@@ -104,10 +93,6 @@ public class IncrementPixel implements Put<Void>, Api<Pixel> {
   @NotNull
   @Override
   public String errorRequest() {
-    return "PUT "
-        + pixela.usersUri()
-        + graph.subPath()
-        + date.format(Graph.PIXEL_DATE_FORMAT)
-        + "/increment";
+    return "PUT " + pixela.usersUri() + graph.subPath() + "/increment";
   }
 }

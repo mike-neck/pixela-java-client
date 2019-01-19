@@ -25,10 +25,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.api.graph.DeleteGraph;
-import pixela.client.api.graph.GetPixel;
-import pixela.client.api.graph.PostPixel;
-import pixela.client.api.graph.SimpleGraph;
+import pixela.client.api.graph.*;
 import pixela.client.http.HttpClient;
 
 public interface Graph {
@@ -57,6 +54,12 @@ public interface Graph {
 
   @NotNull
   String subPath();
+
+  @NotNull
+  IncrementPixel incrementPixel();
+
+  @NotNull
+  DecrementPixel decrementPixel();
 
   @NotNull
   static Graph simple(

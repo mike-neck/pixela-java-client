@@ -85,6 +85,18 @@ public class NewGraph implements Graph {
     return simpleGraph.subPath();
   }
 
+  @NotNull
+  @Override
+  public IncrementPixel incrementPixel() {
+    return simpleGraph.incrementPixel();
+  }
+
+  @NotNull
+  @Override
+  public DecrementPixel decrementPixel() {
+    return simpleGraph.decrementPixel();
+  }
+
   @Override
   public String toString() {
     @SuppressWarnings("StringBufferReplaceableByString")

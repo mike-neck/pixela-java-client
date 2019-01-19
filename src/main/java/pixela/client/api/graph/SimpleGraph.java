@@ -89,6 +89,18 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
     return Graph.PATH + graphId.path();
   }
 
+  @NotNull
+  @Override
+  public IncrementPixel incrementPixel() {
+    return IncrementPixel.of(httpClient, pixela, this);
+  }
+
+  @NotNull
+  @Override
+  public DecrementPixel decrementPixel() {
+    return DecrementPixel.of(httpClient, pixela, this);
+  }
+
   @Override
   public String toString() {
     return "Graph[" + string() + "]";

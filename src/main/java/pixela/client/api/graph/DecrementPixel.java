@@ -16,7 +16,6 @@
 package pixela.client.api.graph;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -31,31 +30,23 @@ public class DecrementPixel implements Put<Void>, Api<Pixel> {
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
   @NotNull private final Graph graph;
-  @NotNull private final LocalDate date;
-  @NotNull private final PixelDetail current;
 
   private DecrementPixel(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
-      @NotNull final Graph graph,
-      @NotNull final LocalDate date,
-      @NotNull final PixelDetail current) {
+      @NotNull final Graph graph) {
     this.httpClient = httpClient;
     this.pixela = pixela;
     this.graph = graph;
-    this.date = date;
-    this.current = current;
   }
 
-  @Contract("_, _, _, _, _ -> new")
+  @Contract("_, _, _ -> new")
   @NotNull
   static DecrementPixel of(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
-      @NotNull final Graph graph,
-      @NotNull final LocalDate date,
-      @NotNull final PixelDetail current) {
-    return new DecrementPixel(httpClient, pixela, graph, date, current);
+      @NotNull final Graph graph) {
+    return new DecrementPixel(httpClient, pixela, graph);
   }
 
   @NotNull
@@ -65,9 +56,7 @@ public class DecrementPixel implements Put<Void>, Api<Pixel> {
     return response
         .toPublisher()
         .<Pixel>then(
-            Mono.defer(
-                () ->
-                    Mono.just(new PixelImpl(httpClient, pixela, graph, date, current.decrement()))))
+            Mono.defer(() -> Mono.just(new PixelImpl(httpClient, pixela, graph, null, null))))
         .cache();
   }
 
@@ -100,10 +89,6 @@ public class DecrementPixel implements Put<Void>, Api<Pixel> {
   @NotNull
   @Override
   public String errorRequest() {
-    return "PUT "
-        + pixela.usersUri()
-        + graph.subPath()
-        + date.format(Graph.PIXEL_DATE_FORMAT)
-        + "/decrement";
+    return "PUT " + pixela.usersUri() + graph.subPath() + "/decrement";
   }
 }
