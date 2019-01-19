@@ -32,7 +32,7 @@ public class PixelRaw implements PixelDetail {
   @SuppressWarnings("unused")
   public PixelRaw() {}
 
-  private PixelRaw(@NotNull final Quantity quantity, @Nullable final String optionalData) {
+  PixelRaw(@NotNull final Quantity quantity, @Nullable final String optionalData) {
     this.quantity = quantity;
     this.optionalData = optionalData;
   }
