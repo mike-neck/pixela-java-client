@@ -20,30 +20,40 @@ import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pixela.client.Graph;
-import pixela.client.Pixela;
-import pixela.client.UserToken;
+import pixela.client.*;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
-class IntPostPixel implements PostPixel, PostPixel.OptionData {
+public class PostPixelImpl implements PostPixel, PostPixel.OptionData {
 
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
   @NotNull private final Graph graph;
-
   @NotNull private final LocalDate date;
-  private final int quantity;
+  @NotNull private final Quantity quantity;
   @Nullable private final String optionalData;
 
-  private IntPostPixel(
+  PostPixelImpl(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
       @NotNull final LocalDate date,
-      // TODO use Quantity
-      final int quantity,
+      @NotNull final Quantity quantity) {
+    this.httpClient = httpClient;
+    this.pixela = pixela;
+    this.graph = graph;
+    this.date = date;
+    this.quantity = quantity;
+    this.optionalData = null;
+  }
+
+  private PostPixelImpl(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @NotNull final LocalDate date,
+      @NotNull final Quantity quantity,
       @NotNull final String optionalData) {
     this.httpClient = httpClient;
     this.pixela = pixela;
@@ -53,39 +63,14 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
     this.optionalData = optionalData;
   }
 
-  IntPostPixel(
-      @NotNull final HttpClient httpClient,
-      @NotNull final Pixela pixela,
-      @NotNull final Graph graph,
-      @NotNull final LocalDate date,
-      final int quantity) {
-    this.httpClient = httpClient;
-    this.pixela = pixela;
-    this.graph = graph;
-    this.date = date;
-    this.quantity = quantity;
-    this.optionalData = null;
-  }
-
-  @NotNull
-  public String getDate() {
-    return date.format(Graph.PIXEL_DATE_FORMAT);
-  }
-
-  public String getQuantity() {
-    return Integer.toString(quantity);
-  }
-
-  @Nullable
-  public String getOptionalData() {
-    return optionalData;
-  }
-
   @NotNull
   @Override
-  public Mono<Graph> call() {
+  public Mono<Pixel> call() {
     final Response<Void> response = httpClient.post(this);
-    return response.toPublisher().thenReturn(graph);
+    return response
+        .toPublisher()
+        .thenReturn(new PixelRaw(quantity, optionalData))
+        .map(pd -> pd.toPixel(httpClient, pixela, graph, date));
   }
 
   @NotNull
@@ -133,14 +118,13 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
   @NotNull
   @Override
   public Mono<PostPixel> optionData(@NotNull final Object pojo) {
-    final Mono<String> mono = httpClient.encodeJson(pojo);
-    return mono.map(this::optionDataJson);
+    return httpClient.encodeJson(pojo).map(this::optionDataJson);
   }
 
   @NotNull
   @Override
   public PostPixel optionDataJson(@NotNull final String json) {
-    return new IntPostPixel(httpClient, pixela, graph, date, quantity, json);
+    return new PostPixelImpl(httpClient, pixela, graph, date, quantity, json);
   }
 
   @NotNull
@@ -149,8 +133,25 @@ class IntPostPixel implements PostPixel, PostPixel.OptionData {
     return this;
   }
 
-  @Override
   public String toString() {
     return errorRequest();
+  }
+
+  @NotNull
+  @Override
+  public String getDate() {
+    return date.format(Graph.PIXEL_DATE_FORMAT);
+  }
+
+  @NotNull
+  @Override
+  public String getQuantity() {
+    return quantity.asString();
+  }
+
+  @Nullable
+  @Override
+  public String getOptionalData() {
+    return optionalData;
   }
 }

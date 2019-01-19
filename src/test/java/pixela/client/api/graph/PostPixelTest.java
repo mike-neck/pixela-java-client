@@ -17,7 +17,9 @@ package pixela.client.api.graph;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,14 +30,14 @@ import java.io.UncheckedIOException;
 import java.time.LocalDate;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import pixela.client.Graph;
 import pixela.client.GraphId;
 import pixela.client.Pixela;
+import pixela.client.Quantity;
 import pixela.client.http.HttpClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-class IntPostPixelTest {
+class PostPixelTest {
 
   private final HttpClient httpClient = mock(HttpClient.class);
 
@@ -55,25 +57,32 @@ class IntPostPixelTest {
     }
   }
 
+  private final PostPixel.PixelDate pixelDate =
+      new SimpleGraph(httpClient, pixela, GraphId.of("test"));
+
   @Test
-  void jsonWithoutOptionalData() throws IOException {
-    final IntPostPixel postPixel =
-        new IntPostPixel(
-            httpClient,
-            pixela,
-            Graph.simple(httpClient, pixela, GraphId.of("test")),
-            LocalDate.of(2018, 12, 23),
-            10);
+  void floatJsonWithoutOptionalData() throws IOException {
+    final PostPixel postPixel = pixelDate.date(LocalDate.of(2006, 1, 22)).quantity(20.12);
     final String json = objectMapper.writeValueAsString(postPixel);
     assertAll(
-        () -> assertThatJson(json).node("date").isString().isEqualTo("20181223"),
+        () -> assertThatJson(json).node("date").isString().isEqualTo("20060122"),
+        () -> assertThatJson(json).node("quantity").isString().isEqualTo("20.12"),
+        () -> assertThatJson(json).node("optionalData").isAbsent());
+  }
+
+  @Test
+  void intJsonWithoutOptionalData() throws JsonProcessingException {
+    final PostPixel postPixel = pixelDate.date(LocalDate.of(2006, 1, 22)).quantity(10);
+    final String json = objectMapper.writeValueAsString(postPixel);
+    assertAll(
+        () -> assertThatJson(json).node("date").isString().isEqualTo("20060122"),
         () -> assertThatJson(json).node("quantity").isString().isEqualTo("10"),
         () -> assertThatJson(json).node("optionalData").isAbsent());
   }
 
   @SuppressWarnings({"UnassignedFluxMonoInstance", "Convert2MethodRef"})
   @Test
-  void jsonWithOptionalData() {
+  void floatJsonWithOptionalData() {
     doAnswer(
             invocation -> {
               final Object object = invocation.getArgument(0);
@@ -85,28 +94,56 @@ class IntPostPixelTest {
     final Map<String, String> map = Map.of("test", "value");
 
     final Mono<PostPixel> postPixel =
-        new IntPostPixel(
-                httpClient,
-                pixela,
-                Graph.simple(httpClient, pixela, GraphId.of("test")),
-                LocalDate.of(2018, 12, 23),
-                10)
-            .optionData(Map.of("test", "value"));
+        pixelDate
+            .date(LocalDate.of(2006, 1, 22))
+            .quantity(Quantity.floating(20.12))
+            .optionData(map);
+
     final Mono<String> mono = postPixel.map(post -> toJson(post));
 
-    final String expectedJson = toJson(map);
+    StepVerifier.create(mono.log("step-verifier"))
+        .assertNext(
+            json ->
+                assertAll(
+                    () -> assertThatJson(json).node("date").isString().isEqualTo("20060122"),
+                    () -> assertThatJson(json).node("quantity").isString().isEqualTo("20.12"),
+                    () ->
+                        assertThatJson(json)
+                            .node("optionalData")
+                            .isString()
+                            .isEqualTo(toJson(map))))
+        .verifyComplete();
+  }
+
+  @SuppressWarnings({"UnassignedFluxMonoInstance", "Convert2MethodRef"})
+  @Test
+  void intJsonWithOptionalData() {
+    doAnswer(
+            invocation -> {
+              final Object object = invocation.getArgument(0);
+              return Mono.just(toJson(object));
+            })
+        .when(httpClient)
+        .encodeJson(any());
+
+    final Map<String, String> map = Map.of("test", "value");
+
+    final Mono<PostPixel> postPixel =
+        pixelDate.date(LocalDate.of(2006, 1, 22)).quantity(Quantity.integer(10)).optionData(map);
+
+    final Mono<String> mono = postPixel.map(post -> toJson(post));
 
     StepVerifier.create(mono)
         .assertNext(
             json ->
                 assertAll(
-                    () -> assertThatJson(json).node("date").isString().isEqualTo("20181223"),
+                    () -> assertThatJson(json).node("date").isString().isEqualTo("20060122"),
                     () -> assertThatJson(json).node("quantity").isString().isEqualTo("10"),
                     () ->
                         assertThatJson(json)
                             .node("optionalData")
                             .isString()
-                            .isEqualTo(expectedJson)))
+                            .isEqualTo(toJson(map))))
         .verifyComplete();
   }
 }

@@ -17,14 +17,21 @@ package pixela.client.api.graph;
 
 import java.time.LocalDate;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.Api;
-import pixela.client.ApiException;
-import pixela.client.Graph;
-import pixela.client.GraphId;
+import org.jetbrains.annotations.Nullable;
+import pixela.client.*;
 import pixela.client.http.Post;
 import reactor.core.publisher.Mono;
 
-public interface PostPixel extends Post<Void>, Api<Graph> {
+public interface PostPixel extends Post<Void>, Api<Pixel> {
+
+  @NotNull
+  String getDate();
+
+  @NotNull
+  String getQuantity();
+
+  @Nullable
+  String getOptionalData();
 
   interface PixelGraphId {
     @NotNull
@@ -36,13 +43,21 @@ public interface PostPixel extends Post<Void>, Api<Graph> {
     PixelQuantity date(@NotNull final LocalDate date);
   }
 
+  @FunctionalInterface
   interface PixelQuantity {
 
     @NotNull
-    OptionData quantity(final int quantity) throws ApiException;
+    OptionData quantity(@NotNull final Quantity quantity);
 
     @NotNull
-    OptionData quantity(final double quantity) throws ApiException;
+    default OptionData quantity(final int quantity) {
+      return quantity(Quantity.integer(quantity));
+    }
+
+    @NotNull
+    default OptionData quantity(final double quantity) {
+      return quantity(Quantity.floating(quantity));
+    }
   }
 
   interface OptionData extends PostPixel {

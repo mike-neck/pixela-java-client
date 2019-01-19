@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.util.function.Function;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.ApiException;
 import pixela.client.Graph;
 import pixela.client.GraphId;
 import pixela.client.Pixela;
@@ -103,18 +102,6 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
   @NotNull
   @Override
   public PostPixel.PixelQuantity date(@NotNull final LocalDate date) {
-    return new PostPixel.PixelQuantity() {
-      @NotNull
-      @Override
-      public PostPixel.OptionData quantity(final int quantity) throws ApiException {
-        return new IntPostPixel(httpClient, pixela, SimpleGraph.this, date, quantity);
-      }
-
-      @NotNull
-      @Override
-      public PostPixel.OptionData quantity(final double quantity) throws ApiException {
-        return new FloatPostPixel(httpClient, pixela, SimpleGraph.this, date, quantity);
-      }
-    };
+    return quantity -> new PostPixelImpl(httpClient, pixela, SimpleGraph.this, date, quantity);
   }
 }

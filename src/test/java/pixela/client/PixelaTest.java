@@ -86,7 +86,7 @@ class PixelaTest {
       // Post Pixel
       final LocalDate date10 = LocalDate.of(2019, 1, 10);
 
-      final Mono<Graph> postPixelViaGraph =
+      final Mono<Pixel> postPixelViaGraph =
           viewUri
               .then(graphCreation)
               .map(graph -> graph.postPixel().date(date10).quantity(10.25))
@@ -105,7 +105,7 @@ class PixelaTest {
       // Post Pixel
       final LocalDate date = LocalDate.of(2019, 1, 9);
 
-      final Mono<Graph> postPixelViaPixela =
+      final Mono<Pixel> postPixelViaPixela =
           getPixelFromPixela
               .then(pixela)
               .flatMap(
@@ -145,18 +145,15 @@ class PixelaTest {
 
       // Delete Pixel
       final Mono<Graph> deletePixel =
-              decrementPixel.map(Pixel::delete).flatMap(DeletePixel::call).log("delete-pixel");
+          decrementPixel.map(Pixel::delete).flatMap(DeletePixel::call).log("delete-pixel");
 
       // Delete Graph
       final Mono<Pixela> deleteGraph =
-              deletePixel.map(Graph::delete).flatMap(DeleteGraph::call).log("delete-graph");
+          deletePixel.map(Graph::delete).flatMap(DeleteGraph::call).log("delete-graph");
 
       // Delete User
       final Mono<Void> mono =
-          deleteGraph
-              .map(Pixela::deleteUser)
-              .log("user-deletion")
-              .flatMap(DeleteUser::call);
+          deleteGraph.map(Pixela::deleteUser).log("user-deletion").flatMap(DeleteUser::call);
 
       final CountDownLatch latch = new CountDownLatch(1);
 
