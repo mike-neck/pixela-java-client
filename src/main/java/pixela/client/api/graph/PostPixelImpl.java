@@ -69,8 +69,7 @@ public class PostPixelImpl implements PostPixel, PostPixel.OptionData {
     final Response<Void> response = httpClient.post(this);
     return response
         .toPublisher()
-        .thenReturn(new PixelRaw(quantity, optionalData))
-        .map(pd -> pd.toPixel(httpClient, pixela, graph, date));
+        .thenReturn(new PixelRaw(quantity, optionalData).toPixel(httpClient, pixela, graph, date));
   }
 
   @NotNull

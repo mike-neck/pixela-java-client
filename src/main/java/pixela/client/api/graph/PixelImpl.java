@@ -46,6 +46,12 @@ class PixelImpl implements pixela.client.Pixel {
 
   @NotNull
   @Override
+  public Graph graph() {
+    return graph;
+  }
+
+  @NotNull
+  @Override
   public LocalDate date() {
     return date;
   }

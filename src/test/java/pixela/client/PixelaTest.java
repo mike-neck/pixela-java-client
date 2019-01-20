@@ -28,6 +28,8 @@ import pixela.client.api.user.DeleteUser;
 import reactor.core.Disposable;
 import reactor.core.Disposables;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 class PixelaTest {
 
@@ -81,22 +83,24 @@ class PixelaTest {
 
       final GraphId testGraph = GraphId.of("test-graph");
 
-      final Mono<URI> viewUri = graphCreation.map(Graph::viewUri).log("view-graph");
+      final Mono<Tuple2<Graph, URI>> viewUri =
+          graphCreation.map(graph -> Tuples.of(graph, graph.viewUri())).log("view-graph");
 
       // Post Pixel
       final LocalDate date10 = LocalDate.of(2019, 1, 10);
 
       final Mono<Pixel> postPixelViaGraph =
           viewUri
-              .then(graphCreation)
+              .map(Tuple2::getT1)
               .map(graph -> graph.postPixel().date(date10).quantity(10.25))
               .log("post-pixel-1")
               .flatMap(PostPixel::call)
-              .log("post-pixel-via-graph");
+              .log("post-pixel-via-graph")
+              .cache();
 
       final Mono<Pixel> getPixelFromPixela =
           postPixelViaGraph
-              .then(pixela)
+              .map(Pixel::pixela)
               .map(px -> px.graph(testGraph))
               .map(graph -> graph.getPixel(date10))
               .flatMap(GetPixel::call)
@@ -107,7 +111,7 @@ class PixelaTest {
 
       final Mono<Pixel> postPixelViaPixela =
           getPixelFromPixela
-              .then(pixela)
+              .map(Pixel::pixela)
               .flatMap(
                   pix ->
                       pix.postPixel(testGraph)
@@ -121,7 +125,7 @@ class PixelaTest {
       // Get Pixel
       final Mono<Pixel> getPixel =
           postPixelViaPixela
-              .then(graphCreation)
+              .map(Pixel::graph)
               .map(graph -> graph.getPixel(date))
               .flatMap(GetPixel::call)
               .log("get-pixel");
@@ -136,25 +140,29 @@ class PixelaTest {
               .log("update-pixel");
 
       // Increment Pixel
-      final Mono<Pixel> incrementPixel =
+      final Mono<Graph> incrementPixel =
           updatePixel
-              .then(pixela)
+              .map(Pixel::pixela)
               .map(px -> px.graph(testGraph))
               .map(Graph::incrementPixel)
               .flatMap(IncrementPixel::call)
               .log("increment-pixel");
 
       // Decrement Pixel
-      final Mono<Pixel> decrementPixel =
+      final Mono<Graph> decrementPixel =
           incrementPixel
-              .then(graphCreation)
               .map(Graph::decrementPixel)
               .flatMap(DecrementPixel::call)
               .log("decrement-pixel");
 
       // Delete Pixel
       final Mono<Graph> deletePixel =
-          decrementPixel.map(Pixel::delete).flatMap(DeletePixel::call).log("delete-pixel");
+          decrementPixel
+              .map(graph -> graph.getPixel(date))
+              .flatMap(GetPixel::call)
+              .map(Pixel::delete)
+              .flatMap(DeletePixel::call)
+              .log("delete-pixel");
 
       // Delete Graph
       final Mono<Pixela> deleteGraph =

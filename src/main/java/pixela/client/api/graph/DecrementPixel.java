@@ -25,7 +25,7 @@ import pixela.client.http.Put;
 import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
-public class DecrementPixel implements Put<Void>, Api<Pixel> {
+public class DecrementPixel implements Put<Void>, Api<Graph> {
 
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
@@ -51,13 +51,9 @@ public class DecrementPixel implements Put<Void>, Api<Pixel> {
 
   @NotNull
   @Override
-  public Mono<Pixel> call() {
+  public Mono<Graph> call() {
     final Response<Void> response = httpClient.put(this);
-    return response
-        .toPublisher()
-        .<Pixel>then(
-            Mono.defer(() -> Mono.just(new PixelImpl(httpClient, pixela, graph, null, null))))
-        .cache();
+    return response.toPublisher().then(Mono.just(graph)).cache();
   }
 
   @NotNull
