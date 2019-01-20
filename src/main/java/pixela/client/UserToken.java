@@ -16,6 +16,7 @@
 package pixela.client;
 
 import java.util.Objects;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class UserToken {
@@ -29,6 +30,7 @@ public class UserToken {
     this.value = value;
   }
 
+  @Contract("_ -> new")
   @NotNull
   public static UserToken of(@NotNull final String value) {
     Objects.requireNonNull(value);
@@ -48,5 +50,20 @@ public class UserToken {
   @Override
   public String toString() {
     return "[" + X_USER_TOKEN + ":" + value + "]";
+  }
+
+  @Override
+  public boolean equals(final Object object) {
+    if (this == object) return true;
+    if (!(object instanceof UserToken)) return false;
+
+    final UserToken userToken = (UserToken) object;
+
+    return value.equals(userToken.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return value.hashCode();
   }
 }

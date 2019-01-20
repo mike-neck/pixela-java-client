@@ -53,7 +53,7 @@ class CreateUserTest {
     when(httpClient.post(createUser)).thenReturn(Mono::empty);
     final Mono<Pixela> pixelaMono = createUser.call();
     StepVerifier.create(pixelaMono)
-        .expectNextMatches(pixela -> pixela instanceof NewPixela)
+        .expectNextMatches(pixela -> pixela instanceof PixelaImpl)
         .verifyComplete();
   }
 }

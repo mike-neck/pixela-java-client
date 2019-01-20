@@ -27,6 +27,8 @@ import reactor.core.publisher.Mono;
 
 public interface Pixela {
 
+  String PROPERTIES_FILE = "pixela.properties";
+
   @NotNull
   URI usersUri(final URI baseUri);
 

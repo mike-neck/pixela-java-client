@@ -19,7 +19,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-class NewPixelaTest {
+class PixelaImplTest {
 
   private HttpClient httpClient;
 
@@ -34,7 +34,7 @@ class NewPixelaTest {
     @Test
     void existsNewFile() throws IOException {
       final Pixela pixela =
-          NewPixela.of(httpClient, UserToken.of("abc123"), Username.of("test-user"));
+          PixelaImpl.of(httpClient, UserToken.of("abc123"), Username.of("test-user"));
       final Path directory = Files.createTempDirectory("test");
       final Path propertyFile = directory.resolve("pixela.properties");
 
@@ -47,7 +47,7 @@ class NewPixelaTest {
     @Test
     void fileContents() throws IOException {
       final Pixela pixela =
-          NewPixela.of(httpClient, UserToken.of("abc123"), Username.of("test-user"));
+          PixelaImpl.of(httpClient, UserToken.of("abc123"), Username.of("test-user"));
       final Path directory = Files.createTempDirectory("test");
       final Path propertyFile = directory.resolve("pixela.properties");
 

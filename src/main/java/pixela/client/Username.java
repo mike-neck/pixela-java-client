@@ -15,6 +15,7 @@
  */
 package pixela.client;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class Username {
@@ -27,6 +28,7 @@ public class Username {
     this.value = value;
   }
 
+  @Contract("_ -> new")
   @NotNull
   public static Username of(@NotNull final String value) {
     return new Username(value);
