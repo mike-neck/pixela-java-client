@@ -15,11 +15,12 @@
  */
 package pixela.client;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class Username {
 
-  public static final String USER_NAME_PROPERTY_KEY = "username";
+  public static final String USER_NAME_PROPERTY_KEY = "pixela.username";
 
   @NotNull private final String value;
 
@@ -27,6 +28,7 @@ public class Username {
     this.value = value;
   }
 
+  @Contract("_ -> new")
   @NotNull
   public static Username of(@NotNull final String value) {
     return new Username(value);

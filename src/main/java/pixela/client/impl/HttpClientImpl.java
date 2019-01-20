@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import pixela.client.ApiException;
@@ -43,6 +44,8 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
   @NotNull private final JdkHttpClient httpClient;
   @NotNull private final JdkRequestBuilder jdkRequestBuilder;
 
+  @NotNull private final SupplierExecutor executor;
+
   HttpClientImpl(@NotNull final PixelaClientConfig config) {
     final ExecutorService executorServiceForJackson = Executors.newSingleThreadExecutor();
     final ExecutorService executorServiceForHttpClient =
@@ -53,6 +56,7 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
     final JsonCodec codec = JsonCodec.forJackson(executorServiceForJackson, objectMapper);
     this.httpClient = JdkHttpClient.create(executorServiceForHttpClient, codec, config);
     this.jdkRequestBuilder = JdkRequestBuilder.create(config.baseUri(), codec);
+    this.executor = SupplierExecutor.fromExecutorService(executorServiceForHttpClient);
   }
 
   @TestOnly
@@ -63,6 +67,7 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
     this.executors = executors;
     this.httpClient = httpClient;
     this.jdkRequestBuilder = jdkRequestBuilder;
+    this.executor = SupplierExecutor.noExecutor();
   }
 
   @Override
@@ -75,6 +80,12 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
   @Override
   public <T> Mono<T> decodeJson(@NotNull final String json, @NotNull final Class<T> type) {
     return httpClient.decodeJson(json, type);
+  }
+
+  @NotNull
+  @Override
+  public <T> Mono<T> runAsync(@NotNull final Supplier<? extends T> supplier) {
+    return executor.runSupplier(supplier);
   }
 
   @NotNull

@@ -16,6 +16,7 @@
 package pixela.client.http;
 
 import java.net.URI;
+import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
@@ -26,6 +27,9 @@ public interface HttpClient extends AutoCloseable {
 
   @NotNull
   <T> Mono<T> decodeJson(@NotNull String json, @NotNull final Class<T> type);
+
+  @NotNull
+  <T> Mono<T> runAsync(@NotNull final Supplier<? extends T> supplier);
 
   @NotNull
   URI baseUri();

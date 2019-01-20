@@ -20,9 +20,7 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import pixela.client.api.graph.*;
 import pixela.client.api.user.DeleteUser;
 import reactor.core.Disposable;
@@ -36,6 +34,18 @@ class PixelaTest {
   @Disabled
   @Nested
   class NewUserTest {
+
+    PixelaClient pixelaClient;
+
+    @BeforeEach
+    void setup() {
+      pixelaClient = Pixela.withDefaultJavaClient();
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+      pixelaClient.close();
+    }
 
     @Test
     void exampleUser() throws InterruptedException {
@@ -51,7 +61,7 @@ class PixelaTest {
 
       // Create User
       final Mono<Pixela> pixela =
-          Pixela.withDefaultJavaClient()
+          pixelaClient
               .createUser()
               .withToken(token)
               .username(username)

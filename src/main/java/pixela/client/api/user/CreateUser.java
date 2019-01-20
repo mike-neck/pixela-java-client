@@ -135,7 +135,7 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
     return response
         .toPublisher()
         .thenReturn(
-            NewPixela.of(httpClient, UserToken.of(token), pixela.client.Username.of(username)));
+            PixelaImpl.of(httpClient, UserToken.of(token), pixela.client.Username.of(username)));
   }
 
   public interface Builder {

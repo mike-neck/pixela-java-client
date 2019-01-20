@@ -15,10 +15,19 @@
  */
 package pixela.client;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.net.URL;
+import java.util.Objects;
+import java.util.Properties;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.api.user.CreateUser;
+import pixela.client.api.user.PixelaImpl;
 import pixela.client.http.HttpClient;
 import reactor.core.Disposable;
+import reactor.core.publisher.Mono;
 
 public class PixelaClient implements AutoCloseable, Disposable {
 
@@ -37,6 +46,30 @@ public class PixelaClient implements AutoCloseable, Disposable {
   @NotNull
   public CreateUser.Token createUser() {
     return CreateUser.builder(httpClient);
+  }
+
+  @NotNull
+  Mono<Pixela> loadFromPropertiesFile() {
+    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    final URL resource = classLoader.getResource(Pixela.PROPERTIES_FILE);
+    if (resource == null) {
+      return Mono.empty();
+    }
+    return httpClient.runAsync(
+        () -> {
+          try (final Reader reader =
+              new InputStreamReader(
+                  Objects.requireNonNull(
+                      classLoader.getResourceAsStream(Pixela.PROPERTIES_FILE)))) {
+            final Properties properties = new Properties();
+            properties.load(reader);
+            return PixelaImpl.fromProperties(httpClient, properties);
+          } catch (final IOException e) {
+            throw new UncheckedIOException(
+                "there is not properties file[" + Pixela.PROPERTIES_FILE + "] in system resource.",
+                e);
+          }
+        });
   }
 
   @Override
