@@ -46,6 +46,12 @@ class PixelImpl implements pixela.client.Pixel {
 
   @NotNull
   @Override
+  public Graph graph() {
+    return graph;
+  }
+
+  @NotNull
+  @Override
   public LocalDate date() {
     return date;
   }
@@ -71,16 +77,6 @@ class PixelImpl implements pixela.client.Pixel {
   @Override
   public UpdatePixel.Quantity update() {
     return quantity -> new UpdatePixelImpl(httpClient, pixela, graph, date, quantity);
-  }
-
-  @Override
-  public IncrementPixel increment() {
-    return IncrementPixel.of(httpClient, pixela, graph, date, raw);
-  }
-
-  @Override
-  public DecrementPixel decrement() {
-    return DecrementPixel.of(httpClient, pixela, graph, date, raw);
   }
 
   @Override

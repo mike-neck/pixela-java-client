@@ -16,13 +16,11 @@
 package pixela.client.api.graph;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.Optional;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.Api;
 import pixela.client.Graph;
-import pixela.client.Pixel;
 import pixela.client.Pixela;
 import pixela.client.UserToken;
 import pixela.client.http.HttpClient;
@@ -30,49 +28,35 @@ import pixela.client.http.Put;
 import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
-public class IncrementPixel implements Put<Void>, Api<Pixel> {
+public class IncrementPixel implements Put<Void>, Api<Graph> {
 
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
   @NotNull private final Graph graph;
-  @NotNull private final LocalDate date;
-  @NotNull private final PixelDetail current;
 
   private IncrementPixel(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
-      @NotNull final Graph graph,
-      @NotNull final LocalDate date,
-      @NotNull final PixelDetail pixelDetail) {
+      @NotNull final Graph graph) {
     this.httpClient = httpClient;
     this.pixela = pixela;
     this.graph = graph;
-    this.date = date;
-    this.current = pixelDetail;
   }
 
-  @Contract("_, _, _, _, _ -> new")
+  @Contract("_, _, _ -> new")
   @NotNull
   static IncrementPixel of(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
-      @NotNull final Graph graph,
-      @NotNull final LocalDate date,
-      @NotNull final PixelDetail pixelDetail) {
-    return new IncrementPixel(httpClient, pixela, graph, date, pixelDetail);
+      @NotNull final Graph graph) {
+    return new IncrementPixel(httpClient, pixela, graph);
   }
 
   @NotNull
   @Override
-  public Mono<Pixel> call() {
+  public Mono<Graph> call() {
     final Response<Void> response = httpClient.put(this);
-    return response
-        .toPublisher()
-        .<Pixel>then(
-            Mono.defer(
-                () ->
-                    Mono.just(new PixelImpl(httpClient, pixela, graph, date, current.increment()))))
-        .cache();
+    return response.toPublisher().then(Mono.just(graph)).cache();
   }
 
   @NotNull
@@ -104,10 +88,6 @@ public class IncrementPixel implements Put<Void>, Api<Pixel> {
   @NotNull
   @Override
   public String errorRequest() {
-    return "PUT "
-        + pixela.usersUri()
-        + graph.subPath()
-        + date.format(Graph.PIXEL_DATE_FORMAT)
-        + "/increment";
+    return "PUT " + pixela.usersUri() + graph.subPath() + "/increment";
   }
 }

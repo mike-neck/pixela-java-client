@@ -53,6 +53,12 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
 
   @NotNull
   @Override
+  public Pixela pixela() {
+    return pixela;
+  }
+
+  @NotNull
+  @Override
   public DeleteGraph delete() {
     return new DeleteGraph(httpClient, pixela, graphId);
   }
@@ -87,6 +93,18 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
   @Override
   public String subPath() {
     return Graph.PATH + graphId.path();
+  }
+
+  @NotNull
+  @Override
+  public IncrementPixel incrementPixel() {
+    return IncrementPixel.of(httpClient, pixela, this);
+  }
+
+  @NotNull
+  @Override
+  public DecrementPixel decrementPixel() {
+    return DecrementPixel.of(httpClient, pixela, this);
   }
 
   @Override

@@ -57,6 +57,12 @@ public class NewGraph implements Graph {
 
   @NotNull
   @Override
+  public Pixela pixela() {
+    return simpleGraph.pixela();
+  }
+
+  @NotNull
+  @Override
   public DeleteGraph delete() {
     return simpleGraph.delete();
   }
@@ -83,6 +89,18 @@ public class NewGraph implements Graph {
   @Override
   public String subPath() {
     return simpleGraph.subPath();
+  }
+
+  @NotNull
+  @Override
+  public IncrementPixel incrementPixel() {
+    return simpleGraph.incrementPixel();
+  }
+
+  @NotNull
+  @Override
+  public DecrementPixel decrementPixel() {
+    return simpleGraph.decrementPixel();
   }
 
   @Override

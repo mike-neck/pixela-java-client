@@ -93,4 +93,9 @@ public class DeletePixel implements Delete<Void>, Api<Graph> {
         + '/'
         + date.format(Graph.PIXEL_DATE_FORMAT);
   }
+
+  @Override
+  public String toString() {
+    return errorRequest();
+  }
 }
