@@ -59,7 +59,7 @@ class NewPixelaTest {
               .flatMapMany(
                   p ->
                       Flux.just(
-                          p.getProperty(UserToken.X_USER_TOKEN, ""),
+                          p.getProperty(UserToken.USERT_TOKEN_PROPERTY_KEY, ""),
                           p.getProperty(Username.USER_NAME_PROPERTY_KEY)))
               .log();
 

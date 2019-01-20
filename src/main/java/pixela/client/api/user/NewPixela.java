@@ -93,7 +93,7 @@ class NewPixela implements Pixela {
     return Mono.<Void>fromRunnable(
             () -> {
               final Properties properties = new Properties(2);
-              properties.setProperty(userToken.tokenName(), userToken.tokenValue());
+              properties.setProperty(UserToken.USERT_TOKEN_PROPERTY_KEY, userToken.tokenValue());
               properties.setProperty(Username.USER_NAME_PROPERTY_KEY, username.value());
               try (final Writer writer =
                   Files.newBufferedWriter(
