@@ -41,6 +41,9 @@ public interface Graph {
   @NotNull String PATH = "/graphs";
 
   @NotNull
+  Pixela pixela();
+
+  @NotNull
   DeleteGraph delete();
 
   @NotNull

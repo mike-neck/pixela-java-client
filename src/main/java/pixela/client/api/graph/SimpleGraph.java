@@ -53,6 +53,12 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
 
   @NotNull
   @Override
+  public Pixela pixela() {
+    return pixela;
+  }
+
+  @NotNull
+  @Override
   public DeleteGraph delete() {
     return new DeleteGraph(httpClient, pixela, graphId);
   }

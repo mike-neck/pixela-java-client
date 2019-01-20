@@ -25,6 +25,14 @@ import reactor.core.publisher.Mono;
 public interface Pixel {
 
   @NotNull
+  default Pixela pixela() {
+    return graph().pixela();
+  }
+
+  @NotNull
+  Graph graph();
+
+  @NotNull
   LocalDate date();
 
   @NotNull
