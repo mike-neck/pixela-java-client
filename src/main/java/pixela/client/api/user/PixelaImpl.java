@@ -50,9 +50,14 @@ public class PixelaImpl implements Pixela {
     this.username = username;
   }
 
+  public interface PixelaToken {
+    @NotNull
+    Pixela token(@NotNull final String token);
+  }
+
   @Contract("_, _, _ -> new")
   @NotNull
-  static Pixela of(
+  public static Pixela of(
       @NotNull final HttpClient httpClient,
       @NotNull final UserToken userToken,
       @NotNull final Username username) {
