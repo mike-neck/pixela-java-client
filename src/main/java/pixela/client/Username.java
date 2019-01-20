@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class Username {
 
-  public static final String USER_NAME_PROPERTY_KEY = "username";
+  public static final String USER_NAME_PROPERTY_KEY = "pixela.username";
 
   @NotNull private final String value;
 

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class UserToken {
 
   public static final String X_USER_TOKEN = "X-USER-TOKEN";
-  public static final String USERT_TOKEN_PROPERTY_KEY = "user_token";
+  public static final String USER_TOKEN_PROPERTY_KEY = "pixela.user_token";
 
   @NotNull private final String value;
 
