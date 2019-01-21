@@ -16,7 +16,9 @@ jobs:
 
       - run: ./gradlew dependencies
 
-      - run: ./gradlew test
+      - run:
+          name: run test
+          command: ./gradlew test
 
       - save_cache:
           paths:
@@ -37,4 +39,14 @@ jobs:
           path: ~/junit
 
       - store_artifacts:
-          path: build/reports/test
+          path: ./build/reports/tests/test
+
+      - run:
+          name: take coverages
+          command: ./gradlew clean coverage
+
+      - store_artifacts:
+          path: ./build/jacoco/report.xml
+
+      - store_artifacts:
+          path: ./build/jacoco/report-html
