@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'jacoco'
 }
 
 ext {
@@ -37,4 +38,31 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = '0.8.2'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        xml.destination = file("$buildDir/jacoco/report.xml")
+        html.enabled = true
+        html.destination = file("$buildDir/jacoco/report-html")
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.5
+            }
+        }
+    }
+}
+
+task jacocoExec(dependsOn: 'test') {
+    finalizedBy 'jacocoTestReport'
 }
