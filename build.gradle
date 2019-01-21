@@ -75,3 +75,9 @@ task coverage(dependsOn: 'jacocoExec') {
     finalizedBy 'coveralls'
     group = 'coverage'
 }
+
+coveralls {
+    saveAsFile = true
+    sendToCoveralls = false
+    saveFilePath = 'build/jacoco/coveralls.json'
+}

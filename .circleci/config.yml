@@ -43,10 +43,14 @@ jobs:
 
       - run:
           name: take coverages
-          command: ./gradlew clean coverage --stacktrace
+          command: ./gradlew clean coverage
+
+      - run:
+          name: send coverage json to coveralls
+          command: curl -i -F json_file=@build/jacoco/coveralls.json https://coveralls.io/api/v1/jobs
 
       - store_artifacts:
-          path: ./build/reports/jacoco/test/jacocoTestReport.xml
+          path: ./build/jacoco/coveralls.json
 
       - store_artifacts:
           path: ./build/jacoco/report-html
