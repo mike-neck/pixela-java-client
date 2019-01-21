@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 ext {
@@ -64,5 +65,13 @@ jacocoTestCoverageVerification {
 }
 
 task jacocoExec(dependsOn: 'test') {
+    group = 'coverage'
     finalizedBy 'jacocoTestReport'
+}
+
+project.tasks.getByName('coveralls').group = 'coverage'
+
+task coverage(dependsOn: 'jacocoExec') {
+    finalizedBy 'coveralls'
+    group = 'coverage'
 }
