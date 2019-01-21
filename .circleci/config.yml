@@ -46,7 +46,7 @@ jobs:
           command: ./gradlew clean coverage
 
       - store_artifacts:
-          path: ./build/jacoco/report.xml
+          path: ./build/reports/jacoco/test/jacocoTestReport.xml
 
       - store_artifacts:
           path: ./build/jacoco/report-html
