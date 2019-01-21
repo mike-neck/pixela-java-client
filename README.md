@@ -4,6 +4,7 @@ pixela-java-client
 [Pixela](https://pixe.la/) API async Client for Java.
 
 [![CircleCI](https://circleci.com/gh/mike-neck/pixela-java-client.svg?style=svg)](https://circleci.com/gh/mike-neck/pixela-java-client)
+[![Coverage Status](https://coveralls.io/repos/github/mike-neck/pixela-java-client/badge.svg?branch=27af5e9bced30156c6e802702f812882eee4a8e0)](https://coveralls.io/github/mike-neck/pixela-java-client?branch=27af5e9bced30156c6e802702f812882eee4a8e0)
 
 Requirements
 ---
