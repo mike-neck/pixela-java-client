@@ -30,7 +30,7 @@ public interface AutoCloseables extends AutoCloseable {
 
   @Contract(value = "_, _ -> new", pure = true)
   @NotNull
-  private static AutoCloseables next(
+  static AutoCloseables next(
       @NotNull final AutoCloseable autoCloseable, @NotNull final AutoCloseables current) {
     return new AutoCloseables() {
       @NotNull
@@ -42,15 +42,17 @@ public interface AutoCloseables extends AutoCloseable {
       @SuppressWarnings("EmptyTryBlock")
       @Override
       public void close() throws Exception {
-        try (current;
-            autoCloseable) {}
+        try (@SuppressWarnings("unused")
+                final AutoCloseable cur = current;
+            @SuppressWarnings("unused")
+                final AutoCloseable auc = autoCloseable) {}
       }
     };
   }
 
   @Contract(value = " -> new", pure = true)
   @NotNull
-  private static AutoCloseables empty() {
+  static AutoCloseables empty() {
     return new AutoCloseables() {
       @NotNull
       @Override

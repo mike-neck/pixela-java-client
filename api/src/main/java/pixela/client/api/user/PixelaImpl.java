@@ -102,7 +102,7 @@ public class PixelaImpl implements Pixela {
   public Mono<Pixela> usingClient(@NotNull final HttpClient client) {
     return Mono.fromCallable(
         () -> {
-          try (httpClient) {
+          try (final AutoCloseable ignore = httpClient) {
             return of(client, userToken, username);
           }
         });
