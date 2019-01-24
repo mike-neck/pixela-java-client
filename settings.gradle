@@ -8,3 +8,8 @@
  */
 
 rootProject.name = 'pixela-java-client'
+
+include 'api', 'default-impl'
+
+project(':api').name = 'pixela-java-client-api'
+project(':default-impl').name = 'pixela-java-client-default-impl'
