@@ -20,6 +20,14 @@ jobs:
           name: run quality check
           command: ./gradlew qualityCheck
 
+      - run:
+          name: check coverage report exists
+          command: ls -l build/reports/jacoco/test/jacocoTestReport.xml
+
+      - run:
+          name: run coverall
+          command: ./gradlew coveralls
+
       - save_cache:
           paths:
             - ~/.gradle
