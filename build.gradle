@@ -1,7 +1,6 @@
 plugins {
     id 'java-library'
     id 'jacoco'
-    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 ext {
@@ -72,7 +71,7 @@ task jacocoReport(type: JacocoReport) {
     additionalClassDirs files(subprojects.sourceSets.main.output)
     reports {
         xml.enabled = true
-        xml.destination = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml")
+        xml.destination = file("$buildDir/reports/jacoco/report.xml")
         html.enabled = true
         html.destination = file("$buildDir/jacoco/report-html")
     }
@@ -87,11 +86,4 @@ task qualityCheck {
     group = 'verification'
     dependsOn 'jacoco'
     finalizedBy 'testReport'
-}
-
-coveralls {
-    saveAsFile = true
-    sendToCoveralls = false
-    saveFilePath = 'build/jacoco/coveralls.json'
-    jacocoReportPath = "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
 }

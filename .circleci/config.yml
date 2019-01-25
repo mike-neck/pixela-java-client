@@ -21,12 +21,8 @@ jobs:
           command: ./gradlew qualityCheck
 
       - run:
-          name: check coverage report exists
-          command: ls -l build/reports/jacoco/test/jacocoTestReport.xml && cat build/reports/jacoco/test/jacocoTestReport.xml
-
-      - run:
-          name: run coverall
-          command: ./gradlew coveralls
+          name: export coverage report to codecov
+          command: bash <(curl -s https://codecov.io/bash)
 
       - save_cache:
           paths:
@@ -48,13 +44,6 @@ jobs:
 
       - store_artifacts:
           path: ./build/reports/tests/test
-
-      - run:
-          name: send coverage json to coveralls
-          command: curl -i -F json_file=@build/jacoco/coveralls.json https://coveralls.io/api/v1/jobs
-
-      - store_artifacts:
-          path: ./build/jacoco/coveralls.json
 
       - store_artifacts:
           path: ./build/jacoco/report-html
