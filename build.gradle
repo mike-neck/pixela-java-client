@@ -93,4 +93,5 @@ coveralls {
     saveAsFile = true
     sendToCoveralls = false
     saveFilePath = 'build/jacoco/coveralls.json'
+    jacocoReportPath = "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
 }
