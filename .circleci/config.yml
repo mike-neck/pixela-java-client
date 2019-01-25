@@ -17,8 +17,8 @@ jobs:
       - run: ./gradlew dependencies
 
       - run:
-          name: run test
-          command: ./gradlew test
+          name: run quality check
+          command: ./gradlew qualityCheck
 
       - save_cache:
           paths:
@@ -40,10 +40,6 @@ jobs:
 
       - store_artifacts:
           path: ./build/reports/tests/test
-
-      - run:
-          name: take coverages
-          command: ./gradlew clean coverage
 
       - run:
           name: send coverage json to coveralls

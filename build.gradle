@@ -47,7 +47,30 @@ jacoco {
     toolVersion = '0.8.2'
 }
 
-jacocoTestReport {
+task testReport(type: TestReport) {
+    reportOn subprojects*.tasks*.withType(Test)
+    destinationDir = file("$buildDir/reports/tests/test")
+    group = 'verification'
+}
+
+task jacocoMerge(type: JacocoMerge) {
+    group = 'coverage'
+
+    dependsOn subprojects*.tasks*.withType(Test)
+
+    executionData((tasks as TaskContainer).getByPath(':pixela-java-client-api:test'))
+    executionData((tasks as TaskContainer).getByPath(':pixela-java-client-default-impl:test'))
+}
+
+task jacocoReport(type: JacocoReport) {
+    group = 'coverage'
+
+    dependsOn 'jacocoMerge'
+    finalizedBy 'coveralls'
+
+    executionData tasks.withType(JacocoMerge).findAll { it.name == 'jacocoMerge' }
+    additionalSourceDirs files(subprojects.sourceSets.main.allSource.srcDirs)
+    additionalClassDirs files(subprojects.sourceSets.main.output)
     reports {
         xml.enabled = true
         xml.destination = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml")
@@ -56,26 +79,15 @@ jacocoTestReport {
     }
 }
 
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.5
-            }
-        }
-    }
+task jacoco {
+    group = 'coverage'
+    dependsOn 'jacocoReport'
 }
 
-task jacocoExec(dependsOn: 'test') {
-    group = 'coverage'
-    finalizedBy 'jacocoTestReport'
-}
-
-project.tasks.getByName('coveralls').group = 'coverage'
-
-task coverage(dependsOn: 'jacocoExec') {
-    finalizedBy 'coveralls'
-    group = 'coverage'
+task qualityCheck {
+    group = 'verification'
+    dependsOn 'jacoco'
+    finalizedBy 'testReport'
 }
 
 coveralls {

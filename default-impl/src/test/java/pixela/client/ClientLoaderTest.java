@@ -15,11 +15,10 @@
  */
 package pixela.client;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 import pixela.client.http.HttpClient;
-import pixela.client.impl.HttpClientFactoryImpl;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ClientLoaderTest {
 
@@ -28,6 +27,6 @@ class ClientLoaderTest {
     final PixelaClientConfig pixelaClientConfig =
         PixelaClientConfig.builder().serviceUri("https://localhost:8000").build();
     final HttpClient httpClient = ClientLoader.create(pixelaClientConfig).load();
-    assertThat(httpClient).isInstanceOf(HttpClientFactoryImpl.class);
+    assertThat(httpClient).isNotNull();
   }
 }

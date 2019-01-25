@@ -31,3 +31,11 @@ dependencies {
     testRuntimeClasspath group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
     testImplementation group: 'net.javacrumbs.json-unit', name: 'json-unit-assertj', version: '2.2.0'
 }
+
+test {
+    useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = '0.8.2'
+}

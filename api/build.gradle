@@ -42,27 +42,3 @@ test {
 jacoco {
     toolVersion = '0.8.2'
 }
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        xml.destination = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml")
-        html.enabled = true
-        html.destination = file("$buildDir/jacoco/report-html")
-    }
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.5
-            }
-        }
-    }
-}
-
-task jacocoExec(dependsOn: 'test') {
-    group = 'coverage'
-    finalizedBy 'jacocoTestReport'
-}
