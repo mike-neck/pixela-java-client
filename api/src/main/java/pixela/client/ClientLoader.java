@@ -16,6 +16,8 @@
 package pixela.client;
 
 import java.util.ServiceLoader;
+import java.util.Spliterator;
+import java.util.stream.StreamSupport;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.HttpClient;
 import pixela.client.http.HttpClientFactory;
@@ -36,8 +38,11 @@ class ClientLoader {
   @NotNull
   HttpClient load() {
     final ServiceLoader<HttpClientFactory> loader = ServiceLoader.load(HttpClientFactory.class);
+    final Spliterator<HttpClientFactory> spliterator = loader.spliterator();
     final HttpClientFactory httpClientFactory =
-        loader.findFirst().orElseThrow(HttpClientFactory::notFoundImplementation);
+        StreamSupport.stream(spliterator, false)
+            .findFirst()
+            .orElseThrow(HttpClientFactory::notFoundImplementation);
     return httpClientFactory.newClient(config);
   }
 }

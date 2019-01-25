@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Post;
 import pixela.client.http.Request;
@@ -39,6 +40,7 @@ class JdkPostRequestBuilder implements RequestBuilder<Post<?>> {
     this.encoder = encoder;
   }
 
+  @Contract("_, _ -> new")
   @NotNull
   static JdkPostRequestBuilder of(@NotNull final URI baseUri, @NotNull final JsonEncoder encoder) {
     return new JdkPostRequestBuilder(baseUri, encoder);

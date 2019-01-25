@@ -1,7 +1,6 @@
 plugins {
     id 'java-library'
     id 'jacoco'
-    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 ext {
@@ -9,6 +8,9 @@ ext {
     jacksonVersion = '2.9.8'
     reactorVersion = '3.2.3.RELEASE'
 }
+
+group = 'org.mikeneck.pixela'
+version = '0.1'
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
@@ -23,10 +25,9 @@ repositories {
 }
 
 dependencies {
-    api "io.projectreactor:reactor-core:$reactorVersion"
-    api "org.jetbrains:annotations:13.0"
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
+    api project(':pixela-java-client-api')
+    implementation project(':pixela-java-client-default-impl')
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitVersion
     testRuntimeClasspath "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
@@ -45,39 +46,44 @@ jacoco {
     toolVersion = '0.8.2'
 }
 
-jacocoTestReport {
+task testReport(type: TestReport) {
+    reportOn subprojects*.tasks*.withType(Test)
+    destinationDir = file("$buildDir/reports/tests/test")
+    group = 'verification'
+}
+
+task jacocoMerge(type: JacocoMerge) {
+    group = 'coverage'
+
+    dependsOn subprojects*.tasks*.withType(Test)
+
+    executionData((tasks as TaskContainer).getByPath(':pixela-java-client-api:test'))
+    executionData((tasks as TaskContainer).getByPath(':pixela-java-client-default-impl:test'))
+}
+
+task jacocoReport(type: JacocoReport) {
+    group = 'coverage'
+
+    dependsOn 'jacocoMerge'
+
+    executionData tasks.withType(JacocoMerge).findAll { it.name == 'jacocoMerge' }
+    additionalSourceDirs files(subprojects.sourceSets.main.allSource.srcDirs)
+    additionalClassDirs files(subprojects.sourceSets.main.output)
     reports {
         xml.enabled = true
-        xml.destination = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml")
+        xml.destination = file("$buildDir/reports/jacoco/report.xml")
         html.enabled = true
         html.destination = file("$buildDir/jacoco/report-html")
     }
 }
 
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.5
-            }
-        }
-    }
-}
-
-task jacocoExec(dependsOn: 'test') {
+task jacoco {
     group = 'coverage'
-    finalizedBy 'jacocoTestReport'
+    dependsOn 'jacocoReport'
 }
 
-project.tasks.getByName('coveralls').group = 'coverage'
-
-task coverage(dependsOn: 'jacocoExec') {
-    finalizedBy 'coveralls'
-    group = 'coverage'
-}
-
-coveralls {
-    saveAsFile = true
-    sendToCoveralls = false
-    saveFilePath = 'build/jacoco/coveralls.json'
+task qualityCheck {
+    group = 'verification'
+    dependsOn 'jacoco'
+    finalizedBy 'testReport'
 }

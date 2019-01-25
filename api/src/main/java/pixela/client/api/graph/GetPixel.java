@@ -18,7 +18,6 @@ package pixela.client.api.graph;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Optional;
-
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.*;

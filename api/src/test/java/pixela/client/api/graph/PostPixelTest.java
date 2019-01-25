@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.LocalDate;
 import java.util.Map;
+import org.eclipse.collections.impl.factory.Maps;
 import org.junit.jupiter.api.Test;
 import pixela.client.GraphId;
 import pixela.client.Pixela;
@@ -91,7 +92,7 @@ class PostPixelTest {
         .when(httpClient)
         .encodeJson(any());
 
-    final Map<String, String> map = Map.of("test", "value");
+    final Map<String, String> map = Maps.immutable.of("test", "value").toMap();
 
     final Mono<PostPixel> postPixel =
         pixelDate
@@ -126,7 +127,7 @@ class PostPixelTest {
         .when(httpClient)
         .encodeJson(any());
 
-    final Map<String, String> map = Map.of("test", "value");
+    final Map<String, String> map = Maps.immutable.of("test", "value").toMap();
 
     final Mono<PostPixel> postPixel =
         pixelDate.date(LocalDate.of(2006, 1, 22)).quantity(Quantity.integer(10)).optionData(map);

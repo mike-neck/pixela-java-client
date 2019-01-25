@@ -1,0 +1,41 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    api project(':pixela-java-client-api')
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitVersion
+    testRuntimeClasspath "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
+    testImplementation group: 'io.projectreactor', name: 'reactor-test', version: reactorVersion
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.11.1'
+    testRuntimeClasspath group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    testImplementation group: 'net.javacrumbs.json-unit', name: 'json-unit-assertj', version: '2.2.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = '0.8.2'
+}
