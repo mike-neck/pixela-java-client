@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.api.graph.CreateGraph;
+import pixela.client.api.graph.GetGraphDefinitions;
 import pixela.client.api.graph.PostPixel;
 import pixela.client.api.user.DeleteUser;
 import pixela.client.http.HttpClient;
@@ -49,6 +50,9 @@ public interface Pixela {
 
   @NotNull
   CreateGraph.Id createGraph();
+
+  @NotNull
+  GetGraphDefinitions getGraphDefinitions();
 
   @NotNull
   PostPixel.PixelDate postPixel(@NotNull final GraphId graphId);
