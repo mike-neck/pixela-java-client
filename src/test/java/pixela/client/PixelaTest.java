@@ -17,6 +17,7 @@ package pixela.client;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -96,12 +97,22 @@ class PixelaTest {
       final Mono<Tuple2<Graph, URI>> viewUri =
           graphCreation.map(graph -> Tuples.of(graph, graph.viewUri())).log("view-graph");
 
+      // get graph definitions
+      final Mono<List<Graph>> getGraphDefinitions =
+          viewUri
+              .map(Tuple2::getT1)
+              .map(Graph::pixela)
+              .map(Pixela::getGraphDefinitions)
+              .log("get-graph-definitions-API")
+              .flatMap(GetGraphDefinitions::call)
+              .log("get-graph-definitions");
+
       // Post Pixel
       final LocalDate date10 = LocalDate.of(2019, 1, 10);
 
       final Mono<Pixel> postPixelViaGraph =
-          viewUri
-              .map(Tuple2::getT1)
+          getGraphDefinitions
+              .map(list -> list.get(0))
               .map(graph -> graph.postPixel().date(date10).quantity(10.25))
               .log("post-pixel-1")
               .flatMap(PostPixel::call)
