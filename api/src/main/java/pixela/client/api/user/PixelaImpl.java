@@ -113,7 +113,7 @@ public class PixelaImpl implements Pixela {
   public Mono<Void> persistAsFile(@NotNull final Path file) {
     return Mono.<Void>fromRunnable(
             () -> {
-              final Properties properties = new Properties(2);
+              final Properties properties = new Properties();
               properties.setProperty(UserToken.USER_TOKEN_PROPERTY_KEY, userToken.tokenValue());
               properties.setProperty(Username.USER_NAME_PROPERTY_KEY, username.value());
               try (final Writer writer =

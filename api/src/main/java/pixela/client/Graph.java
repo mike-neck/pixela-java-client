@@ -83,6 +83,17 @@ public interface Graph {
       this.string = string;
     }
 
+    @NotNull
+    @Contract(pure = true)
+    public static Type fromString(@NotNull final String type) {
+      return Arrays.stream(values())
+          .filter(t -> t.string.equals(type.toLowerCase()))
+          .findFirst()
+          .orElseThrow(
+              () ->
+                  new NoSuchElementException("Type [" + type + "] is not found in this library."));
+    }
+
     @Contract(pure = true)
     @NotNull
     public String value() {
