@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
-class GraphDetailsTest {
+class GraphDefinitionsTest {
 
   private final ObjectMapper objectMapper =
       new ObjectMapper()
@@ -44,21 +44,21 @@ class GraphDetailsTest {
             + "\"color\":\"shibafu\","
             + "\"timezone\":\"Asia/Tokyo\","
             + "\"purgeCacheURLs\":[\"https://camo.githubusercontent.com/xxx/xxxx\"]}]}";
-    final GraphDetails graphDetails = objectMapper.readValue(json, GraphDetails.class);
+    final GraphDefinitions graphDefinitions = objectMapper.readValue(json, GraphDefinitions.class);
 
-    assertThat(graphDetails.getGraphs())
+    assertThat(graphDefinitions.getGraphs())
         .hasSize(1)
         .satisfies(
-            (GraphDetail graphDetail) ->
+            (GraphDefinition graphDefinition) ->
                 assertAll(
-                    () -> assertThat(graphDetail.getId()).isEqualTo("test-graph"),
-                    () -> assertThat(graphDetail.getName()).isEqualTo("graph-name"),
-                    () -> assertThat(graphDetail.getUnit()).isEqualTo("commit"),
-                    () -> assertThat(graphDetail.getType()).isEqualTo("int"),
-                    () -> assertThat(graphDetail.getColor()).isEqualTo("shibafu"),
-                    () -> assertThat(graphDetail.getTimezone()).isEqualTo("Asia/Tokyo"),
+                    () -> assertThat(graphDefinition.getId()).isEqualTo("test-graph"),
+                    () -> assertThat(graphDefinition.getName()).isEqualTo("graph-name"),
+                    () -> assertThat(graphDefinition.getUnit()).isEqualTo("commit"),
+                    () -> assertThat(graphDefinition.getType()).isEqualTo("int"),
+                    () -> assertThat(graphDefinition.getColor()).isEqualTo("shibafu"),
+                    () -> assertThat(graphDefinition.getTimezone()).isEqualTo("Asia/Tokyo"),
                     () ->
-                        assertThat(graphDetail.getPurgeCacheURLs())
+                        assertThat(graphDefinition.getPurgeCacheURLs())
                             .containsExactly("https://camo.githubusercontent.com/xxx/xxxx")),
             atIndex(0));
   }

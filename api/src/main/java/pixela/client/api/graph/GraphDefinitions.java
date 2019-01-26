@@ -24,24 +24,24 @@ import pixela.client.Pixela;
 import pixela.client.http.HttpClient;
 
 @SuppressWarnings("WeakerAccess")
-public class GraphDetails {
+public class GraphDefinitions {
 
-  @NotNull private List<GraphDetail> graphs;
+  @NotNull private List<GraphDefinition> graphs;
 
-  public GraphDetails(@NotNull final List<GraphDetail> graphs) {
+  public GraphDefinitions(@NotNull final List<GraphDefinition> graphs) {
     this.graphs = graphs;
   }
 
-  public GraphDetails() {
+  public GraphDefinitions() {
     this.graphs = Collections.emptyList();
   }
 
   @NotNull
-  public List<GraphDetail> getGraphs() {
+  public List<GraphDefinition> getGraphs() {
     return graphs;
   }
 
-  public void setGraphs(@NotNull final List<GraphDetail> graphs) {
+  public void setGraphs(@NotNull final List<GraphDefinition> graphs) {
     this.graphs = graphs;
   }
 

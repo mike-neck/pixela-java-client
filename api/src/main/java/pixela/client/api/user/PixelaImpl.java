@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
 import pixela.client.api.graph.CreateGraph;
+import pixela.client.api.graph.GetGraphDefinitions;
 import pixela.client.api.graph.PostPixel;
 import pixela.client.http.HttpClient;
 import reactor.core.publisher.Mono;
@@ -137,6 +138,12 @@ public class PixelaImpl implements Pixela {
   @Override
   public CreateGraph.Id createGraph() {
     return CreateGraph.builder(httpClient, this);
+  }
+
+  @NotNull
+  @Override
+  public GetGraphDefinitions getGraphDefinitions() {
+    return GetGraphDefinitions.of(httpClient, this);
   }
 
   @NotNull

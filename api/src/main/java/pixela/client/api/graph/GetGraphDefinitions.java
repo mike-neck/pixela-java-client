@@ -26,29 +26,29 @@ import pixela.client.http.HttpClient;
 import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
-public class GetGraph implements Api<List<Graph>>, Get<GraphDetails> {
+public class GetGraphDefinitions implements Api<List<Graph>>, Get<GraphDefinitions> {
 
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
 
-  private GetGraph(@NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
+  private GetGraphDefinitions(@NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
     this.httpClient = httpClient;
     this.pixela = pixela;
   }
 
   @Contract("_, _ -> new")
   @NotNull
-  public static GetGraph of(@NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
-    return new GetGraph(httpClient, pixela);
+  public static GetGraphDefinitions of(@NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
+    return new GetGraphDefinitions(httpClient, pixela);
   }
 
   @NotNull
   @Override
   public Mono<List<Graph>> call() {
-    final Response<GraphDetails> response = httpClient.get(this);
+    final Response<GraphDefinitions> response = httpClient.get(this);
     return response
         .toPublisher()
-        .map(graphDetails -> graphDetails.asCollection(httpClient, pixela));
+        .map(graphDefinitions -> graphDefinitions.asCollection(httpClient, pixela));
   }
 
   @NotNull
@@ -66,8 +66,8 @@ public class GetGraph implements Api<List<Graph>>, Get<GraphDetails> {
 
   @NotNull
   @Override
-  public Class<? extends GraphDetails> responseType() {
-    return GraphDetails.class;
+  public Class<? extends GraphDefinitions> responseType() {
+    return GraphDefinitions.class;
   }
 
   @NotNull

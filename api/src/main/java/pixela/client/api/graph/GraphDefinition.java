@@ -23,7 +23,7 @@ import pixela.client.*;
 import pixela.client.http.HttpClient;
 
 @SuppressWarnings("WeakerAccess")
-public class GraphDetail {
+public class GraphDefinition {
 
   @NotNull private String id;
   @NotNull private String name;
@@ -33,7 +33,7 @@ public class GraphDetail {
   @NotNull private String timezone;
   @NotNull private List<String> purgeCacheURLs;
 
-  public GraphDetail(
+  public GraphDefinition(
       @NotNull final String id,
       @NotNull final String name,
       @NotNull final String unit,
@@ -50,7 +50,7 @@ public class GraphDetail {
     this.purgeCacheURLs = purgeCacheURLs;
   }
 
-  public GraphDetail() {
+  public GraphDefinition() {
     this.id = "";
     this.name = "";
     this.unit = "";
