@@ -61,7 +61,7 @@ public class GetGraphDefinitions implements Api<List<Graph>>, Get<GraphDefinitio
   @NotNull
   @Override
   public Optional<UserToken> userToken() {
-    return Optional.empty();
+    return Optional.of(pixela.token());
   }
 
   @NotNull
