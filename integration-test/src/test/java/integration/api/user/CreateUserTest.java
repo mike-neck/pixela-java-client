@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client.api.user;
+package integration.api.user;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import integration.NormalResponse;
+import integration.ToJson;
+import integration.ToJsonProvider;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import pixela.client.*;
-import pixela.client.api.NormalResponse;
+import pixela.client.MockPixelaServer;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
