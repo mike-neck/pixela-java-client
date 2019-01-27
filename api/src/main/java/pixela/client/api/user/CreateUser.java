@@ -124,7 +124,7 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
         + "  agreeTermsOfService:"
         + agreeTermsOfService
         + '\n'
-        + "  notMinor"
+        + "  notMinor:"
         + notMinor;
   }
 

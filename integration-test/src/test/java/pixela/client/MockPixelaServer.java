@@ -18,9 +18,7 @@ package pixela.client;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import java.lang.reflect.Method;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.*;
 
 public class MockPixelaServer implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
@@ -28,19 +26,10 @@ public class MockPixelaServer implements BeforeEachCallback, AfterEachCallback, 
   private static final ExtensionContext.Namespace NAMESPACE =
       ExtensionContext.Namespace.create(MockPixelaServer.class);
 
-  private static final int PORT_NUMBER = 8_000;
+  public static final int PORT_NUMBER = 8_000;
 
   @Override
   public void afterEach(@NotNull final ExtensionContext context) {
-    final ExtensionContext.Store store = context.getStore(NAMESPACE);
-    final WireMockServer wireMockServer =
-        store.getOrComputeIfAbsent(
-            NAMESPACE, ns -> new WireMockServer(options().port(PORT_NUMBER)), WireMockServer.class);
-    wireMockServer.start();
-  }
-
-  @Override
-  public void beforeEach(@NotNull final ExtensionContext context) {
     final ExtensionContext.Store store = context.getStore(NAMESPACE);
     final WireMockServer wireMockServer = store.get(NAMESPACE, WireMockServer.class);
     if (wireMockServer == null) {
@@ -50,17 +39,21 @@ public class MockPixelaServer implements BeforeEachCallback, AfterEachCallback, 
   }
 
   @Override
+  public void beforeEach(@NotNull final ExtensionContext context) {
+    final ExtensionContext.Store store = context.getStore(NAMESPACE);
+    final WireMockServer wireMockServer =
+        store.getOrComputeIfAbsent(
+            NAMESPACE, ns -> new WireMockServer(options().port(PORT_NUMBER)), WireMockServer.class);
+    wireMockServer.start();
+  }
+
+  @Override
   public boolean supportsParameter(
       @NotNull final ParameterContext parameterContext,
       @NotNull final ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    final Method testMethod = extensionContext.getRequiredTestMethod();
-    final Test test = testMethod.getAnnotation(Test.class);
-    if (test == null) {
-      return false;
-    }
     final Class<?> type = parameterContext.getParameter().getType();
-    return PixelaClient.class.equals(type);
+    return PixelaClientConfig.class.equals(type);
   }
 
   @Override
@@ -68,13 +61,8 @@ public class MockPixelaServer implements BeforeEachCallback, AfterEachCallback, 
       @NotNull final ParameterContext parameterContext,
       @NotNull final ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    final Method testMethod = extensionContext.getRequiredTestMethod();
-    final Test test = testMethod.getAnnotation(Test.class);
-    if (test == null) {
-      throw new ParameterResolutionException("Only test method is supported.");
-    }
     final Class<?> type = parameterContext.getParameter().getType();
-    if (!PixelaClient.class.equals(type)) {
+    if (!PixelaClientConfig.class.equals(type)) {
       throw new ParameterResolutionException("Only PixelaClientConfig is supported.");
     }
     return PixelaClientConfig.builder().serviceUri("http://localhost:" + PORT_NUMBER).build();
