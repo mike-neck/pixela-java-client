@@ -28,7 +28,9 @@ dependencies {
     testRuntimeClasspath group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
     testImplementation group: 'net.javacrumbs.json-unit', name: 'json-unit-assertj', version: '2.2.0'
 
-    testImplementation "com.github.tomakehurst:wiremock:2.20.0"
+    testImplementation ("com.github.tomakehurst:wiremock:2.20.0") {
+        exclude module: 'junit'
+    }
 }
 
 test {
