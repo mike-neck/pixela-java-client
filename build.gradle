@@ -59,6 +59,7 @@ task jacocoMerge(type: JacocoMerge) {
 
     executionData((tasks as TaskContainer).getByPath(':pixela-java-client-api:test'))
     executionData((tasks as TaskContainer).getByPath(':pixela-java-client-default-impl:test'))
+    executionData((tasks as TaskContainer).getByPath(':integration-test:test'))
 }
 
 task jacocoReport(type: JacocoReport) {
