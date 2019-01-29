@@ -22,25 +22,20 @@ import integration.NormalResponse;
 import integration.ToJson;
 import integration.ToJsonProvider;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import pixela.client.*;
 import pixela.client.MockPixelaServer;
+import pixela.client.Pixela;
+import pixela.client.PixelaClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 @ExtendWith({MockPixelaServer.class, ToJsonProvider.class})
 class CreateUserTest {
 
-  private PixelaClient pixelaClient;
-
   @BeforeEach
-  void prepare(@NotNull final PixelaClientConfig config, @NotNull final ToJson toJson) {
-    pixelaClient = Pixela.withDefaultJavaClient(config);
-
-    configureFor(MockPixelaServer.PORT_NUMBER);
+  void prepare(@NotNull final ToJson toJson) {
     stubFor(
         post("/v1/users")
             .withRequestBody(matchingJsonPath("$.token", matching("[ -~]{8,128}")))
@@ -65,13 +60,8 @@ class CreateUserTest {
                     .withHeader("Content-Type", "application/json")));
   }
 
-  @AfterEach
-  void finish() throws Exception {
-    pixelaClient.close();
-  }
-
   @Test
-  void success() {
+  void success(@NotNull final PixelaClient pixelaClient) {
     final Mono<Pixela> response =
         pixelaClient
             .createUser()
@@ -87,7 +77,7 @@ class CreateUserTest {
   }
 
   @Test
-  void failure() {
+  void failure(@NotNull final PixelaClient pixelaClient) {
     final Mono<Pixela> response =
         pixelaClient
             .createUser()

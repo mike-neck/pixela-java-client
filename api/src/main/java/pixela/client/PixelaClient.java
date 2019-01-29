@@ -42,7 +42,6 @@ public class PixelaClient implements AutoCloseable, Disposable {
     return new PixelaClient(httpClient);
   }
 
-  @SuppressWarnings("WeakerAccess")
   @NotNull
   public CreateUser.Token createUser() {
     return CreateUser.builder(httpClient);
