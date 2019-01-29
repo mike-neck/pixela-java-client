@@ -122,7 +122,7 @@ public class MockPixelaServer implements BeforeEachCallback, AfterEachCallback, 
         .ifPresent(
             pixelaUser ->
                 store.getOrComputeIfAbsent(
-                    PixelaUser.class,
+                    Pixela.class,
                     klass ->
                         pixelaClient.username(pixelaUser.username()).token(pixelaUser.userToken()),
                     Pixela.class));
