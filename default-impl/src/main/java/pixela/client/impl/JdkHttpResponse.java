@@ -51,6 +51,8 @@ class JdkHttpResponse {
     } else if (responseType.equals(Void.class)) {
       final Mono<BasicResponse> response = decoder.decode(json, BasicResponse.class);
       return response.flatMap(res -> (Mono<T>) res.emptyOrError());
+    } else if (responseType.equals(String.class)) {
+      return Mono.just((T) json);
     } else {
       return decoder.decode(json, responseType);
     }
