@@ -32,7 +32,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
-public class GetGraphSvg implements Get<String>, Api<Tuple2<Graph, String>> {
+public class GetGraphSvgImpl implements Get<String>, Api<Tuple2<Graph, String>> {
 
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
@@ -41,7 +41,7 @@ public class GetGraphSvg implements Get<String>, Api<Tuple2<Graph, String>> {
   @NotNull private final DateOption date;
   @NotNull private final ModeOption mode;
 
-  public GetGraphSvg(
+  GetGraphSvgImpl(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final Graph graph,
