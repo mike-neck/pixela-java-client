@@ -37,7 +37,7 @@ public interface GetGraphSvg extends Get<String>, Api<Tuple2<Graph, String>> {
 
   @Contract("_, _, _ -> new")
   @NotNull
-  static GetGraphSvg.NoOption of(
+  static GetGraphSvg.NoOption noOption(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final Graph graph) {

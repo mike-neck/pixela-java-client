@@ -69,6 +69,12 @@ public class NewGraph implements Graph {
 
   @NotNull
   @Override
+  public GetGraphSvg.NoOption getGraphSvg() {
+    return simpleGraph.getGraphSvg();
+  }
+
+  @NotNull
+  @Override
   public URI viewUri() {
     return simpleGraph.viewUri();
   }

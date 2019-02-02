@@ -47,6 +47,9 @@ public interface Graph {
   DeleteGraph delete();
 
   @NotNull
+  GetGraphSvg.NoOption getGraphSvg();
+
+  @NotNull
   URI viewUri();
 
   @NotNull

@@ -45,7 +45,7 @@ class GetGraphSvgTest {
     @Test
     void withDate() {
       final GetGraphSvg getGraphSvg =
-          GetGraphSvg.of(httpClient, pixela, graph).date(LocalDate.of(2019, 1, 2));
+          GetGraphSvg.noOption(httpClient, pixela, graph).date(LocalDate.of(2019, 1, 2));
       final URI uri = getGraphSvg.apiEndpoint(baseUri);
 
       assertThat(uri)
@@ -57,7 +57,7 @@ class GetGraphSvgTest {
 
     @Test
     void withMode() {
-      final GetGraphSvg getGraphSvg = GetGraphSvg.of(httpClient, pixela, graph).shortMode();
+      final GetGraphSvg getGraphSvg = GetGraphSvg.noOption(httpClient, pixela, graph).shortMode();
       final URI uri = getGraphSvg.apiEndpoint(baseUri);
 
       assertThat(uri)
@@ -69,7 +69,7 @@ class GetGraphSvgTest {
 
     @Test
     void noOption() {
-      final GetGraphSvg getGraphSvg = GetGraphSvg.of(httpClient, pixela, graph);
+      final GetGraphSvg getGraphSvg = GetGraphSvg.noOption(httpClient, pixela, graph);
       final URI uri = getGraphSvg.apiEndpoint(baseUri);
 
       assertThat(uri)
@@ -82,7 +82,9 @@ class GetGraphSvgTest {
     @Test
     void hasBothOption() {
       final GetGraphSvg getGraphSvg =
-          GetGraphSvg.of(httpClient, pixela, graph).date(LocalDate.of(2019, 1, 2)).shortMode();
+          GetGraphSvg.noOption(httpClient, pixela, graph)
+              .date(LocalDate.of(2019, 1, 2))
+              .shortMode();
       final URI uri = getGraphSvg.apiEndpoint(baseUri);
 
       assertThat(uri)
@@ -98,7 +100,7 @@ class GetGraphSvgTest {
 
     @Test
     void success() {
-      final GetGraphSvg.NoOption getGraphSvg = GetGraphSvg.of(httpClient, pixela, graph);
+      final GetGraphSvg.NoOption getGraphSvg = GetGraphSvg.noOption(httpClient, pixela, graph);
       when(httpClient.get(getGraphSvg)).thenReturn(() -> Mono.just("svg-data"));
       final Mono<Tuple2<Graph, String>> response = getGraphSvg.call();
       StepVerifier.create(response)
@@ -114,7 +116,7 @@ class GetGraphSvgTest {
     void failure() {
       when(pixela.usersUri()).thenReturn("/v1/users/1122");
 
-      final GetGraphSvg.NoOption getGraphSvg = GetGraphSvg.of(httpClient, pixela, graph);
+      final GetGraphSvg.NoOption getGraphSvg = GetGraphSvg.noOption(httpClient, pixela, graph);
       when(httpClient.get(getGraphSvg))
           .thenReturn(() -> Mono.error(() -> ApiException.of("Failure")));
       final Mono<Tuple2<Graph, String>> response = getGraphSvg.call();
