@@ -68,7 +68,7 @@ public class CreateWebhook implements Post<CreateWebhookResult>, Api<Webhook> {
     final Response<CreateWebhookResult> response = httpClient.post(this);
     return response
         .toPublisher()
-        .map(CreateWebhookResult::getWebhookHash)
+        .flatMap(result -> result.webhookHash(this))
         .map(WebhookHash::of)
         .map(hash -> WebhookImpl.of(httpClient, graph, hash));
   }

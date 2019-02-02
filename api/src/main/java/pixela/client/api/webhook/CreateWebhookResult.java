@@ -15,18 +15,57 @@
  */
 package pixela.client.api.webhook;
 
+import java.util.Optional;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import pixela.client.ApiException;
+import pixela.client.http.Request;
+import reactor.core.publisher.Mono;
+
 public class CreateWebhookResult {
 
-  private String webhookHash;
+  @Nullable private String webhookHash;
   private String message;
   private boolean isSuccess;
 
-  @SuppressWarnings("WeakerAccess")
+  public CreateWebhookResult() {}
+
+  private CreateWebhookResult(
+      @Nullable final String webhookHash, @NotNull final String message, final boolean isSuccess) {
+    this.webhookHash = webhookHash;
+    this.message = message;
+    this.isSuccess = isSuccess;
+  }
+
+  @NotNull
+  @Contract("_, _ -> new")
+  static CreateWebhookResult success(
+      @NotNull final String webhookHash, @NotNull final String message) {
+    return new CreateWebhookResult(webhookHash, message, true);
+  }
+
+  @Contract("_ -> new")
+  @NotNull
+  static CreateWebhookResult failure(@NotNull final String message) {
+    return new CreateWebhookResult(null, message, false);
+  }
+
+  @NotNull
+  Mono<String> webhookHash(@NotNull final Request<?> request) {
+    if (isSuccess) {
+      return Mono.justOrEmpty(Optional.ofNullable(webhookHash));
+    } else {
+      return Mono.error(ApiException.of(message).appendDebugInfo(request));
+    }
+  }
+
+  @Nullable
   public String getWebhookHash() {
     return webhookHash;
   }
 
-  public void setWebhookHash(final String webhookHash) {
+  public void setWebhookHash(@Nullable final String webhookHash) {
     this.webhookHash = webhookHash;
   }
 

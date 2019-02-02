@@ -35,4 +35,20 @@ public class WebhookHash {
   public String subPath() {
     return "/webhooks" + webhookHash;
   }
+
+  @Contract(value = "null -> false", pure = true)
+  @Override
+  public boolean equals(final Object object) {
+    if (this == object) return true;
+    if (!(object instanceof WebhookHash)) return false;
+
+    final WebhookHash that = (WebhookHash) object;
+
+    return webhookHash.equals(that.webhookHash);
+  }
+
+  @Override
+  public int hashCode() {
+    return webhookHash.hashCode();
+  }
 }
