@@ -65,6 +65,12 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
 
   @NotNull
   @Override
+  public GetGraphSvg.NoOption getGraphSvg() {
+    return GetGraphSvg.noOption(httpClient, pixela, this);
+  }
+
+  @NotNull
+  @Override
   public URI viewUri() {
     final URI uri = httpClient.baseUri();
     final URI usersUri = pixela.usersUri(uri);

@@ -227,6 +227,33 @@ class JdkHttpResponseTest {
         }
       }
     }
+
+    @Nested
+    class StringType {
+
+      private Request<String> request;
+
+      @BeforeEach
+      void setup() {
+        request = mock(StringReq.class);
+        doCallRealMethod().when(request).responseType();
+      }
+
+      @Nested
+      class ReadObjectWillReturnTheSameStringAsResponse {
+
+        @BeforeEach
+        void setup() {
+          when(response.body()).thenReturn("Response String");
+        }
+
+        @Test
+        void theyAreSame() {
+          final Mono<String> mono = jdkHttpResponse.readObject(request);
+          StepVerifier.create(mono).expectNext("Response String").verifyComplete();
+        }
+      }
+    }
   }
 
   interface Req extends Request<Model> {
@@ -286,6 +313,14 @@ class JdkHttpResponseTest {
     @Override
     default Class<? extends Void> responseType() {
       return Void.class;
+    }
+  }
+
+  interface StringReq extends Request<String> {
+    @NotNull
+    @Override
+    default Class<? extends String> responseType() {
+      return String.class;
     }
   }
 }
