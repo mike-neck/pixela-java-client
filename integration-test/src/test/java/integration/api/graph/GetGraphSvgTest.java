@@ -23,6 +23,7 @@ import integration.NormalResponse;
 import integration.PixelaUser;
 import integration.ToJson;
 import integration.ToJsonProvider;
+import java.time.LocalDate;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,19 +48,27 @@ class GetGraphSvgTest {
   @BeforeEach
   void prepare(@NotNull final ToJson toJson) {
     stubFor(
-        get(urlPathMatching("/v1/users/test-user/graphs/test\\-graph"))
+        get(urlEqualTo("/v1/users/test-user/graphs/test-graph"))
             .willReturn(
                 aResponse()
                     .withStatus(200)
                     .withBody(svgBody)
                     .withHeader("Content-Type", "image/svg+xml")));
+
     stubFor(
-        get(urlPathMatching("/v1/users/abc123/graphs/test\\-graph"))
+        get(urlEqualTo("/v1/users/abc123/graphs/test-graph"))
             .willReturn(
                 aResponse()
                     .withStatus(404)
                     .withHeader("Content-Type", "application/json")
                     .withBody(toJson.apply(NormalResponse.failure("Not found")))));
+    stubFor(
+        get(urlEqualTo("/v1/users/with-query/graphs/test-graph?date=20190102&mode=short"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withBody(svgBody)
+                    .withHeader("Content-Type", "image/svg+xml")));
   }
 
   @PixelaUser(username = "test-user", userToken = "test-token")
@@ -89,5 +98,24 @@ class GetGraphSvgTest {
                     .hasMessageContaining("Not found")
                     .hasMessageContaining("GET /v1/users/abc123/graphs/test-graph"))
         .verify();
+  }
+
+  @PixelaUser(username = "with-query", userToken = "test-token")
+  @Test
+  void withQuery(@NotNull final Pixela pixela) {
+    final Mono<Tuple2<Graph, String>> mono =
+        pixela
+            .graph(GraphId.of("test-graph"))
+            .getGraphSvg()
+            .date(LocalDate.of(2019, 1, 2))
+            .shortMode()
+            .call();
+    StepVerifier.create(mono)
+        .consumeNextWith(
+            tuple ->
+                assertAll(
+                    () -> assertThat(tuple.getT2()).isEqualTo(svgBody),
+                    () -> assertThat(tuple.getT1().subPath()).isEqualTo("/graphs/test-graph")))
+        .verifyComplete();
   }
 }
