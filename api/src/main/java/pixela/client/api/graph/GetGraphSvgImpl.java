@@ -16,23 +16,18 @@
 package pixela.client.api.graph;
 
 import java.net.URI;
-import java.util.Optional;
-import org.jetbrains.annotations.Contract;
+import java.time.LocalDate;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.Api;
 import pixela.client.Graph;
 import pixela.client.Pixela;
-import pixela.client.UserToken;
-import pixela.client.api.QueryParam;
 import pixela.client.api.QueryParams;
-import pixela.client.http.Get;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
-public class GetGraphSvgImpl implements Get<String>, Api<Tuple2<Graph, String>> {
+class GetGraphSvgImpl implements GetGraphSvg.WithDateOption, GetGraphSvg.NoOption {
 
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
@@ -54,50 +49,6 @@ public class GetGraphSvgImpl implements Get<String>, Api<Tuple2<Graph, String>> 
     this.mode = mode;
   }
 
-  @FunctionalInterface
-  private interface DateOption extends QueryParam {
-    @NotNull
-    @Override
-    default String queryName() {
-      return "date";
-    }
-
-    @SuppressWarnings("NullableProblems")
-    @NotNull
-    @Contract(pure = true)
-    static DateOption empty() {
-      return Optional::empty;
-    }
-  }
-
-  public enum ModeOption implements QueryParam {
-    NONE {
-      @NotNull
-      @Override
-      public Optional<String> asString() {
-        return Optional.empty();
-      }
-    },
-    SHORT {
-      @NotNull
-      @Override
-      public Optional<String> asString() {
-        return Optional.of("short");
-      }
-    },
-    ;
-
-    @NotNull
-    @Override
-    public String queryName() {
-      return "mode";
-    }
-
-    @NotNull
-    @Override
-    public abstract Optional<String> asString();
-  }
-
   @NotNull
   @Override
   public Mono<Tuple2<Graph, String>> call() {
@@ -116,24 +67,6 @@ public class GetGraphSvgImpl implements Get<String>, Api<Tuple2<Graph, String>> 
 
   @NotNull
   @Override
-  public Optional<UserToken> userToken() {
-    return Optional.empty();
-  }
-
-  @NotNull
-  @Override
-  public WithBody withBody() {
-    return WithBody.FALSE;
-  }
-
-  @NotNull
-  @Override
-  public Class<? extends String> responseType() {
-    return String.class;
-  }
-
-  @NotNull
-  @Override
   public String errorRequest() {
     return "GET "
         + pixela.usersUri()
@@ -144,5 +77,17 @@ public class GetGraphSvgImpl implements Get<String>, Api<Tuple2<Graph, String>> 
         + "\n"
         + "mode: "
         + mode.asString().orElse("");
+  }
+
+  @NotNull
+  @Override
+  public WithDateOption date(@NotNull final LocalDate date) {
+    return new GetGraphSvgImpl(httpClient, pixela, graph, DateOption.of(date), mode);
+  }
+
+  @NotNull
+  @Override
+  public GetGraphSvg mode(@NotNull final ModeOption mode) {
+    return new GetGraphSvgImpl(httpClient, pixela, graph, date, mode);
   }
 }
