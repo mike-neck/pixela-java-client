@@ -41,6 +41,9 @@ public interface Graph {
   @NotNull String PATH = "/graphs";
 
   @NotNull
+  String id();
+
+  @NotNull
   Pixela pixela();
 
   @NotNull

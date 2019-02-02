@@ -57,6 +57,12 @@ public class NewGraph implements Graph {
 
   @NotNull
   @Override
+  public String id() {
+    return simpleGraph.id();
+  }
+
+  @NotNull
+  @Override
   public Pixela pixela() {
     return simpleGraph.pixela();
   }

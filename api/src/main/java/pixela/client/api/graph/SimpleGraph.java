@@ -53,6 +53,12 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
 
   @NotNull
   @Override
+  public String id() {
+    return graphId.value();
+  }
+
+  @NotNull
+  @Override
   public Pixela pixela() {
     return pixela;
   }
