@@ -47,4 +47,20 @@ public class GraphId {
   public String toString() {
     return "[graphID:" + value + "]";
   }
+
+  @Contract(value = "null -> false", pure = true)
+  @Override
+  public boolean equals(final Object object) {
+    if (this == object) return true;
+    if (!(object instanceof GraphId)) return false;
+
+    final GraphId graphId = (GraphId) object;
+
+    return value.equals(graphId.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return value.hashCode();
+  }
 }

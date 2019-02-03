@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.Graph;
 import pixela.client.Webhook;
 import pixela.client.WebhookHash;
+import pixela.client.WebhookType;
 import pixela.client.http.HttpClient;
 import reactor.core.publisher.Mono;
 
@@ -28,23 +29,27 @@ public class WebhookImpl implements Webhook {
   @NotNull private final HttpClient httpClient;
   @NotNull private final Graph graph;
   @NotNull private final WebhookHash webhookHash;
+  @NotNull private final WebhookType webhookType;
 
   private WebhookImpl(
       @NotNull final HttpClient httpClient,
       @NotNull final Graph graph,
-      @NotNull final WebhookHash webhookHash) {
+      @NotNull final WebhookHash webhookHash,
+      @NotNull final WebhookType webhookType) {
     this.httpClient = httpClient;
     this.graph = graph;
     this.webhookHash = webhookHash;
+    this.webhookType = webhookType;
   }
 
   @NotNull
-  @Contract("_, _, _ -> new")
+  @Contract("_, _, _, _ -> new")
   static WebhookImpl of(
       @NotNull final HttpClient httpClient,
       @NotNull final Graph graph,
-      @NotNull final WebhookHash webhookHash) {
-    return new WebhookImpl(httpClient, graph, webhookHash);
+      @NotNull final WebhookHash webhookHash,
+      @NotNull final WebhookType webhookType) {
+    return new WebhookImpl(httpClient, graph, webhookHash, webhookType);
   }
 
   @NotNull
@@ -56,6 +61,11 @@ public class WebhookImpl implements Webhook {
   @NotNull
   public WebhookHash webhookHash() {
     return webhookHash;
+  }
+
+  @NotNull
+  WebhookType webhookType() {
+    return webhookType;
   }
 
   @NotNull

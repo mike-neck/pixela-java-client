@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client;
+package integration;
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-import org.jetbrains.annotations.NotNull;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public enum WebhookType {
-  INCREMENT,
-  DECREMENT,
-  ;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface JsonResource {
 
-  @NotNull
-  public static WebhookType of(@NotNull final String type) {
-    return Arrays.stream(values())
-        .filter(webhookType -> webhookType.asString().equals(type))
-        .findFirst()
-        .orElseThrow(() -> new NoSuchElementException("No type fround: " + type));
-  }
-
-  @NotNull
-  public String asString() {
-    return name().toLowerCase();
-  }
+  String name();
 }
