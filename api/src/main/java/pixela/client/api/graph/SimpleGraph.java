@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.Graph;
 import pixela.client.GraphId;
 import pixela.client.Pixela;
+import pixela.client.WebhookType;
+import pixela.client.api.webhook.CreateWebhook;
 import pixela.client.http.HttpClient;
 
 public class SimpleGraph implements Graph, PostPixel.PixelDate {
@@ -49,6 +51,12 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
       @NotNull final Pixela pixela,
       @NotNull final GraphId graphId) {
     return new SimpleGraph(httpClient, pixela, graphId);
+  }
+
+  @NotNull
+  @Override
+  public String id() {
+    return graphId.value();
   }
 
   @NotNull
@@ -111,6 +119,18 @@ public class SimpleGraph implements Graph, PostPixel.PixelDate {
   @Override
   public DecrementPixel decrementPixel() {
     return DecrementPixel.of(httpClient, pixela, this);
+  }
+
+  @NotNull
+  @Override
+  public CreateWebhook createIncrementWebhook() {
+    return CreateWebhook.of(httpClient, pixela, this, WebhookType.INCREMENT);
+  }
+
+  @NotNull
+  @Override
+  public CreateWebhook createDecrementWebhook() {
+    return CreateWebhook.of(httpClient, pixela, this, WebhookType.DECREMENT);
   }
 
   @Override

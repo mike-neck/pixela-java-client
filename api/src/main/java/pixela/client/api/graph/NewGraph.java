@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
+import pixela.client.api.webhook.CreateWebhook;
 import pixela.client.http.HttpClient;
 
 public class NewGraph implements Graph {
@@ -53,6 +54,12 @@ public class NewGraph implements Graph {
     this.type = type;
     this.color = color;
     this.timezone = timezone;
+  }
+
+  @NotNull
+  @Override
+  public String id() {
+    return simpleGraph.id();
   }
 
   @NotNull
@@ -107,6 +114,18 @@ public class NewGraph implements Graph {
   @Override
   public DecrementPixel decrementPixel() {
     return simpleGraph.decrementPixel();
+  }
+
+  @NotNull
+  @Override
+  public CreateWebhook createIncrementWebhook() {
+    return simpleGraph.createIncrementWebhook();
+  }
+
+  @NotNull
+  @Override
+  public CreateWebhook createDecrementWebhook() {
+    return simpleGraph.createDecrementWebhook();
   }
 
   @Override

@@ -26,6 +26,7 @@ import java.util.NoSuchElementException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.api.graph.*;
+import pixela.client.api.webhook.CreateWebhook;
 import pixela.client.http.HttpClient;
 
 public interface Graph {
@@ -39,6 +40,9 @@ public interface Graph {
           .toFormatter();
 
   @NotNull String PATH = "/graphs";
+
+  @NotNull
+  String id();
 
   @NotNull
   Pixela pixela();
@@ -68,12 +72,18 @@ public interface Graph {
   DecrementPixel decrementPixel();
 
   @NotNull
+  CreateWebhook createIncrementWebhook();
+
+  @NotNull
   static Graph simple(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final GraphId graphId) {
     return SimpleGraph.of(httpClient, pixela, graphId);
   }
+
+  @NotNull
+  CreateWebhook createDecrementWebhook();
 
   enum Type {
     INT("int"),
