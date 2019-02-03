@@ -19,6 +19,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 import pixela.client.ApiException;
 import pixela.client.http.Request;
 import reactor.core.publisher.Mono;
@@ -38,6 +39,7 @@ public class CreateWebhookResult {
     this.isSuccess = isSuccess;
   }
 
+  @TestOnly
   @NotNull
   @Contract("_, _ -> new")
   static CreateWebhookResult success(
@@ -45,6 +47,7 @@ public class CreateWebhookResult {
     return new CreateWebhookResult(webhookHash, message, true);
   }
 
+  @TestOnly
   @Contract("_ -> new")
   @NotNull
   static CreateWebhookResult failure(@NotNull final String message) {
