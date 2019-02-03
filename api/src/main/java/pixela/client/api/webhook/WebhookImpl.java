@@ -54,7 +54,7 @@ public class WebhookImpl implements Webhook {
   }
 
   @NotNull
-  WebhookHash webhookHash() {
+  public WebhookHash webhookHash() {
     return webhookHash;
   }
 
