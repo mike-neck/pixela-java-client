@@ -70,7 +70,7 @@ public class CreateWebhook implements Post<CreateWebhookResult>, Api<Webhook> {
         .toPublisher()
         .flatMap(result -> result.webhookHash(this))
         .map(WebhookHash::of)
-        .map(hash -> WebhookImpl.of(httpClient, graph, hash));
+        .map(hash -> WebhookImpl.of(httpClient, graph, hash, webhookType));
   }
 
   @NotNull
