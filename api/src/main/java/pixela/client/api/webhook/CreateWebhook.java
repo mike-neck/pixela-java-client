@@ -55,7 +55,7 @@ public class CreateWebhook implements Post<CreateWebhookResult>, Api<Webhook> {
 
   @SuppressWarnings("WeakerAccess")
   public String getGraphID() {
-    return graph.id();
+    return graph.id().value();
   }
 
   public String getType() {

@@ -58,7 +58,7 @@ public class NewGraph implements Graph {
 
   @NotNull
   @Override
-  public String id() {
+  public GraphId id() {
     return simpleGraph.id();
   }
 

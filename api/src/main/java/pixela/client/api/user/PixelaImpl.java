@@ -30,6 +30,7 @@ import pixela.client.*;
 import pixela.client.api.graph.CreateGraph;
 import pixela.client.api.graph.GetGraphDefinitions;
 import pixela.client.api.graph.PostPixel;
+import pixela.client.api.webhook.GetWebhooks;
 import pixela.client.http.HttpClient;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -156,6 +157,11 @@ public class PixelaImpl implements Pixela {
   @Override
   public Graph graph(@NotNull final GraphId graphId) {
     return Graph.simple(httpClient, this, graphId);
+  }
+
+  @Override
+  public GetWebhooks getWebhooks() {
+    return GetWebhooks.of(httpClient, this);
   }
 
   @Override

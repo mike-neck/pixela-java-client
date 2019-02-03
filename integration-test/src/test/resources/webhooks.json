@@ -1,0 +1,19 @@
+{
+  "webhooks": [
+    {
+      "webhookHash": "hash-1i",
+      "graphID": "graph-1",
+      "type": "increment"
+    },
+    {
+      "webhookHash": "hash-1d",
+      "graphID": "graph-1",
+      "type": "decrement"
+    },
+    {
+      "webhookHash": "hash-2i",
+      "graphID": "graph-2",
+      "type": "increment"
+    }
+  ]
+}

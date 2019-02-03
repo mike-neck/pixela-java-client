@@ -23,6 +23,7 @@ import pixela.client.api.graph.CreateGraph;
 import pixela.client.api.graph.GetGraphDefinitions;
 import pixela.client.api.graph.PostPixel;
 import pixela.client.api.user.DeleteUser;
+import pixela.client.api.webhook.GetWebhooks;
 import pixela.client.http.HttpClient;
 import reactor.core.publisher.Mono;
 
@@ -59,6 +60,8 @@ public interface Pixela {
 
   @NotNull
   Graph graph(@NotNull final GraphId graphId);
+
+  GetWebhooks getWebhooks();
 
   @NotNull PixelaClientConfig DEFAULT_CONFIG = PixelaClientConfig.builder().build();
 

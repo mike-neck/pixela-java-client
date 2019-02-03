@@ -81,7 +81,8 @@ class CreateWebhookTest {
         .consumeNextWith(
             webhook ->
                 assertAll(
-                    () -> assertThat(webhook.targetGraph().id()).isEqualTo("test-graph"),
+                    () ->
+                        assertThat(webhook.targetGraph().id()).isEqualTo(GraphId.of("test-graph")),
                     () -> assertThat(webhook).isInstanceOf(WebhookImpl.class),
                     () ->
                         assertThat(((WebhookImpl) webhook).webhookHash())
@@ -99,7 +100,8 @@ class CreateWebhookTest {
         .consumeNextWith(
             webhook ->
                 assertAll(
-                    () -> assertThat(webhook.targetGraph().id()).isEqualTo("test-graph"),
+                    () ->
+                        assertThat(webhook.targetGraph().id()).isEqualTo(GraphId.of("test-graph")),
                     () ->
                         assertThat(((WebhookImpl) webhook).webhookHash())
                             .isEqualTo(WebhookHash.of("webhook-decrement-hash"))))

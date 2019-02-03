@@ -16,7 +16,9 @@
 package pixela.client.api.webhook;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.Api;
 import pixela.client.Pixela;
@@ -27,19 +29,25 @@ import pixela.client.http.HttpClient;
 import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
-public class GetWebhooks implements Get<Webhooks>, Api<Iterable<Webhook>> {
+public class GetWebhooks implements Get<Webhooks>, Api<List<Webhook>> {
 
-  private final HttpClient httpClient;
-  private final Pixela pixela;
+  @NotNull private final HttpClient httpClient;
+  @NotNull private final Pixela pixela;
 
-  public GetWebhooks(final HttpClient httpClient, final Pixela pixela) {
+  private GetWebhooks(@NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
     this.httpClient = httpClient;
     this.pixela = pixela;
   }
 
   @NotNull
+  @Contract("_, _ -> new")
+  public static GetWebhooks of(@NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
+    return new GetWebhooks(httpClient, pixela);
+  }
+
+  @NotNull
   @Override
-  public Mono<Iterable<Webhook>> call() {
+  public Mono<List<Webhook>> call() {
     final Response<Webhooks> response = httpClient.get(this);
     return response.toPublisher().map(webhooks -> webhooks.toList(httpClient, pixela));
   }
