@@ -15,12 +15,22 @@
  */
 package pixela.client;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 import org.jetbrains.annotations.NotNull;
 
 public enum WebhookType {
   INCREMENT,
   DECREMENT,
   ;
+
+  @NotNull
+  public static WebhookType of(@NotNull final String type) {
+    return Arrays.stream(values())
+        .filter(webhookType -> webhookType.asString().equals(type))
+        .findFirst()
+        .orElseThrow(() -> new NoSuchElementException("No type fround: " + type));
+  }
 
   @NotNull
   public String asString() {

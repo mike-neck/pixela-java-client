@@ -64,6 +64,11 @@ public class WebhookImpl implements Webhook {
   }
 
   @NotNull
+  WebhookType webhookType() {
+    return webhookType;
+  }
+
+  @NotNull
   @Override
   public Mono<Webhook> invoke() {
     return Mono.error(UnsupportedOperationException::new);
