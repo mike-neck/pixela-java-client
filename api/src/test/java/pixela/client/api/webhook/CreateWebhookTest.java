@@ -45,8 +45,7 @@ class CreateWebhookTest {
   private final ObjectMapper objectMapper =
       new ObjectMapper()
           .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
-          .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
-          .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+          .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
   @BeforeEach
   void setup() {
