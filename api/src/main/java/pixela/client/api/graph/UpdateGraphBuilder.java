@@ -113,6 +113,7 @@ public class UpdateGraphBuilder {
     return UpdateGraphImpl.withTimezone(httpClient, pixela, graph, timezone);
   }
 
+  @SuppressWarnings("WeakerAccess")
   @NotNull
   public UpdateGraph.SelfSufficient purgeCacheURLs(@NotNull final String... purgeCacheURLs) {
     final List<URI> uris =
@@ -156,6 +157,7 @@ public class UpdateGraphBuilder {
     }
   }
 
+  @SuppressWarnings("WeakerAccess")
   public SelfSufficient selfSufficient() {
     return selfSufficient ->
         UpdateGraphImpl.withSelfSufficient(httpClient, pixela, graph, selfSufficient);
