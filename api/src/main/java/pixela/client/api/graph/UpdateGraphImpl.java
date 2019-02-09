@@ -17,9 +17,11 @@ package pixela.client.api.graph;
 
 import java.net.URI;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pixela.client.Graph;
@@ -30,7 +32,7 @@ import pixela.client.http.HttpClient;
 import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
-class UpdateGraphImpl implements UpdateGraph {
+class UpdateGraphImpl implements UpdateGraph.Unit {
 
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
@@ -62,6 +64,27 @@ class UpdateGraphImpl implements UpdateGraph {
     this.timezone = timezone;
     this.purgeCacheURLs = purgeCacheURLs;
     this.selfSufficient = selfSufficient;
+  }
+
+  private UpdateGraphImpl(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @Nullable final String name,
+      @Nullable final String unit,
+      @Nullable final Graph.Color color,
+      @Nullable final ZoneId timezone,
+      @Nullable final GraphSelfSufficient selfSufficient) {
+    this(
+        httpClient,
+        pixela,
+        graph,
+        name,
+        unit,
+        color,
+        timezone,
+        Collections.emptyList(),
+        selfSufficient);
   }
 
   @Nullable
@@ -148,5 +171,101 @@ class UpdateGraphImpl implements UpdateGraph {
       stringBuilder.append('\n').append("  selfSufficient: ").append(selfSufficient.asString());
     }
     return stringBuilder.toString();
+  }
+
+  @NotNull
+  @Contract("_, _, _, _ -> new")
+  static UpdateGraphImpl withName(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @NotNull final String name) {
+    return new UpdateGraphImpl(httpClient, pixela, graph, name, null, null, null, null);
+  }
+
+  @NotNull
+  @Contract("_, _, _, _ -> new")
+  static UpdateGraphImpl withUnit(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @NotNull final String unit) {
+    return new UpdateGraphImpl(httpClient, pixela, graph, null, unit, null, null, null);
+  }
+
+  @NotNull
+  @Contract("_, _, _, _ -> new")
+  static UpdateGraphImpl withColor(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @NotNull final Graph.Color color) {
+    return new UpdateGraphImpl(httpClient, pixela, graph, null, null, color, null, null);
+  }
+
+  @NotNull
+  @Contract("_, _, _, _ -> new")
+  static UpdateGraphImpl withTimezone(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @NotNull final ZoneId timezone) {
+    return new UpdateGraphImpl(httpClient, pixela, graph, null, null, null, timezone, null);
+  }
+
+  @NotNull
+  @Contract("_, _, _, _ -> new")
+  static UpdateGraphImpl withPurgeCacheURLs(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @NotNull final List<URI> purgeCacheURLs) {
+    return new UpdateGraphImpl(
+        httpClient, pixela, graph, null, null, null, null, purgeCacheURLs, null);
+  }
+
+  @NotNull
+  @Contract("_, _, _, _ -> new")
+  static UpdateGraphImpl withSelfSufficient(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph,
+      @NotNull final GraphSelfSufficient selfSufficient) {
+    return new UpdateGraphImpl(httpClient, pixela, graph, null, null, null, null, selfSufficient);
+  }
+
+  @NotNull
+  @Override
+  public GraphColor unit(@NotNull final String unit) {
+    return new UpdateGraphImpl(
+        httpClient, pixela, graph, name, unit, color, timezone, purgeCacheURLs, selfSufficient);
+  }
+
+  @NotNull
+  @Override
+  public Timezone color(@NotNull final Graph.Color color) {
+    return new UpdateGraphImpl(
+        httpClient, pixela, graph, name, unit, color, timezone, purgeCacheURLs, selfSufficient);
+  }
+
+  @NotNull
+  @Override
+  public PurgeCacheUrls timezone(@NotNull final ZoneId timezone) {
+    return new UpdateGraphImpl(
+        httpClient, pixela, graph, name, unit, color, timezone, purgeCacheURLs, selfSufficient);
+  }
+
+  @NotNull
+  @Override
+  public SelfSufficient purgeCacheURLs(@NotNull final List<URI> purgeCacheURLs) {
+    return new UpdateGraphImpl(
+        httpClient, pixela, graph, name, unit, color, timezone, purgeCacheURLs, selfSufficient);
+  }
+
+  @NotNull
+  @Override
+  public UpdateGraph selfSufficient(@NotNull final GraphSelfSufficient selfSufficient) {
+    return new UpdateGraphImpl(
+        httpClient, pixela, graph, name, unit, color, timezone, purgeCacheURLs, selfSufficient);
   }
 }

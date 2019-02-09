@@ -48,6 +48,9 @@ public interface Graph {
   Pixela pixela();
 
   @NotNull
+  UpdateGraphBuilder updateGraph();
+
+  @NotNull
   DeleteGraph delete();
 
   @NotNull
