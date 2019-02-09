@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -95,7 +96,11 @@ class UpdateGraphBuilderTest {
             .operation(builder -> builder.purgeCacheURLs("https://example.com/test"))
             .expecting("purgeCacheURLs: [https://example.com/test]"),
         test("purgeCacheURLs-selfSufficient")
-            .operation(builder -> builder.purgeCacheURLs("https://example.com/test").increment())
+            .operation(
+                builder ->
+                    builder
+                        .purgeCacheURLs(Collections.singletonList("https://example.com/test"))
+                        .increment())
             .expecting("purgeCacheURLs: [https://example.com/test]", "selfSufficient: increment"),
         test("selfSufficient")
             .operation(builder -> builder.selfSufficient().decrement())
