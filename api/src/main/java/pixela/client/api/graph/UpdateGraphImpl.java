@@ -17,10 +17,8 @@ package pixela.client.api.graph;
 
 import java.net.URI;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +40,7 @@ class UpdateGraphImpl implements UpdateGraph.Unit {
   @Nullable private final String unit;
   @Nullable private final Graph.Color color;
   @Nullable private final ZoneId timezone;
-  @NotNull private final List<URI> purgeCacheURLs;
+  @NotNull private final PurgeCacheURLs purgeCacheURLs;
   @Nullable private final GraphSelfSufficient selfSufficient;
 
   UpdateGraphImpl(
@@ -53,7 +51,7 @@ class UpdateGraphImpl implements UpdateGraph.Unit {
       @Nullable final String unit,
       @Nullable final Graph.Color color,
       @Nullable final ZoneId timezone,
-      @NotNull final List<URI> purgeCacheURLs,
+      @NotNull final PurgeCacheURLs purgeCacheURLs,
       @Nullable final GraphSelfSufficient selfSufficient) {
     this.httpClient = httpClient;
     this.pixela = pixela;
@@ -83,7 +81,7 @@ class UpdateGraphImpl implements UpdateGraph.Unit {
         unit,
         color,
         timezone,
-        Collections.emptyList(),
+        PurgeCacheURLs.NOT_UPDATE,
         selfSufficient);
   }
 
@@ -113,9 +111,9 @@ class UpdateGraphImpl implements UpdateGraph.Unit {
     return timezone.toString();
   }
 
-  @NotNull
+  @Nullable
   public List<String> getPurgeCacheURLs() {
-    return purgeCacheURLs.stream().map(URI::toASCIIString).collect(Collectors.toList());
+    return purgeCacheURLs.asStringList();
   }
 
   @Nullable
@@ -164,7 +162,7 @@ class UpdateGraphImpl implements UpdateGraph.Unit {
     if (timezone != null) {
       stringBuilder.append('\n').append("  timezone: ").append(timezone);
     }
-    if (!purgeCacheURLs.isEmpty()) {
+    if (purgeCacheURLs.toBeUpdated()) {
       stringBuilder.append('\n').append("  purgeCacheURLs: ").append(purgeCacheURLs);
     }
     if (selfSufficient != null) {
@@ -213,6 +211,16 @@ class UpdateGraphImpl implements UpdateGraph.Unit {
     return new UpdateGraphImpl(httpClient, pixela, graph, null, null, null, timezone, null);
   }
 
+  @Contract("_, _, _ -> new")
+  @NotNull
+  static UpdateGraphImpl withRemovingPurgeCacheURLs(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final Graph graph) {
+    return new UpdateGraphImpl(
+        httpClient, pixela, graph, null, null, null, null, PurgeCacheURLs.remove(), null);
+  }
+
   @NotNull
   @Contract("_, _, _, _ -> new")
   static UpdateGraphImpl withPurgeCacheURLs(
@@ -221,7 +229,15 @@ class UpdateGraphImpl implements UpdateGraph.Unit {
       @NotNull final Graph graph,
       @NotNull final List<URI> purgeCacheURLs) {
     return new UpdateGraphImpl(
-        httpClient, pixela, graph, null, null, null, null, purgeCacheURLs, null);
+        httpClient,
+        pixela,
+        graph,
+        null,
+        null,
+        null,
+        null,
+        PurgeCacheURLs.update(purgeCacheURLs),
+        null);
   }
 
   @NotNull
@@ -259,7 +275,30 @@ class UpdateGraphImpl implements UpdateGraph.Unit {
   @Override
   public SelfSufficient purgeCacheURLs(@NotNull final List<URI> purgeCacheURLs) {
     return new UpdateGraphImpl(
-        httpClient, pixela, graph, name, unit, color, timezone, purgeCacheURLs, selfSufficient);
+        httpClient,
+        pixela,
+        graph,
+        name,
+        unit,
+        color,
+        timezone,
+        PurgeCacheURLs.update(purgeCacheURLs),
+        selfSufficient);
+  }
+
+  @NotNull
+  @Override
+  public SelfSufficient removePurgeCacheURLs() {
+    return new UpdateGraphImpl(
+        httpClient,
+        pixela,
+        graph,
+        name,
+        unit,
+        color,
+        timezone,
+        PurgeCacheURLs.remove(),
+        selfSufficient);
   }
 
   @NotNull

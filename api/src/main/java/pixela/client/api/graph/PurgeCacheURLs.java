@@ -18,6 +18,7 @@ package pixela.client.api.graph;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,10 +33,19 @@ interface PurgeCacheURLs {
   @Nullable
   List<URI> values();
 
+  @Nullable
+  default List<String> asStringList() {
+    final List<URI> values = values();
+    if (values == null) {
+      return null;
+    }
+    return values.stream().map(URI::toASCIIString).collect(Collectors.toList());
+  }
+
   @NotNull PurgeCacheURLs NOT_UPDATE = () -> null;
 
   @NotNull
-  static PurgeCacheURLs updateToEmpty() {
+  static PurgeCacheURLs remove() {
     return update(Collections.emptyList());
   }
 

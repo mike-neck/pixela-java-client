@@ -49,7 +49,7 @@ class UpdateGraphImplTest {
     void noEntries() throws JsonProcessingException {
       final UpdateGraph updateGraph =
           new UpdateGraphImpl(
-              httpClient, pixela, graph, null, null, null, null, Collections.emptyList(), null);
+              httpClient, pixela, graph, null, null, null, null, PurgeCacheURLs.NOT_UPDATE, null);
 
       final String json = objectMapper.writeValueAsString(updateGraph);
 
@@ -67,7 +67,7 @@ class UpdateGraphImplTest {
               null,
               null,
               null,
-              Collections.singletonList(URI.create("https://example.com")),
+              PurgeCacheURLs.update(Collections.singletonList(URI.create("https://example.com"))),
               null);
 
       final String json = objectMapper.writeValueAsString(updateGraph);
@@ -90,7 +90,7 @@ class UpdateGraphImplTest {
               "test-unit",
               Graph.Color.PURPLE,
               ZoneId.of("Asia/Tokyo"),
-              Collections.emptyList(),
+              PurgeCacheURLs.remove(),
               GraphSelfSufficient.DECREMENT);
 
       final String json = objectMapper.writeValueAsString(updateGraph);
@@ -100,7 +100,7 @@ class UpdateGraphImplTest {
           () -> assertThatJson(json).node("unit").isString().isEqualTo("test-unit"),
           () -> assertThatJson(json).node("color").isString().isEqualTo("ajisai"),
           () -> assertThatJson(json).node("timezone").isString().isEqualTo("Asia/Tokyo"),
-          () -> assertThatJson(json).node("purgeCacheURLs").isAbsent(),
+          () -> assertThatJson(json).node("purgeCacheURLs").isArray().isEmpty(),
           () -> assertThatJson(json).node("selfSufficient").isString().isEqualTo("decrement"));
     }
   }
@@ -118,7 +118,7 @@ class UpdateGraphImplTest {
     void noEntries() {
       final UpdateGraph updateGraph =
           new UpdateGraphImpl(
-              httpClient, pixela, graph, null, null, null, null, Collections.emptyList(), null);
+              httpClient, pixela, graph, null, null, null, null, PurgeCacheURLs.NOT_UPDATE, null);
 
       assertThat(updateGraph.errorRequest()).contains("PUT /v1/users/112233").doesNotContain("\n");
     }
@@ -134,7 +134,7 @@ class UpdateGraphImplTest {
               null,
               null,
               null,
-              Collections.emptyList(),
+              PurgeCacheURLs.NOT_UPDATE,
               null);
 
       assertThat(updateGraph.errorRequest())
@@ -152,7 +152,9 @@ class UpdateGraphImplTest {
               "test-unit",
               Graph.Color.PURPLE,
               ZoneId.of("Asia/Tokyo"),
-              Arrays.asList(URI.create("https://example.com"), URI.create("https://google.com")),
+              PurgeCacheURLs.update(
+                  Arrays.asList(
+                      URI.create("https://example.com"), URI.create("https://google.com"))),
               GraphSelfSufficient.NONE);
 
       assertThat(updateGraph.errorRequest())
@@ -165,6 +167,15 @@ class UpdateGraphImplTest {
               "timezone: Asia/Tokyo",
               "purgeCacheURLs: [https://example.com, https://google.com]",
               "selfSufficient: none");
+    }
+
+    @Test
+    void removePurgeCacheURLs() {
+      final UpdateGraph updateGraph =
+          new UpdateGraphImpl(
+              httpClient, pixela, graph, null, null, null, null, PurgeCacheURLs.remove(), null);
+
+      assertThat(updateGraph.errorRequest()).contains("purgeCacheURLs: []");
     }
   }
 
@@ -187,7 +198,7 @@ class UpdateGraphImplTest {
     void test() {
       final UpdateGraph updateGraph =
           new UpdateGraphImpl(
-              httpClient, pixela, graph, null, null, null, null, Collections.emptyList(), null);
+              httpClient, pixela, graph, null, null, null, null, PurgeCacheURLs.NOT_UPDATE, null);
 
       assertThat(updateGraph.apiEndpoint(URI.create("https://example.com")))
           .hasPath("/v1/users/112233/graphs/445566")
@@ -220,7 +231,7 @@ class UpdateGraphImplTest {
                 null,
                 null,
                 null,
-                Collections.emptyList(),
+                PurgeCacheURLs.NOT_UPDATE,
                 null);
 
         final Mono<Graph> mono = updateGraph.call();
@@ -251,7 +262,7 @@ class UpdateGraphImplTest {
                 null,
                 null,
                 null,
-                Collections.emptyList(),
+                PurgeCacheURLs.NOT_UPDATE,
                 null);
 
         final Mono<Graph> mono = updateGraph.call();

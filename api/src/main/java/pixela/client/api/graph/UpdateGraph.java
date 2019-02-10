@@ -98,6 +98,9 @@ public interface UpdateGraph extends Put<Void>, Api<Graph> {
     SelfSufficient purgeCacheURLs(@NotNull final List<URI> purgeCacheURLs);
 
     @NotNull
+    SelfSufficient removePurgeCacheURLs();
+
+    @NotNull
     default SelfSufficient purgeCacheURLs(@NotNull final Iterable<String> purgeCacheURLs) {
       final List<URI> uris =
           StreamSupport.stream(purgeCacheURLs.spliterator(), false)

@@ -23,12 +23,17 @@ class PurgeCacheURLsTest {
     void valuesWillReturnNull() {
       assertThat(notUpdate.values()).isNull();
     }
+
+    @Test
+    void asStringListReturnsNull() {
+      assertThat(notUpdate.asStringList()).isNull();
+    }
   }
 
   @Nested
   class Empty {
 
-    final PurgeCacheURLs empty = PurgeCacheURLs.updateToEmpty();
+    final PurgeCacheURLs empty = PurgeCacheURLs.remove();
 
     @Test
     void toBeUpdatedIsTrue() {
@@ -38,6 +43,11 @@ class PurgeCacheURLsTest {
     @Test
     void valuesWillReturnEmpty() {
       assertThat(empty.values()).isEmpty();
+    }
+
+    @Test
+    void asStringListReturnsEmpty() {
+      assertThat(empty.asStringList()).isEmpty();
     }
   }
 
@@ -60,6 +70,12 @@ class PurgeCacheURLsTest {
       assertThat(update.values())
           .containsExactly(
               URI.create("https://example.com/test"), URI.create("https://www.example.com/test"));
+    }
+
+    @Test
+    void asStringListReturnsNonEmpty() {
+      assertThat(update.asStringList())
+          .containsExactly("https://example.com/test", "https://www.example.com/test");
     }
   }
 }
