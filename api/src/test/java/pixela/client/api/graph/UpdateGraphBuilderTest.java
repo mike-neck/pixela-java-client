@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import pixela.client.Graph;
 import pixela.client.GraphId;
@@ -105,13 +104,6 @@ class UpdateGraphBuilderTest {
         test("selfSufficient")
             .operation(builder -> builder.selfSufficient().decrement())
             .expecting("selfSufficient: decrement"));
-  }
-
-  @Test
-  void unitOnly() {
-    final String requestString = graph.updateGraph().unit("commit").errorRequest();
-
-    assertThat(requestString).contains("unit: commit");
   }
 
   private static class OpAndExpectation {

@@ -121,6 +121,7 @@ public class UpdateGraphBuilder {
     return purgeCacheURLs(uris);
   }
 
+  @SuppressWarnings("WeakerAccess")
   @NotNull
   public UpdateGraph.SelfSufficient purgeCacheURLs(@NotNull final Iterable<String> purgeCacheURLs) {
     final List<URI> uris =
