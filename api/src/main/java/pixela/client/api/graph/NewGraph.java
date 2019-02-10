@@ -70,6 +70,12 @@ public class NewGraph implements Graph {
 
   @NotNull
   @Override
+  public UpdateGraphBuilder updateGraph() {
+    return simpleGraph.updateGraph();
+  }
+
+  @NotNull
+  @Override
   public DeleteGraph delete() {
     return simpleGraph.delete();
   }

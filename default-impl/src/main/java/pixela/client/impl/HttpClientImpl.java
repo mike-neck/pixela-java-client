@@ -36,7 +36,6 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
   static final ObjectMapper objectMapper =
       new ObjectMapper()
           .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
-          .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
           .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
   @NotNull private final AutoCloseable executors;

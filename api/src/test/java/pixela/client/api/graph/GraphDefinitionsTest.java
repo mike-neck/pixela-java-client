@@ -30,7 +30,6 @@ class GraphDefinitionsTest {
   private final ObjectMapper objectMapper =
       new ObjectMapper()
           .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
-          .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
           .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
   @Test
