@@ -23,6 +23,7 @@ import pixela.client.api.graph.CreateGraph;
 import pixela.client.api.graph.GetGraphDefinitions;
 import pixela.client.api.graph.PostPixel;
 import pixela.client.api.user.DeleteUser;
+import pixela.client.api.user.UpdateUser;
 import pixela.client.api.webhook.GetWebhooks;
 import pixela.client.http.HttpClient;
 import reactor.core.publisher.Mono;
@@ -48,6 +49,9 @@ public interface Pixela {
 
   @NotNull
   Pixela updateToken(@NotNull final UserToken newToken);
+
+  @NotNull
+  UpdateUser.WithToken updateUser();
 
   @NotNull
   DeleteUser deleteUser();

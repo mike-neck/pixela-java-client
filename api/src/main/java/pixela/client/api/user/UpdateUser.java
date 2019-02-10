@@ -17,6 +17,7 @@ package pixela.client.api.user;
 
 import java.net.URI;
 import java.util.Optional;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.Api;
 import pixela.client.Pixela;
@@ -34,13 +35,33 @@ public class UpdateUser implements Put<Void>, Api<Pixela> {
 
   @NotNull private final UserToken newToken;
 
-  UpdateUser(
+  private UpdateUser(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
       @NotNull final UserToken newToken) {
     this.httpClient = httpClient;
     this.pixela = pixela;
     this.newToken = newToken;
+  }
+
+  @NotNull
+  @Contract("_, _, _ -> new")
+  static UpdateUser of(
+      @NotNull final HttpClient httpClient,
+      @NotNull final Pixela pixela,
+      @NotNull final UserToken newToken) {
+    return new UpdateUser(httpClient, pixela, newToken);
+  }
+
+  @FunctionalInterface
+  public interface WithToken {
+    @NotNull
+    default UpdateUser newToken(@NotNull final String newToken) {
+      return newToken(UserToken.of(newToken));
+    }
+
+    @NotNull
+    UpdateUser newToken(@NotNull final UserToken newToken);
   }
 
   @NotNull

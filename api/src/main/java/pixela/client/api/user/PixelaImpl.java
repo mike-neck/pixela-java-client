@@ -137,6 +137,12 @@ public class PixelaImpl implements Pixela {
 
   @NotNull
   @Override
+  public UpdateUser.WithToken updateUser() {
+    return newToken -> UpdateUser.of(httpClient, this, newToken);
+  }
+
+  @NotNull
+  @Override
   public DeleteUser deleteUser() {
     return DeleteUser.of(httpClient, userToken, username);
   }

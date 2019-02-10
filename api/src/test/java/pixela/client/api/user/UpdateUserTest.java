@@ -28,7 +28,7 @@ class UpdateUserTest {
   void setup() {
     httpClient = mock(HttpClient.class);
     pixela = mock(Pixela.class);
-    this.updateUser = new UpdateUser(httpClient, pixela, newToken);
+    this.updateUser = UpdateUser.of(httpClient, pixela, newToken);
   }
 
   @Nested
