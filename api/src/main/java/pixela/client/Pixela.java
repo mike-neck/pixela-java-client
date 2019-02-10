@@ -47,6 +47,9 @@ public interface Pixela {
   Mono<Void> persistAsFile(@NotNull final Path file);
 
   @NotNull
+  Pixela updateToken(@NotNull final UserToken newToken);
+
+  @NotNull
   DeleteUser deleteUser();
 
   @NotNull
