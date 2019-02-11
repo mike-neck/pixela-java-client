@@ -7,6 +7,8 @@ ext {
     junitVersion = '5.3.2'
     jacksonVersion = '2.9.8'
     reactorVersion = '3.2.3.RELEASE'
+
+    canPublish = hasProperty('sonatypeUrl') && hasProperty('sonatypeUsername') && hasProperty('sonatypePassword')
 }
 
 group = 'org.mikeneck.pixela'
