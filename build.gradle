@@ -9,6 +9,8 @@ ext {
     reactorVersion = '3.2.3.RELEASE'
 }
 
+apply from: file('maven.gradle')
+
 group = 'org.mikeneck.pixela'
 version = '0.1'
 
@@ -17,6 +19,11 @@ targetCompatibility = JavaVersion.VERSION_11
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+subprojects {
+    group = rootProject.group
+    version = rootProject.version
 }
 
 repositories {
@@ -87,4 +94,18 @@ task qualityCheck {
     group = 'verification'
     dependsOn 'jacoco'
     finalizedBy 'testReport'
+}
+
+task localInstall(
+        group: 'publish',
+        dependsOn: [
+                ':pixela-java-client-api:install',
+                ':pixela-java-client-default-impl:install'])
+
+if (canPublish) {
+    task publish(
+            group: 'publish',
+            dependsOn: [
+                    ':pixela-java-client-api:uploadArchives',
+                    ':pixela-java-client-default-impl:uploadArchives'])
 }

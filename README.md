@@ -14,12 +14,35 @@ Requirements
     optionally this client has extension point for those who not using Java11, you can use this library on Java 8 
     implementing `pixela.client.http.HttpClient` interface.
 
+Current version
+---
+
+`0.1`
+
 Installation
 ---
 
+### Maven
+
+```xml
+<dependency>
+  <groupId>org.mikeneck.pixela</groupId>
+  <artifactId>pixela-java-client-api</artifactId>
+  <version>0.1</version>
+</dependency>
+<dependency>
+  <groupId>org.mikeneck.pixela</groupId>
+  <artifactId>pixela-java-client-default-impl</artifactId>
+  <version>0.1</version>
+</dependency>
+```
+
+### Gradle
+
 ```groovy
 dependencies {
-  implementation "org.mikeneck.pixela:pixela-client:$PIXELA_CLIENT_VERSION"
+  implementation "org.mikeneck.pixela:pixela-java-client-api:$PIXELA_CLIENT_VERSION"
+  implementation "org.mikeneck.pixela:pixela-java-client-default-impl:$PIXELA_CLIENT_VERSION"
 }
 ```
 
