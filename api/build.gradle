@@ -35,6 +35,8 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.11.1'
     testRuntimeClasspath group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
     testImplementation group: 'net.javacrumbs.json-unit', name: 'json-unit-assertj', version: '2.2.0'
+
+    testCompileClasspath "org.jetbrains:annotations:13.0"
 }
 
 test {
