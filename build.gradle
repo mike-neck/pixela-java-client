@@ -109,9 +109,3 @@ if (canPublish) {
                     ':pixela-java-client-api:uploadArchives',
                     ':pixela-java-client-default-impl:uploadArchives'])
 }
-
-task echoHome {
-    doLast {
-        println System.getProperty('user.home')
-    }
-}
