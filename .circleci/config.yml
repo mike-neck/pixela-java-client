@@ -49,3 +49,11 @@ jobs:
 
       - store_artifacts:
           path: ./build/jacoco/report-html
+
+      - run:
+          name: build jar
+          command: ./gradlew clean install
+
+      - run:
+          name: show archives
+          command: ls -l ~/.m2/repository/org/mikeneck/pixela

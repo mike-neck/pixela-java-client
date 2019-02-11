@@ -1,8 +1,14 @@
 ext {
-    canPublish = project.property('sonatypeUrl') != null &&
-            project.property('sonatypeUsername') != null &&
-            project.property('sonatypePassword') != null &&
-            project.property('signing.keyId') != null &&
-            project.property('signing.password') != null &&
-            project.property('signing.secretKeyRingFile') != null
+    canPublish = {
+        try {
+            return project.property('sonatypeUrl') != null &&
+                    project.property('sonatypeUsername') != null &&
+                    project.property('sonatypePassword') != null &&
+                    project.property('signing.keyId') != null &&
+                    project.property('signing.password') != null &&
+                    project.property('signing.secretKeyRingFile') != null
+        } catch (Exception ignored) {
+            return false
+        }
+    }
 }

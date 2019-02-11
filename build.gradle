@@ -102,7 +102,7 @@ task localInstall(
                 ':pixela-java-client-api:install',
                 ':pixela-java-client-default-impl:install'])
 
-if (canPublish) {
+if (canPublish()) {
     task publish(
             group: 'publish',
             dependsOn: [
