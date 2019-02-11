@@ -1,6 +1,8 @@
 plugins {
     id 'java-library'
     id 'jacoco'
+    id 'maven'
+    id 'signing'
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -18,6 +20,7 @@ repositories {
 
 dependencies {
     api project(':pixela-java-client-api')
+    compileClasspath "org.jetbrains:annotations:13.0"
 
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
@@ -38,4 +41,64 @@ test {
 
 jacoco {
     toolVersion = '0.8.2'
+}
+
+task sourcesJar(type: Jar, group: 'publish') {
+    classifier = 'sources'
+    from project.sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, group: 'publish') {
+    dependsOn 'javadoc'
+    from tasks.javadoc
+    classifier = 'javadoc'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment {MavenDeployment deployment ->
+                signing.signPom(deployment)
+            }
+            repository(url: sonatypeUrl) {
+                authentication userName: sonatypeUsername, password: sonatypePassword
+            }
+            pom.project {
+                name('pixela-java-client-api')
+                packaging 'jar'
+                description 'pixela-java-client API'
+                url 'https://github.com/mike-neck/pixela-java-client'
+
+                scm {
+                    connection 'scm:git:https://github.com/mike-neck/pixela-java-client'
+                    developerConnection 'scm:git:https://github.com/mike-neck/pixela-java-client'
+                    url 'https://github.com/mike-neck/pixela-java-client'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'mikeneck'
+                        name 'Shinya Mochida'
+                        email 'jkrt3333[at]gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign(project.configurations.archives)
+}
+
+artifacts {
+    add('archives', javadocJar)
+    add('archives', sourcesJar)
 }

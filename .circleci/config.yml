@@ -16,6 +16,8 @@ jobs:
 
       - run: ./gradlew dependencies
 
+      - run: ./gradlew echoHome
+
       - run:
           name: run quality check
           command: ./gradlew qualityCheck
