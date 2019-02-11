@@ -56,39 +56,41 @@ task javadocJar(type: Jar, group: 'publish') {
     classifier = 'javadoc'
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment {MavenDeployment deployment ->
-                signing.signPom(deployment)
-            }
-            repository(url: sonatypeUrl) {
-                authentication userName: sonatypeUsername, password: sonatypePassword
-            }
-            pom.project {
-                name('pixela-java-client-api')
-                packaging 'jar'
-                description 'pixela-java-client API'
-                url 'https://github.com/mike-neck/pixela-java-client'
-
-                scm {
-                    connection 'scm:git:https://github.com/mike-neck/pixela-java-client'
-                    developerConnection 'scm:git:https://github.com/mike-neck/pixela-java-client'
+if (canPublish) {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment {MavenDeployment deployment ->
+                    signing.signPom(deployment)
+                }
+                repository(url: sonatypeUrl) {
+                    authentication userName: sonatypeUsername, password: sonatypePassword
+                }
+                pom.project {
+                    name('pixela-java-client-api')
+                    packaging 'jar'
+                    description 'pixela-java-client API'
                     url 'https://github.com/mike-neck/pixela-java-client'
-                }
-
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    
+                    scm {
+                        connection 'scm:git:https://github.com/mike-neck/pixela-java-client'
+                        developerConnection 'scm:git:https://github.com/mike-neck/pixela-java-client'
+                        url 'https://github.com/mike-neck/pixela-java-client'
                     }
-                }
-
-                developers {
-                    developer {
-                        id 'mikeneck'
-                        name 'Shinya Mochida'
-                        email 'jkrt3333[at]gmail.com'
+    
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+    
+                    developers {
+                        developer {
+                            id 'mikeneck'
+                            name 'Shinya Mochida'
+                            email 'jkrt3333[at]gmail.com'
+                        }
                     }
                 }
             }
