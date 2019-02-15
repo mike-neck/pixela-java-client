@@ -40,6 +40,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
   @NotNull private final Graph.Type type;
   @NotNull private final Graph.Color color;
   @NotNull private final ZoneId timezone;
+  @NotNull private final GraphSelfSufficient selfSufficient;
 
   private CreateGraph(
       @NotNull final HttpClient httpClient,
@@ -49,7 +50,8 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
       @NotNull final String unit,
       @NotNull final Graph.Type type,
       @NotNull final Graph.Color color,
-      @NotNull final ZoneId timezone) {
+      @NotNull final ZoneId timezone,
+      @NotNull final GraphSelfSufficient selfSufficient) {
     this.httpClient = httpClient;
     this.pixela = pixela;
     this.id = id;
@@ -58,6 +60,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
     this.type = type;
     this.color = color;
     this.timezone = timezone;
+    this.selfSufficient = selfSufficient;
   }
 
   @NotNull
@@ -88,6 +91,11 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
   @NotNull
   public String getTimezone() {
     return timezone.toString();
+  }
+
+  @NotNull
+  public String getSelfSufficient() {
+    return selfSufficient.asString();
   }
 
   @NotNull
@@ -165,6 +173,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
     return errorRequest();
   }
 
+  @NotNull
   public static Id builder(@NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
     Objects.requireNonNull(httpClient, "httpClient is null");
     Objects.requireNonNull(pixela, "pixela is null");
@@ -173,15 +182,24 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
             unit ->
                 type ->
                     color ->
-                        timezone -> {
-                          Objects.requireNonNull(id, "id is null");
-                          Objects.requireNonNull(name, "name is null");
-                          Objects.requireNonNull(unit, "unit is null");
-                          Objects.requireNonNull(type, "type is null");
-                          Objects.requireNonNull(color, "color is null");
-                          return new CreateGraph(
-                              httpClient, pixela, id, name, unit, type, color, timezone);
-                        };
+                        timezone ->
+                            selfSufficient -> {
+                              Objects.requireNonNull(id, "id is null");
+                              Objects.requireNonNull(name, "name is null");
+                              Objects.requireNonNull(unit, "unit is null");
+                              Objects.requireNonNull(type, "type is null");
+                              Objects.requireNonNull(color, "color is null");
+                              return new CreateGraph(
+                                  httpClient,
+                                  pixela,
+                                  id,
+                                  name,
+                                  unit,
+                                  type,
+                                  color,
+                                  timezone,
+                                  selfSufficient);
+                            };
   }
 
   public interface Id {
@@ -281,21 +299,50 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
     }
   }
 
-  public interface Timezone extends Api<Graph> {
+  @FunctionalInterface
+  public interface Timezone extends SelfSufficient {
 
     @NotNull
-    CreateGraph timezone(@NotNull final ZoneId timezone);
+    SelfSufficient timezone(@NotNull final ZoneId timezone);
 
     @NotNull
-    default CreateGraph timezone(@NotNull final String timezone) throws DateTimeException {
+    default SelfSufficient timezone(@NotNull final String timezone) throws DateTimeException {
       final ZoneId tz = ZoneId.of(timezone);
       return timezone(tz);
     }
 
     @NotNull
     @Override
+    default CreateGraph selfSufficient(@NotNull final GraphSelfSufficient selfSufficient) {
+      return timezone(ZoneId.of("UTC")).selfSufficient(selfSufficient);
+    }
+  }
+
+  @FunctionalInterface
+  public interface SelfSufficient extends Api<Graph> {
+
+    @NotNull
+    CreateGraph selfSufficient(@NotNull final GraphSelfSufficient selfSufficient);
+
+    @NotNull
+    default CreateGraph increment() {
+      return selfSufficient(GraphSelfSufficient.INCREMENT);
+    }
+
+    @NotNull
+    default CreateGraph decrement() {
+      return selfSufficient(GraphSelfSufficient.DECREMENT);
+    }
+
+    @NotNull
+    default CreateGraph none() {
+      return selfSufficient(GraphSelfSufficient.NONE);
+    }
+
+    @NotNull
+    @Override
     default Mono<Graph> call() {
-      return timezone(ZoneId.of("UTC")).call();
+      return none().call();
     }
   }
 }
