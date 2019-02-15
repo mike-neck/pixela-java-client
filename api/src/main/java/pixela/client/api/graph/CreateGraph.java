@@ -249,7 +249,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
     }
 
     @NotNull
-    default Timezone momoji() {
+    default Timezone momiji() {
       return color(Graph.Color.MOMIJI);
     }
 
