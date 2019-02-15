@@ -164,7 +164,10 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
         + color.value()
         + '\n'
         + "  timezone: "
-        + timezone.getId();
+        + timezone.getId()
+        + '\n'
+        + "  selfSufficient: "
+        + selfSufficient.asString();
   }
 
   @NotNull

@@ -54,6 +54,7 @@ class CreateGraphTest {
             .withRequestBody(
                 matchingJsonPath("$.color", matching("shibafu|momiji|sora|ichou|ajisai|kuro")))
             .withRequestBody(matchingJsonPath("$.timezone", matching("[A-Z][A-Za-z0-9/\\-]+")))
+            .withRequestBody(matchingJsonPath("$.selfSufficient", equalTo("decrement")))
             .willReturn(
                 aResponse()
                     .withStatus(200)
@@ -93,6 +94,7 @@ class CreateGraphTest {
             .integer()
             .ajisai()
             .timezone(ZoneId.of("Asia/Tokyo"))
+            .decrement()
             .call();
 
     StepVerifier.create(graphMono)
