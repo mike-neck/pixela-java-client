@@ -5,6 +5,7 @@ pixela-java-client
 
 [![CircleCI](https://circleci.com/gh/mike-neck/pixela-java-client.svg?style=svg)](https://circleci.com/gh/mike-neck/pixela-java-client)
 [![codecov](https://codecov.io/gh/mike-neck/pixela-java-client/branch/master/graph/badge.svg)](https://codecov.io/gh/mike-neck/pixela-java-client)
+[![Maven](https://img.shields.io/badge/maven-0.2-green.svg)](https://search.maven.org/search?q=pixela)
 
 Requirements
 ---
@@ -13,11 +14,6 @@ Requirements
     * Since this client uses Java 11's `java.net.http` package, user application is required to use Java11. But 
     optionally this client has extension point for those who not using Java11, you can use this library on Java 8 
     implementing `pixela.client.http.HttpClient` interface.
-
-Current version
----
-
-`0.1`
 
 Installation
 ---
