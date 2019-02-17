@@ -56,4 +56,8 @@ public class OutdatedDependencies {
   public int hashCode() {
     return dependencies != null ? dependencies.hashCode() : 0;
   }
+
+  public boolean upToDate() {
+    return dependencies.isEmpty();
+  }
 }
