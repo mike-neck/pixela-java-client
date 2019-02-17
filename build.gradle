@@ -21,7 +21,7 @@ ext {
 apply from: file('maven.gradle')
 
 group = 'org.mikeneck.pixela'
-version = '0.1'
+version = '0.2'
 
 subprojects {
     group = rootProject.group
