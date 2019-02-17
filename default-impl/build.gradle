@@ -3,6 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven'
     id 'signing'
+    id "com.github.ben-manes.versions" version "0.20.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -106,3 +107,5 @@ artifacts {
     add('archives', javadocJar)
     add('archives', sourcesJar)
 }
+
+apply from: rootProject.file('dep.gradle')

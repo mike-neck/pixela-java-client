@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'jacoco'
+    id "com.github.ben-manes.versions" version "0.20.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -42,3 +43,5 @@ test {
 jacoco {
     toolVersion = '0.8.2'
 }
+
+apply from: rootProject.file('dep.gradle')
