@@ -1,0 +1,42 @@
+import groovy.json.JsonOutput
+
+ext {
+    depUpdateReport = file("$buildDir/dependencies/update-report.json")
+}
+
+dependencyUpdates.resolutionStrategy {
+    componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+            def rejected = ['alpha', 'beta', 'rc'].any { qualifier ->
+                def version = selection.candidate.version
+                version.contains(qualifier) || version.contains(qualifier.toUpperCase())
+            }
+            if (rejected) {
+                selection.reject('Release candidate')
+            }
+        }
+    }
+}
+
+dependencyUpdates {
+    checkForGradleUpdate = true
+    outputFormatter = { result ->
+        def updates = result.outdated.dependencies
+        if (updates.empty) {
+            println 'dependencies up to date'
+            return
+        }
+        def list = updates.collect {
+            [group: it.group,
+             name: it.name,
+             current: "${it.version}",
+             available: it.available.milestone]
+        }
+        list.each { println it }
+        File report = depUpdateReport
+        if (!report.parentFile.exists()) {
+            report.parentFile.mkdirs()
+        }
+        report.write(JsonOutput.toJson(list), 'UTF-8')
+    }
+}
