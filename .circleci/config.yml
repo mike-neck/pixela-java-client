@@ -28,6 +28,10 @@ jobs:
           name: check dependency updates.
           command: ./gradlew dependencyUpdateCheck
 
+      - run:
+          name: run example code.
+          command: ./gradlew :example:java-example:run
+
       - save_cache:
           paths:
             - ~/.gradle

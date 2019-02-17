@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compileClasspath "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+    implementation project(':pixela-java-client-api')
+    runtimeClasspath project(':pixela-java-client-default-impl')
+}
+
+application {
+    mainClassName = 'org.mikeneck.example.PixelaApplication'
+}
+
+run {
+    args "${System.getenv('PIXELA_USER_NAME')}", "${System.getenv('PIXELA_USER_TOKEN')}", "${System.getenv('PIXELA_GRAPH_NAME')}"
+}
