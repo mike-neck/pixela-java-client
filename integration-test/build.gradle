@@ -22,18 +22,18 @@ dependencies {
     implementation project(':pixela-java-client-default-impl')
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitVersion
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testRuntimeClasspath "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testImplementation group: 'io.projectreactor', name: 'reactor-test', version: reactorVersion
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.11.1'
-    testRuntimeClasspath group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-    testImplementation group: 'net.javacrumbs.json-unit', name: 'json-unit-assertj', version: '2.2.0'
+    testImplementation "io.projectreactor:reactor-test:$reactorVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testRuntimeClasspath "org.slf4j:slf4j-simple:1.7.25"
+    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:$jsonUnitAssertjVersion"
 
-    testImplementation ("com.github.tomakehurst:wiremock:2.20.0") {
+    testImplementation ("com.github.tomakehurst:wiremock:$wiremockVersion") {
         exclude module: 'junit'
     }
 
-    testCompileClasspath "org.jetbrains:annotations:13.0"
+    testCompileClasspath "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
 }
 
 test {
