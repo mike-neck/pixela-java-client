@@ -24,6 +24,10 @@ jobs:
           name: export coverage report to codecov
           command: bash <(curl -s https://codecov.io/bash)
 
+      - run:
+          name: check dependency updates.
+          command: ./gradlew dependencyUpdateCheck
+
       - save_cache:
           paths:
             - ~/.gradle
