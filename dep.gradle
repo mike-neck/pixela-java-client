@@ -7,11 +7,22 @@ ext {
 dependencyUpdates.resolutionStrategy {
     componentSelection { rules ->
         rules.all { ComponentSelection selection ->
-            def rejected = ['alpha', 'beta', 'rc'].any { qualifier ->
+            def contains = { String ptn -> { String ver -> ver.contains(ptn) || ver.contains(ptn.toUpperCase()) } }
+            def patterns = [
+                    [ptn: 'alpha', pred: contains],
+                    [ptn: 'beta', pred: contains],
+                    [ptn: 'rc', pred: contains],
+                    [ptn: '.+\\.M\\p{Digit}$', pred: { String p -> {
+                        String ver -> ver.matches(p)
+                    } }]
+            ]
+            def rejected = patterns.any { check ->
+                def predicate = check.pred(check.ptn)
                 def version = selection.candidate.version
-                version.contains(qualifier) || version.contains(qualifier.toUpperCase())
+                predicate(version)
             }
             if (rejected) {
+                logger.info('{}:{}:{}', selection.candidate.group, selection.candidate.module, selection.candidate.version)
                 selection.reject('Release candidate')
             }
         }

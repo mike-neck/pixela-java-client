@@ -51,6 +51,10 @@ public class DependencyUpdatesSlackNotificationTask extends DefaultTask {
       return;
     }
     final OutdatedDependencies outdatedDependencies = new OutdatedDependencies(loadFiles());
+    if (outdatedDependencies.upToDate()) {
+      getLogger().info("Finish without sending notification. Because updates were not found.");
+      return;
+    }
     final SlackMessage slackMessage = outdatedDependencies.toSlackMessage();
     if (slackUrl == null || slackUrl.isEmpty() || slackUrl.isBlank()) {
       getLogger()
@@ -72,6 +76,9 @@ public class DependencyUpdatesSlackNotificationTask extends DefaultTask {
     }
     final Set<OutdatedDependency> dependencies = new HashSet<>();
     for (final File dependencyUpdatesFile : dependencyUpdatesFiles) {
+      if (!dependencyUpdatesFile.exists()) {
+        continue;
+      }
       final List<OutdatedDependency> outdatedDependencies =
           codec.loadFileAsList(dependencyUpdatesFile, OutdatedDependency.class);
       dependencies.addAll(outdatedDependencies);

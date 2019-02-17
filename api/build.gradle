@@ -21,23 +21,23 @@ repositories {
 
 dependencies {
     api "io.projectreactor:reactor-core:$reactorVersion"
-    compileClasspath "org.jetbrains:annotations:13.0"
+    compileClasspath "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
 
     testImplementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
     testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
 
-    testImplementation group: 'org.eclipse.collections', name: 'eclipse-collections', version: '9.2.0'
+    testImplementation "org.eclipse.collections:eclipse-collections:$eclipseCollectionsVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitVersion
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testRuntimeClasspath "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
-    testImplementation group: 'io.projectreactor', name: 'reactor-test', version: reactorVersion
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.11.1'
-    testRuntimeClasspath group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-    testImplementation group: 'net.javacrumbs.json-unit', name: 'json-unit-assertj', version: '2.2.0'
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "io.projectreactor:reactor-test:$reactorVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testRuntimeClasspath "org.slf4j:slf4j-simple:$slf4jSimpleVersion"
+    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:$jsonUnitAssertjVersion"
 
-    testCompileClasspath "org.jetbrains:annotations:13.0"
+    testCompileClasspath "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
 }
 
 test {
