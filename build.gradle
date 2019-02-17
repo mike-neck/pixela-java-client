@@ -58,9 +58,13 @@ task jacocoReport(type: JacocoReport) {
 
     dependsOn 'jacocoMerge'
 
+    def targetProjects = [':pixela-java-client-api', ':pixela-java-client-default-impl', ':integration-test'].collect {
+        project(it)
+    }
+
     executionData tasks.withType(JacocoMerge).findAll { it.name == 'jacocoMerge' }
-    additionalSourceDirs files(subprojects.sourceSets.main.allSource.srcDirs)
-    additionalClassDirs files(subprojects.sourceSets.main.output)
+    additionalSourceDirs files(targetProjects*.sourceSets*.main*.allSource*.srcDirs)
+    additionalClassDirs files(targetProjects*.sourceSets*.main*.output)
     reports {
         xml.enabled = true
         xml.destination = file("$buildDir/reports/jacoco/report.xml")
