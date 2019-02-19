@@ -16,6 +16,7 @@
 package org.mikeneck.example;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
@@ -56,7 +57,7 @@ public class PixelaApplication {
           graph
               .incrementPixel()
               .call()
-              .map(g -> g.getPixel(LocalDate.now()))
+              .map(g -> g.getPixel(LocalDate.now(ZoneId.of("Asia/Tokyo"))))
               .flatMap(GetPixel::call)
               .subscribe(
                   pixel ->
