@@ -8,6 +8,7 @@ ext {
     junitVersion = '5.4.0'
     jacksonVersion = '2.9.8'
     reactorVersion = '3.2.6.RELEASE'
+    reactorNettyVersion = '0.8.5.RELEASE'
     jetbrainsAnnotationsVersion = '17.0.0'
     eclipseCollectionsVersion = '9.2.0'
     mockitoVersion = '2.24.0'
