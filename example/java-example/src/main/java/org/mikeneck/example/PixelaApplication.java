@@ -53,12 +53,15 @@ public class PixelaApplication {
 
       final Pixela pixela = pixelaClient.username(username).token(userToken);
       final Graph graph = pixela.graph(GraphId.of(graphName));
+      final Throwable[] exception = new Throwable[1];
       final Disposable disposable =
           graph
               .incrementPixel()
               .call()
               .map(g -> g.getPixel(LocalDate.now(ZoneId.of("Asia/Tokyo"))))
               .flatMap(GetPixel::call)
+              .doOnTerminate(latch::countDown)
+              .doOnError(throwable -> exception[0] = throwable)
               .subscribe(
                   pixel ->
                       System.out.println(
@@ -66,15 +69,14 @@ public class PixelaApplication {
                               + pixel.date().format(DateTimeFormatter.ISO_LOCAL_DATE)
                               + ", quantity:"
                               + pixel.quantity()
-                              + "]"),
-                  e -> {
-                    System.out.println(e.getMessage());
-                    throw new RuntimeException(e);
-                  },
-                  latch::countDown);
+                              + "]"));
 
-      latch.await();
-      disposable.dispose();
+      try (final AutoCloseable ignore = disposable::dispose) {
+        latch.await();
+        if (exception[0] != null) {
+          throw new RuntimeException(exception[0]);
+        }
+      }
     }
   }
 }
