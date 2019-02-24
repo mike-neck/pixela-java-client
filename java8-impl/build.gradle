@@ -1,0 +1,112 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'maven'
+    id 'signing'
+    id "com.github.ben-manes.versions" version "0.20.0"
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    api project(':pixela-java-client-api')
+    compileClasspath "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+
+    implementation "io.projectreactor.netty:reactor-netty:$reactorNettyVersion"
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+    testRuntimeClasspath "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "io.projectreactor:reactor-test:$reactorVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testRuntimeClasspath "org.slf4j:slf4j-simple:1.7.25"
+    testImplementation "net.javacrumbs.json-unit:json-unit-assertj:$jsonUnitAssertjVersion"
+
+    testCompileClasspath "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = '0.8.2'
+}
+
+task sourcesJar(type: Jar, group: 'publish') {
+    classifier = 'sources'
+    from project.sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, group: 'publish') {
+    dependsOn 'javadoc'
+    from tasks.javadoc
+    classifier = 'javadoc'
+}
+
+if (canPublish) {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment {MavenDeployment deployment ->
+                    signing.signPom(deployment)
+                }
+                repository(url: sonatypeUrl) {
+                    authentication userName: sonatypeUsername, password: sonatypePassword
+                }
+                pom.project {
+                    name('pixela-java-client-api')
+                    packaging 'jar'
+                    description 'pixela-java-client API'
+                    url 'https://github.com/mike-neck/pixela-java-client'
+
+                    scm {
+                        connection 'scm:git:https://github.com/mike-neck/pixela-java-client'
+                        developerConnection 'scm:git:https://github.com/mike-neck/pixela-java-client'
+                        url 'https://github.com/mike-neck/pixela-java-client'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'mikeneck'
+                            name 'Shinya Mochida'
+                            email 'jkrt3333[at]gmail.com'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign(project.configurations.archives)
+}
+
+artifacts {
+    add('archives', javadocJar)
+    add('archives', sourcesJar)
+}
+
+apply from: rootProject.file('dep.gradle')

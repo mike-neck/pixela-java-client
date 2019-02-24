@@ -15,14 +15,16 @@
  */
 package pixela.client.impl;
 
+import org.jetbrains.annotations.NotNull;
 import pixela.client.PixelaClientConfig;
 import pixela.client.http.HttpClient;
 import pixela.client.http.HttpClientFactory;
 
 public class HttpClientFactoryImpl implements HttpClientFactory {
 
+  @NotNull
   @Override
-  public HttpClient newClient(final PixelaClientConfig pixelaClientConfig) {
+  public HttpClient newClient(@NotNull final PixelaClientConfig pixelaClientConfig) {
     return new HttpClientImpl(pixelaClientConfig);
   }
 }

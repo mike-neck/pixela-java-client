@@ -15,11 +15,13 @@
  */
 package pixela.client.http;
 
+import org.jetbrains.annotations.NotNull;
 import pixela.client.PixelaClientConfig;
 
 public interface HttpClientFactory {
 
-  HttpClient newClient(final PixelaClientConfig pixelaClientConfig);
+  @NotNull
+  HttpClient newClient(@NotNull final PixelaClientConfig pixelaClientConfig);
 
   static IllegalStateException notFoundImplementation() {
     return new IllegalStateException(

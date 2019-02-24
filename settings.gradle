@@ -12,6 +12,8 @@ rootProject.name = 'pixela-java-client'
 include 'api', 'default-impl'
 include 'integration-test'
 include 'example:java-example'
+include 'java8-impl'
 
 project(':api').name = 'pixela-java-client-api'
 project(':default-impl').name = 'pixela-java-client-default-impl'
+project(':java8-impl').name = 'pixela-java-client-java8-impl'

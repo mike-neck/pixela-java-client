@@ -8,6 +8,7 @@ ext {
     junitVersion = '5.4.0'
     jacksonVersion = '2.9.8'
     reactorVersion = '3.2.6.RELEASE'
+    reactorNettyVersion = '0.8.5.RELEASE'
     jetbrainsAnnotationsVersion = '17.0.0'
     eclipseCollectionsVersion = '9.2.0'
     mockitoVersion = '2.24.0'
@@ -50,6 +51,7 @@ task jacocoMerge(type: JacocoMerge) {
 
     executionData((tasks as TaskContainer).getByPath(':pixela-java-client-api:test'))
     executionData((tasks as TaskContainer).getByPath(':pixela-java-client-default-impl:test'))
+    executionData((tasks as TaskContainer).getByPath(':pixela-java-client-java8-impl:test'))
     executionData((tasks as TaskContainer).getByPath(':integration-test:test'))
 }
 
@@ -58,7 +60,12 @@ task jacocoReport(type: JacocoReport) {
 
     dependsOn 'jacocoMerge'
 
-    def targetProjects = [':pixela-java-client-api', ':pixela-java-client-default-impl', ':integration-test'].collect {
+    def targetProjects = [
+            ':pixela-java-client-api',
+            ':pixela-java-client-default-impl',
+            ':pixela-java-client-java8-impl',
+            ':integration-test'
+    ].collect {
         project(it)
     }
 
@@ -88,6 +95,7 @@ task localInstall(
         group: 'publish',
         dependsOn: [
                 ':pixela-java-client-api:install',
+                ':pixela-java-client-java8-impl:install',
                 ':pixela-java-client-default-impl:install'])
 
 if (canPublish) {
@@ -95,6 +103,7 @@ if (canPublish) {
             group: 'publish',
             dependsOn: [
                     ':pixela-java-client-api:uploadArchives',
+                    ':pixela-java-client-java8-impl:uploadArchives',
                     ':pixela-java-client-default-impl:uploadArchives'])
 }
 
@@ -104,8 +113,14 @@ task dependencyUpdateCheck(
         dependsOn: [
                 ':pixela-java-client-api:dependencyUpdates',
                 ':pixela-java-client-default-impl:dependencyUpdates',
+                ':pixela-java-client-java8-impl:dependencyUpdates',
                 ':integration-test:dependencyUpdates']) {
-    dependencyUpdatesFiles = ['api', 'default-impl', 'integration-test'].collect {
+    dependencyUpdatesFiles = [
+            'api',
+            'default-impl',
+            'pixela-java-client-java8-impl',
+            'integration-test'
+    ].collect {
         file("$projectDir/$it/build/dependencies/update-report.json")
     }
     slackUrl = slack
