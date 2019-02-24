@@ -113,9 +113,14 @@ task dependencyUpdateCheck(
         dependsOn: [
                 ':pixela-java-client-api:dependencyUpdates',
                 ':pixela-java-client-default-impl:dependencyUpdates',
-                ':pixela-java-client-java8-impl',
+                ':pixela-java-client-java8-impl:dependencyUpdates',
                 ':integration-test:dependencyUpdates']) {
-    dependencyUpdatesFiles = ['api', 'default-impl', 'integration-test'].collect {
+    dependencyUpdatesFiles = [
+            'api',
+            'default-impl',
+            'pixela-java-client-java8-impl',
+            'integration-test'
+    ].collect {
         file("$projectDir/$it/build/dependencies/update-report.json")
     }
     slackUrl = slack
