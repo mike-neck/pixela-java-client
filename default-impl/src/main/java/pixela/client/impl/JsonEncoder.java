@@ -25,7 +25,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @FunctionalInterface
-interface JsonEncoder {
+public interface JsonEncoder {
 
   @NotNull
   default Mono<String> encode(@NotNull final Request<?> request) {

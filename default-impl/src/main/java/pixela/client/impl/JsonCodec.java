@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
-interface JsonCodec extends JsonDecoder, JsonEncoder {
+public interface JsonCodec extends JsonDecoder, JsonEncoder {
 
   @NotNull
   static JsonCodec forJackson(
