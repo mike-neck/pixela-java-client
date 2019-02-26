@@ -18,22 +18,20 @@ package pixela.client.impl;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import java.util.concurrent.ExecutorService;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.json.JsonCodecFactory;
 
-import java.util.concurrent.ExecutorService;
+public class JsonCodecFactoryImpl implements JsonCodecFactory {
 
-public class JconCodecFactoryImpl implements JsonCodecFactory {
+  static final ObjectMapper objectMapper =
+      new ObjectMapper()
+          .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
+          .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-
-    static final ObjectMapper objectMapper =
-            new ObjectMapper()
-                    .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
-                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-    @NotNull
-    @Override
-    public JsonCodec create(@NotNull final ExecutorService executorService) {
-        return null;
-    }
+  @NotNull
+  @Override
+  public JsonCodec create(@NotNull final ExecutorService executorService) {
+    return null;
+  }
 }

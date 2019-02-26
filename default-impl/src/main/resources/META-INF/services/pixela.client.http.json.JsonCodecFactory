@@ -1,1 +1,1 @@
-pixela.client.impl.JconCodecFactoryImpl
+pixela.client.impl.JsonCodecFactoryImpl

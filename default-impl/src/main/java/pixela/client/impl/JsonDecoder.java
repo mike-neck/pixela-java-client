@@ -16,12 +16,9 @@
 package pixela.client.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
-import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 public interface JsonDecoder {
 
@@ -31,23 +28,6 @@ public interface JsonDecoder {
   @NotNull
   static JsonDecoder forJackson(
       @NotNull final ExecutorService executorService, @NotNull final ObjectMapper objectMapper) {
-    return new JsonDecoder() {
-      @SuppressWarnings("BlockingMethodInNonBlockingContext")
-      @NotNull
-      @Override
-      public <T> Mono<T> decode(
-          @NotNull final String json, @NotNull final Class<? extends T> type) {
-        final Supplier<Mono<T>> decodeJson =
-            () -> {
-              try {
-                final T object = objectMapper.readValue(json, type);
-                return Mono.just(object);
-              } catch (final IOException e) {
-                return Mono.error(e);
-              }
-            };
-        return Mono.defer(decodeJson).subscribeOn(Schedulers.fromExecutor(executorService));
-      }
-    };
+    return new JsonDecoderImpl(objectMapper, executorService);
   }
 }

@@ -16,13 +16,10 @@
 package pixela.client.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
-import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Request;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @FunctionalInterface
 public interface JsonEncoder {
@@ -39,18 +36,7 @@ public interface JsonEncoder {
   @NotNull
   static JsonEncoder forJackson(
       @NotNull final ExecutorService executorService, @NotNull final ObjectMapper objectMapper) {
-    final Function<Object, Mono<String>> toJson =
-        object -> {
-          try {
-            final String json = objectMapper.writeValueAsString(object);
-            return Mono.just(json);
-          } catch (final IOException e) {
-            return Mono.error(e);
-          }
-        };
-    return object ->
-        Mono.defer(() -> toJson.apply(object))
-            .subscribeOn(Schedulers.fromExecutor(executorService));
+    return new JsonEncoderImpl(objectMapper, executorService);
   }
 
   @NotNull
