@@ -15,22 +15,7 @@
  */
 package pixela.client.http.json;
 
-import java.util.ServiceLoader;
-import java.util.concurrent.ExecutorService;
-import org.jetbrains.annotations.NotNull;
+import pixela.client.impl.JsonDecoder;
+import pixela.client.impl.JsonEncoder;
 
-public interface JsonCodecFactory {
-
-  @NotNull
-  JsonCodec create(@NotNull final ExecutorService executorService);
-
-  static JsonCodecFactory getInstance() {
-    final ServiceLoader<JsonCodecFactory> loader = ServiceLoader.load(JsonCodecFactory.class);
-    return loader
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new IllegalStateException(
-                    "No " + JsonCodecFactory.class + " implementation found."));
-  }
-}
+public interface JsonCodec extends JsonDecoder, JsonEncoder {}

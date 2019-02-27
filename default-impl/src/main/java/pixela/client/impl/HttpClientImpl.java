@@ -29,6 +29,8 @@ import pixela.client.ApiException;
 import pixela.client.AutoCloseables;
 import pixela.client.PixelaClientConfig;
 import pixela.client.http.*;
+import pixela.client.http.json.JsonCodec;
+import pixela.client.http.json.JsonCodecFactory;
 import reactor.core.publisher.Mono;
 
 class HttpClientImpl implements pixela.client.http.HttpClient {
@@ -52,7 +54,7 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
     this.executors =
         AutoCloseables.of(
             executorServiceForHttpClient::shutdown, executorServiceForJackson::shutdown);
-    final JsonCodec codec = JsonCodec.forJackson(executorServiceForJackson, objectMapper);
+    final JsonCodec codec = JsonCodecFactory.getInstance().create(executorServiceForJackson);
     this.httpClient = JdkHttpClient.create(executorServiceForHttpClient, codec, config);
     this.jdkRequestBuilder = JdkRequestBuilder.create(config.baseUri(), codec);
     this.executor = SupplierExecutor.fromExecutorService(executorServiceForHttpClient);

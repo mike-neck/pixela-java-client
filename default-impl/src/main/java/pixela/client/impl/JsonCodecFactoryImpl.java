@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import java.util.concurrent.ExecutorService;
 import org.jetbrains.annotations.NotNull;
+import pixela.client.http.json.JsonCodec;
 import pixela.client.http.json.JsonCodecFactory;
 
 public class JsonCodecFactoryImpl implements JsonCodecFactory {
@@ -32,6 +33,6 @@ public class JsonCodecFactoryImpl implements JsonCodecFactory {
   @NotNull
   @Override
   public JsonCodec create(@NotNull final ExecutorService executorService) {
-    return null;
+    return new JsonCodecImpl(executorService, objectMapper);
   }
 }

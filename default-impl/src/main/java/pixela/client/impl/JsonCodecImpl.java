@@ -18,28 +18,34 @@ package pixela.client.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.ExecutorService;
 import org.jetbrains.annotations.NotNull;
+import pixela.client.http.json.JsonCodec;
 import reactor.core.publisher.Mono;
 
-public interface JsonCodec extends JsonDecoder, JsonEncoder {
+public class JsonCodecImpl implements JsonCodec {
+  @NotNull private final JsonDecoder decoder;
+  @NotNull private final JsonEncoder encoder;
+
+  JsonCodecImpl(
+      @NotNull final ExecutorService executorService, @NotNull final ObjectMapper objectMapper) {
+    this(
+        JsonDecoder.forJackson(executorService, objectMapper),
+        JsonEncoder.forJackson(executorService, objectMapper));
+  }
+
+  private JsonCodecImpl(@NotNull final JsonDecoder decoder, @NotNull final JsonEncoder encoder) {
+    this.decoder = decoder;
+    this.encoder = encoder;
+  }
 
   @NotNull
-  static JsonCodec forJackson(
-      @NotNull final ExecutorService executorService, @NotNull final ObjectMapper objectMapper) {
-    final JsonDecoder decoder = JsonDecoder.forJackson(executorService, objectMapper);
-    final JsonEncoder encoder = JsonEncoder.forJackson(executorService, objectMapper);
-    return new JsonCodec() {
-      @NotNull
-      @Override
-      public <T> Mono<T> decode(
-          @NotNull final String json, @NotNull final Class<? extends T> type) {
-        return decoder.decode(json, type);
-      }
+  @Override
+  public <T> Mono<T> decode(@NotNull final String json, @NotNull final Class<? extends T> type) {
+    return decoder.decode(json, type);
+  }
 
-      @NotNull
-      @Override
-      public Mono<String> encodeObject(@NotNull final Object object) {
-        return encoder.encodeObject(object);
-      }
-    };
+  @NotNull
+  @Override
+  public Mono<String> encodeObject(@NotNull final Object object) {
+    return encoder.encodeObject(object);
   }
 }
