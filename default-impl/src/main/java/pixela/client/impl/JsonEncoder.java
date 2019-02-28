@@ -15,8 +15,6 @@
  */
 package pixela.client.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.concurrent.ExecutorService;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Request;
 import reactor.core.publisher.Mono;
@@ -31,12 +29,6 @@ public interface JsonEncoder {
     } else {
       return Mono.empty();
     }
-  }
-
-  @NotNull
-  static JsonEncoder forJackson(
-      @NotNull final ExecutorService executorService, @NotNull final ObjectMapper objectMapper) {
-    return new JsonEncoderImpl(objectMapper, executorService);
   }
 
   @NotNull

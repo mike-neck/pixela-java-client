@@ -28,8 +28,7 @@ class JdkHttpClientTest {
     executorService.shutdown();
   }
 
-  private final JsonDecoder decoder =
-      JsonDecoder.forJackson(executorService, HttpClientImpl.objectMapper);
+  private final JsonDecoder decoder = new JsonCodecFactoryImpl().create(executorService);
 
   private HttpClient httpClient;
 

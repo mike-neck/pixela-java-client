@@ -45,7 +45,7 @@ class JdkPutRequestBuilderTest {
     executor.shutdown();
   }
 
-  private final JsonEncoder encoder = JsonEncoder.forJackson(executor, HttpClientImpl.objectMapper);
+  private final JsonEncoder encoder = new JsonCodecFactoryImpl().create(executor);
 
   private static RequestConfigurer requestConfigurer(
       final Consumer<Flux<ByteBuffer>> stepVerifier) {

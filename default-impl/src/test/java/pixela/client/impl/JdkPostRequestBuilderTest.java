@@ -37,8 +37,7 @@ class JdkPostRequestBuilderTest {
     executorService.shutdown();
   }
 
-  private final JsonEncoder encoder =
-      JsonEncoder.forJackson(executorService, HttpClientImpl.objectMapper);
+  private final JsonEncoder encoder = new JsonCodecFactoryImpl().create(executorService);
 
   @Test
   void noBodyRequest() throws InterruptedException {

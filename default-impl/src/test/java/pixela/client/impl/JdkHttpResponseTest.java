@@ -27,8 +27,7 @@ class JdkHttpResponseTest {
   @BeforeEach
   void setup() {
     response = mock(MockHttpResponse.class);
-    final JsonDecoder decoder =
-        JsonDecoder.forJackson(executorService, HttpClientImpl.objectMapper);
+    final JsonDecoder decoder = new JsonCodecFactoryImpl().create(executorService);
     jdkHttpResponse = JdkHttpResponse.create(response, decoder);
   }
 

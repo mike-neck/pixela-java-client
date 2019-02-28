@@ -15,8 +15,6 @@
  */
 package pixela.client.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.concurrent.ExecutorService;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
@@ -24,10 +22,4 @@ public interface JsonDecoder {
 
   @NotNull
   <T> Mono<T> decode(@NotNull final String json, @NotNull final Class<? extends T> type);
-
-  @NotNull
-  static JsonDecoder forJackson(
-      @NotNull final ExecutorService executorService, @NotNull final ObjectMapper objectMapper) {
-    return new JsonDecoderImpl(objectMapper, executorService);
-  }
 }

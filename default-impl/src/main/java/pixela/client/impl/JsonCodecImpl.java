@@ -16,36 +16,54 @@
 package pixela.client.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.json.JsonCodec;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 public class JsonCodecImpl implements JsonCodec {
-  @NotNull private final JsonDecoder decoder;
-  @NotNull private final JsonEncoder encoder;
+  private @NotNull ExecutorService executorService;
+  private @NotNull ObjectMapper objectMapper;
 
   JsonCodecImpl(
       @NotNull final ExecutorService executorService, @NotNull final ObjectMapper objectMapper) {
-    this(
-        JsonDecoder.forJackson(executorService, objectMapper),
-        JsonEncoder.forJackson(executorService, objectMapper));
+    this.executorService = executorService;
+    this.objectMapper = objectMapper;
   }
 
-  private JsonCodecImpl(@NotNull final JsonDecoder decoder, @NotNull final JsonEncoder encoder) {
-    this.decoder = decoder;
-    this.encoder = encoder;
-  }
-
+  @SuppressWarnings("BlockingMethodInNonBlockingContext")
   @NotNull
   @Override
   public <T> Mono<T> decode(@NotNull final String json, @NotNull final Class<? extends T> type) {
-    return decoder.decode(json, type);
+    final Supplier<Mono<T>> decodeJson =
+        () -> {
+          try {
+            final T object = objectMapper.readValue(json, type);
+            return Mono.just(object);
+          } catch (final IOException e) {
+            return Mono.error(e);
+          }
+        };
+    return Mono.defer(decodeJson).subscribeOn(Schedulers.fromExecutor(executorService));
   }
 
   @NotNull
   @Override
   public Mono<String> encodeObject(@NotNull final Object object) {
-    return encoder.encodeObject(object);
+    final Function<Object, Mono<String>> toJson =
+        obj -> {
+          try {
+            final String json = objectMapper.writeValueAsString(obj);
+            return Mono.just(json);
+          } catch (final IOException e) {
+            return Mono.error(e);
+          }
+        };
+    return Mono.defer(() -> toJson.apply(object))
+        .subscribeOn(Schedulers.fromExecutor(executorService));
   }
 }
