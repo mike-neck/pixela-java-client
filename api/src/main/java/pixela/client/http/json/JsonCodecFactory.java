@@ -17,6 +17,7 @@ package pixela.client.http.json;
 
 import java.util.ServiceLoader;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.StreamSupport;
 import org.jetbrains.annotations.NotNull;
 
 public interface JsonCodecFactory {
@@ -26,7 +27,7 @@ public interface JsonCodecFactory {
 
   static JsonCodecFactory getInstance() {
     final ServiceLoader<JsonCodecFactory> loader = ServiceLoader.load(JsonCodecFactory.class);
-    return loader
+    return StreamSupport.stream(loader.spliterator(), false)
         .findFirst()
         .orElseThrow(
             () ->
