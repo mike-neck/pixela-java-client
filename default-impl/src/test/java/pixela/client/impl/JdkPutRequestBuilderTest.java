@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import pixela.client.UserToken;
 import pixela.client.http.Put;
 import pixela.client.http.Request;
+import pixela.client.http.json.JsonEncoder;
 import reactor.adapter.JdkFlowAdapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

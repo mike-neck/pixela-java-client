@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
+import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 

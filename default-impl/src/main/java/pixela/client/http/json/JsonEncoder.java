@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client.impl;
+package pixela.client.http.json;
 
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Request;

@@ -15,7 +15,4 @@
  */
 package pixela.client.http.json;
 
-import pixela.client.impl.JsonDecoder;
-import pixela.client.impl.JsonEncoder;
-
 public interface JsonCodec extends JsonDecoder, JsonEncoder {}

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import pixela.client.http.Request;
 import pixela.client.http.Response;
+import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 
 class JdkHttpResponse {

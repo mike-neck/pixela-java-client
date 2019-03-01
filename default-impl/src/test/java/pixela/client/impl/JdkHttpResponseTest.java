@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import pixela.client.http.Request;
+import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
