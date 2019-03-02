@@ -80,7 +80,7 @@ public class GetPixel implements Get<PixelRaw>, Api<Pixel> {
 
   @NotNull
   @Override
-  public Class<? extends PixelRaw> responseType() {
+  public Class<PixelRaw> responseType() {
     return PixelRaw.class;
   }
 

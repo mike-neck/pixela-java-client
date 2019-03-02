@@ -94,7 +94,7 @@ public class CreateWebhook implements Post<CreateWebhookResult>, Api<Webhook> {
 
   @NotNull
   @Override
-  public Class<? extends CreateWebhookResult> responseType() {
+  public Class<CreateWebhookResult> responseType() {
     return CreateWebhookResult.class;
   }
 

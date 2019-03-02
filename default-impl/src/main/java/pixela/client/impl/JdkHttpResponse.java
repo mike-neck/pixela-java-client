@@ -43,7 +43,7 @@ class JdkHttpResponse {
   <T> Mono<T> readObject(final Request<T> request) {
     final String json = response.body();
     final int statusCode = response.statusCode();
-    final Class<? extends T> responseType = request.responseType();
+    final Class<T> responseType = request.responseType();
     if (statusCode / 100 != 2) {
       final Mono<BasicResponse> response = decoder.decode(json, BasicResponse.class);
       return response

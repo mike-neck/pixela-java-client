@@ -96,7 +96,7 @@ public class UpdateUser implements Put<Void>, Api<Pixela> {
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 

@@ -38,7 +38,8 @@ public class GetGraphDefinitions implements Api<List<Graph>>, Get<GraphDefinitio
 
   @Contract("_, _ -> new")
   @NotNull
-  public static GetGraphDefinitions of(@NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
+  public static GetGraphDefinitions of(
+      @NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
     return new GetGraphDefinitions(httpClient, pixela);
   }
 
@@ -66,7 +67,7 @@ public class GetGraphDefinitions implements Api<List<Graph>>, Get<GraphDefinitio
 
   @NotNull
   @Override
-  public Class<? extends GraphDefinitions> responseType() {
+  public Class<GraphDefinitions> responseType() {
     return GraphDefinitions.class;
   }
 

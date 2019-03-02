@@ -80,7 +80,7 @@ public class DeletePixel implements Delete<Void>, Api<Graph> {
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 

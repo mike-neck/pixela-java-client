@@ -37,7 +37,7 @@ public interface UpdateGraph extends Put<Void>, Api<Graph> {
 
   @NotNull
   @Override
-  default Class<? extends Void> responseType() {
+  default Class<Void> responseType() {
     return Void.class;
   }
 

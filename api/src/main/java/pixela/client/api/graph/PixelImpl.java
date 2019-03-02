@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.Graph;
 import pixela.client.Pixela;
 import pixela.client.http.HttpClient;
+import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 
 class PixelImpl implements pixela.client.Pixel {
@@ -71,7 +72,8 @@ class PixelImpl implements pixela.client.Pixel {
   @NotNull
   @Override
   public <T> Mono<T> as(@NotNull final Class<T> type) {
-    return Mono.justOrEmpty(raw.optionalData()).flatMap(json -> httpClient.decodeJson(json, type));
+    final JsonDecoder decoder = httpClient.decoder();
+    return Mono.justOrEmpty(raw.optionalData()).flatMap(json -> decoder.decode(json, type));
   }
 
   @Override

@@ -15,9 +15,6 @@
  */
 package pixela.client.impl;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.util.concurrent.ExecutorService;
@@ -31,14 +28,11 @@ import pixela.client.PixelaClientConfig;
 import pixela.client.http.*;
 import pixela.client.http.json.JsonCodec;
 import pixela.client.http.json.JsonCodecFactory;
+import pixela.client.http.json.JsonDecoder;
+import pixela.client.http.json.JsonEncoder;
 import reactor.core.publisher.Mono;
 
 class HttpClientImpl implements pixela.client.http.HttpClient {
-
-  static final ObjectMapper objectMapper =
-      new ObjectMapper()
-          .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
-          .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
   @NotNull private final AutoCloseable executors;
 
@@ -77,10 +71,20 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
     return jdkRequestBuilder.encodeJson(object);
   }
 
+  @Override
+  public JsonEncoder encoder() {
+    return jdkRequestBuilder::encodeJson;
+  }
+
   @NotNull
   @Override
   public <T> Mono<T> decodeJson(@NotNull final String json, @NotNull final Class<T> type) {
     return httpClient.decodeJson(json, type);
+  }
+
+  @Override
+  public JsonDecoder decoder() {
+    return httpClient::decodeJson;
   }
 
   @NotNull

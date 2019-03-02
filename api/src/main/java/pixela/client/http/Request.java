@@ -42,7 +42,7 @@ public interface Request<T> {
   }
 
   @NotNull
-  Class<? extends T> responseType();
+  Class<T> responseType();
 
   @NotNull
   default Optional<String> contentType() {

@@ -197,7 +197,7 @@ class JdkPostRequestBuilderTest {
 
     @NotNull
     @Override
-    public Class<? extends Void> responseType() {
+    public Class<Void> responseType() {
       return Void.class;
     }
 

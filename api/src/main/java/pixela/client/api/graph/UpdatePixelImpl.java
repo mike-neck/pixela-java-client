@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import pixela.client.*;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Response;
+import pixela.client.http.json.JsonEncoder;
 import reactor.core.publisher.Mono;
 
 public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, PixelDetail {
@@ -109,7 +110,7 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 
@@ -167,8 +168,9 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
   @NotNull
   @Override
   public Mono<UpdatePixel> optionalData(@NotNull final Object object) {
-    return httpClient
-        .encodeJson(object)
+    final JsonEncoder encoder = httpClient.encoder();
+    return encoder
+        .encodeObject(object)
         .map(opd -> new UpdatePixelImpl(httpClient, pixela, graph, date, quantity, opd));
   }
 }

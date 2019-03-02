@@ -67,7 +67,7 @@ public class GetWebhooks implements Get<Webhooks>, Api<List<Webhook>> {
 
   @NotNull
   @Override
-  public Class<? extends Webhooks> responseType() {
+  public Class<Webhooks> responseType() {
     return Webhooks.class;
   }
 

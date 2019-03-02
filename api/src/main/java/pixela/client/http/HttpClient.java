@@ -18,15 +18,39 @@ package pixela.client.http;
 import java.net.URI;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
+import pixela.client.http.json.JsonDecoder;
+import pixela.client.http.json.JsonEncoder;
 import reactor.core.publisher.Mono;
 
 public interface HttpClient extends AutoCloseable {
 
+  /**
+   * encode json.
+   *
+   * @param object - object to be encoded into json.
+   * @return - {@link Mono} wrapping json string.
+   * @deprecated use {@link JsonEncoder} from {@link HttpClient#encoder()} method.
+   */
+  @Deprecated
   @NotNull
   Mono<String> encodeJson(@NotNull Object object);
 
+  JsonEncoder encoder();
+
+  /**
+   * decoding json.
+   *
+   * @param json - json string.
+   * @param type - the type of object.
+   * @param <T> - the type of object.
+   * @return {@link Mono} instance which may hold decoded object.
+   * @deprecated use {@link JsonDecoder} from {@link HttpClient#decoder()} method.
+   */
+  @Deprecated
   @NotNull
   <T> Mono<T> decodeJson(@NotNull String json, @NotNull final Class<T> type);
+
+  JsonDecoder decoder();
 
   @NotNull
   <T> Mono<T> runAsync(@NotNull final Supplier<? extends T> supplier);

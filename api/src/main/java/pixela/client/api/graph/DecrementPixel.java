@@ -78,7 +78,7 @@ public class DecrementPixel implements Put<Void>, Api<Graph> {
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 

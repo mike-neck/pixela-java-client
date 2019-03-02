@@ -38,14 +38,14 @@ public class JsonCodecImpl implements JsonCodec {
 
   @NotNull
   @Override
-  public <T> Mono<T> decode(@NotNull final String json, @NotNull final Class<? extends T> type) {
+  public <T> Mono<T> decode(@NotNull final String json, @NotNull final Class<T> type) {
     final CompletableFuture<T> future =
         CompletableFuture.supplyAsync(() -> decodeSync(json, type), executorService);
     return Mono.create(
         sink -> future.thenAccept(sink::success).exceptionally(asFunction(sink::error)));
   }
 
-  <T> T decodeSync(@NotNull final String json, @NotNull final Class<? extends T> type) {
+  <T> T decodeSync(@NotNull final String json, @NotNull final Class<T> type) {
     try {
       return objectMapper.readValue(json, type);
     } catch (final IOException e) {

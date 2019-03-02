@@ -137,7 +137,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 

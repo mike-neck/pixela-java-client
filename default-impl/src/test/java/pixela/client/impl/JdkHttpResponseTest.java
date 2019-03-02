@@ -259,7 +259,7 @@ class JdkHttpResponseTest {
   interface Req extends Request<Model> {
     @NotNull
     @Override
-    default Class<? extends Model> responseType() {
+    default Class<Model> responseType() {
       return Model.class;
     }
   }
@@ -311,7 +311,7 @@ class JdkHttpResponseTest {
   interface VoidReq extends Request<Void> {
     @NotNull
     @Override
-    default Class<? extends Void> responseType() {
+    default Class<Void> responseType() {
       return Void.class;
     }
   }
@@ -319,7 +319,7 @@ class JdkHttpResponseTest {
   interface StringReq extends Request<String> {
     @NotNull
     @Override
-    default Class<? extends String> responseType() {
+    default Class<String> responseType() {
       return String.class;
     }
   }

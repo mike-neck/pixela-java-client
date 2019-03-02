@@ -74,7 +74,7 @@ public class DeleteUser implements Delete<Void>, Api<Void> {
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 

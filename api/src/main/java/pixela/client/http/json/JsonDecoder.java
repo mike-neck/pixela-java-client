@@ -21,5 +21,5 @@ import reactor.core.publisher.Mono;
 public interface JsonDecoder {
 
   @NotNull
-  <T> Mono<T> decode(@NotNull final String json, @NotNull final Class<? extends T> type);
+  <T> Mono<T> decode(@NotNull final String json, @NotNull final Class<T> type);
 }
