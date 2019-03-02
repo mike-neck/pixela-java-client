@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client.impl;
+package pixela.client;
 
 import org.jetbrains.annotations.NotNull;
-import pixela.client.ApiException;
 import reactor.core.publisher.Mono;
 
-class BasicResponse {
+public class BasicResponse {
   @NotNull private String message = "";
   private boolean isSuccess;
 
   @NotNull
-  String getMessage() {
+  public String getMessage() {
     return message;
   }
 
@@ -32,7 +31,7 @@ class BasicResponse {
     this.message = message;
   }
 
-  boolean isIsSuccess() {
+  public boolean isIsSuccess() {
     return isSuccess;
   }
 
@@ -40,7 +39,7 @@ class BasicResponse {
     isSuccess = success;
   }
 
-  Mono<Void> emptyOrError() {
+  public Mono<Void> emptyOrError() {
     if (isSuccess) {
       return Mono.empty();
     } else {

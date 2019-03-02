@@ -19,6 +19,7 @@ import java.net.http.HttpResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import pixela.client.ApiException;
+import pixela.client.BasicResponse;
 import pixela.client.http.Request;
 import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
