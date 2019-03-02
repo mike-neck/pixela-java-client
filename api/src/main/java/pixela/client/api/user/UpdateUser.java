@@ -24,7 +24,6 @@ import pixela.client.Pixela;
 import pixela.client.UserToken;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Put;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class UpdateUser implements Put<Void>, Api<Pixela> {
@@ -72,8 +71,8 @@ public class UpdateUser implements Put<Void>, Api<Pixela> {
   @NotNull
   @Override
   public Mono<Pixela> call() {
-    final Response<Void> response = httpClient.put(this);
-    return response.toPublisher().then(Mono.fromSupplier(() -> pixela.updateToken(newToken)));
+    final Mono<Void> response = httpClient.put(this);
+    return response.then(Mono.fromSupplier(() -> pixela.updateToken(newToken)));
   }
 
   @NotNull

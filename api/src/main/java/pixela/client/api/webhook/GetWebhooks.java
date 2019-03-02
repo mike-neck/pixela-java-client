@@ -26,7 +26,6 @@ import pixela.client.UserToken;
 import pixela.client.Webhook;
 import pixela.client.http.Get;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class GetWebhooks implements Get<Webhooks>, Api<List<Webhook>> {
@@ -48,8 +47,8 @@ public class GetWebhooks implements Get<Webhooks>, Api<List<Webhook>> {
   @NotNull
   @Override
   public Mono<List<Webhook>> call() {
-    final Response<Webhooks> response = httpClient.get(this);
-    return response.toPublisher().map(webhooks -> webhooks.toList(httpClient, pixela));
+    final Mono<Webhooks> response = httpClient.get(this);
+    return response.map(webhooks -> webhooks.toList(httpClient, pixela));
   }
 
   @NotNull

@@ -16,7 +16,7 @@
 package pixela.client.impl;
 
 import org.jetbrains.annotations.NotNull;
-import pixela.client.http.Response;
+import pixela.client.ApiException;
 import reactor.core.publisher.Mono;
 
 class BasicResponse {
@@ -44,7 +44,7 @@ class BasicResponse {
     if (isSuccess) {
       return Mono.empty();
     } else {
-      return Mono.error(Response.error(message));
+      return Mono.error(ApiException.of(message));
     }
   }
 }

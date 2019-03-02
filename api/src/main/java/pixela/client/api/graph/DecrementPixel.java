@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Put;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class DecrementPixel implements Put<Void>, Api<Graph> {
@@ -52,8 +51,8 @@ public class DecrementPixel implements Put<Void>, Api<Graph> {
   @NotNull
   @Override
   public Mono<Graph> call() {
-    final Response<Void> response = httpClient.put(this);
-    return response.toPublisher().then(Mono.just(graph)).cache();
+    final Mono<Void> response = httpClient.put(this);
+    return response.then(Mono.just(graph)).cache();
   }
 
   @NotNull

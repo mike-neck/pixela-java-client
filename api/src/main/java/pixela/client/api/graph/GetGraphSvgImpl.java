@@ -22,7 +22,6 @@ import pixela.client.Graph;
 import pixela.client.Pixela;
 import pixela.client.api.QueryParams;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
@@ -52,8 +51,8 @@ class GetGraphSvgImpl implements GetGraphSvg.WithDateOption, GetGraphSvg.NoOptio
   @NotNull
   @Override
   public Mono<Tuple2<Graph, String>> call() {
-    final Response<String> response = httpClient.get(this);
-    return response.toPublisher().map(svg -> Tuples.of(graph, svg));
+    final Mono<String> response = httpClient.get(this);
+    return response.map(svg -> Tuples.of(graph, svg));
   }
 
   @NotNull

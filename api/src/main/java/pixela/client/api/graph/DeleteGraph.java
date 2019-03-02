@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
 import pixela.client.http.Delete;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class DeleteGraph implements Delete<Void>, Api<Pixela> {
@@ -42,8 +41,8 @@ public class DeleteGraph implements Delete<Void>, Api<Pixela> {
   @NotNull
   @Override
   public Mono<Pixela> call() {
-    final Response<Void> response = httpClient.delete(this);
-    return response.toPublisher().then(Mono.just(pixela));
+    final Mono<Void> response = httpClient.delete(this);
+    return response.then(Mono.just(pixela));
   }
 
   @NotNull

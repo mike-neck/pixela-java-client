@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pixela.client.*;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
 import pixela.client.http.json.JsonEncoder;
 import reactor.core.publisher.Mono;
 
@@ -77,9 +76,8 @@ public class UpdatePixelImpl implements UpdatePixel, UpdatePixel.OptionalData, P
   @NotNull
   @Override
   public Mono<pixela.client.Pixel> call() {
-    final Response<Void> response = httpClient.put(this);
+    final Mono<Void> response = httpClient.put(this);
     return response
-        .toPublisher()
         .<pixela.client.Pixel>then(
             Mono.defer(() -> Mono.just(new PixelImpl(httpClient, pixela, graph, date, this))))
         .cache();

@@ -102,41 +102,41 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
   @SuppressWarnings("Duplicates")
   @NotNull
   @Override
-  public <T> Response<T> get(@NotNull final Get<T> getRequest) {
+  public <T> Mono<T> get(@NotNull final Get<T> getRequest) {
     final Mono<HttpRequest> httpRequest = jdkRequestBuilder.get(getRequest);
     final Mono<JdkHttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
     final Mono<T> mono = response.flatMap(res -> res.readObject(getRequest));
-    return () -> mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(getRequest)).cache();
+    return mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(getRequest)).cache();
   }
 
   @SuppressWarnings("Duplicates")
   @NotNull
   @Override
-  public <T> Response<T> post(@NotNull final Post<T> postRequest) {
+  public <T> Mono<T> post(@NotNull final Post<T> postRequest) {
     final Mono<HttpRequest> httpRequest = jdkRequestBuilder.post(postRequest);
     final Mono<JdkHttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
     final Mono<T> mono = response.flatMap(res -> res.readObject(postRequest));
-    return () -> mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(postRequest)).cache();
+    return mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(postRequest)).cache();
   }
 
   @SuppressWarnings("Duplicates")
   @NotNull
   @Override
-  public <T> Response<T> put(@NotNull final Put<T> putRequest) {
+  public <T> Mono<T> put(@NotNull final Put<T> putRequest) {
     final Mono<HttpRequest> httpRequest = jdkRequestBuilder.put(putRequest);
     final Mono<JdkHttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
     final Mono<T> mono = response.flatMap(res -> res.readObject(putRequest));
-    return () -> mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(putRequest)).cache();
+    return mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(putRequest)).cache();
   }
 
   @SuppressWarnings("Duplicates")
   @NotNull
   @Override
-  public <T> Response<T> delete(@NotNull final Delete<T> deleteRequest) {
+  public <T> Mono<T> delete(@NotNull final Delete<T> deleteRequest) {
     final Mono<HttpRequest> delete = jdkRequestBuilder.delete(deleteRequest);
     final Mono<JdkHttpResponse> response = delete.flatMap(httpClient::sendRequest);
     final Mono<T> mono = response.flatMap(res -> res.readObject(deleteRequest));
-    return () -> mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(deleteRequest)).cache();
+    return mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(deleteRequest)).cache();
   }
 
   @Override

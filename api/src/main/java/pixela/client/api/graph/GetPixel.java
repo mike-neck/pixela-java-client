@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
 import pixela.client.http.Get;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class GetPixel implements Get<PixelRaw>, Api<Pixel> {
@@ -57,8 +56,8 @@ public class GetPixel implements Get<PixelRaw>, Api<Pixel> {
   @NotNull
   @Override
   public Mono<Pixel> call() {
-    final Response<PixelRaw> response = httpClient.get(this);
-    return response.toPublisher().map(raw -> raw.toPixel(httpClient, pixela, graph, date)).cache();
+    final Mono<PixelRaw> response = httpClient.get(this);
+    return response.map(raw -> raw.toPixel(httpClient, pixela, graph, date)).cache();
   }
 
   @NotNull

@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
 import pixela.client.http.Get;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class GetGraphDefinitions implements Api<List<Graph>>, Get<GraphDefinitions> {
@@ -46,10 +45,8 @@ public class GetGraphDefinitions implements Api<List<Graph>>, Get<GraphDefinitio
   @NotNull
   @Override
   public Mono<List<Graph>> call() {
-    final Response<GraphDefinitions> response = httpClient.get(this);
-    return response
-        .toPublisher()
-        .map(graphDefinitions -> graphDefinitions.asCollection(httpClient, pixela));
+    final Mono<GraphDefinitions> response = httpClient.get(this);
+    return response.map(graphDefinitions -> graphDefinitions.asCollection(httpClient, pixela));
   }
 
   @NotNull

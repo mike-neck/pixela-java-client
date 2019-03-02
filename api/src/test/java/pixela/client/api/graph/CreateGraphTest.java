@@ -60,8 +60,7 @@ class CreateGraphTest {
 
       @BeforeEach
       void given() {
-        when(httpClient.post(createGraph))
-            .thenReturn(() -> Mono.error(ApiException.of("Failure.")));
+        when(httpClient.post(createGraph)).thenReturn(Mono.error(ApiException.of("Failure.")));
       }
 
       @Test
@@ -78,10 +77,9 @@ class CreateGraphTest {
     @Nested
     class SuccessTest {
 
-      @SuppressWarnings("Convert2MethodRef")
       @BeforeEach
       void given() {
-        when(httpClient.post(createGraph)).thenReturn(() -> Mono.empty());
+        when(httpClient.post(createGraph)).thenReturn(Mono.empty());
       }
 
       @Test

@@ -26,7 +26,6 @@ import pixela.client.UserToken;
 import pixela.client.YesNo;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Post;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class CreateUser implements Post<Void>, Api<Pixela> {
@@ -131,11 +130,9 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
   @NotNull
   @Override
   public Mono<Pixela> call() {
-    final Response<Void> response = httpClient.post(this);
-    return response
-        .toPublisher()
-        .thenReturn(
-            PixelaImpl.of(httpClient, UserToken.of(token), pixela.client.Username.of(username)));
+    final Mono<Void> response = httpClient.post(this);
+    return response.thenReturn(
+        PixelaImpl.of(httpClient, UserToken.of(token), pixela.client.Username.of(username)));
   }
 
   public interface Builder {

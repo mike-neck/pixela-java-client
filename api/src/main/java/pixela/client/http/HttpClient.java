@@ -59,14 +59,14 @@ public interface HttpClient extends AutoCloseable {
   URI baseUri();
 
   @NotNull
-  <T> Response<T> get(@NotNull final Get<T> getRequest);
+  <T> Mono<T> get(@NotNull final Get<T> getRequest);
 
   @NotNull
-  <T> Response<T> post(@NotNull final Post<T> postRequest);
+  <T> Mono<T> post(@NotNull final Post<T> postRequest);
 
   @NotNull
-  <T> Response<T> put(@NotNull final Put<T> putRequest);
+  <T> Mono<T> put(@NotNull final Put<T> putRequest);
 
   @NotNull
-  <T> Response<T> delete(@NotNull final Delete<T> deleteRequest);
+  <T> Mono<T> delete(@NotNull final Delete<T> deleteRequest);
 }

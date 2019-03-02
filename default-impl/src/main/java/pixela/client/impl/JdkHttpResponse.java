@@ -18,8 +18,8 @@ package pixela.client.impl;
 import java.net.http.HttpResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
+import pixela.client.ApiException;
 import pixela.client.http.Request;
-import pixela.client.http.Response;
 import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 
@@ -48,7 +48,7 @@ class JdkHttpResponse {
       final Mono<BasicResponse> response = decoder.decode(json, BasicResponse.class);
       return response
           .map(BasicResponse::getMessage)
-          .flatMap(message -> Mono.error(Response.error(message)));
+          .flatMap(message -> Mono.error(ApiException.of(message)));
     } else if (responseType.equals(Void.class)) {
       final Mono<BasicResponse> response = decoder.decode(json, BasicResponse.class);
       return response.flatMap(res -> (Mono<T>) res.emptyOrError());

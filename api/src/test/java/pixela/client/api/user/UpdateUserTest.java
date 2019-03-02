@@ -73,11 +73,10 @@ class UpdateUserTest {
 
       private final Pixela newPixela = mock(Pixela.class);
 
-      @SuppressWarnings("Convert2MethodRef")
       @BeforeEach
       void given() {
         when(pixela.updateToken(newToken)).thenReturn(newPixela);
-        when(httpClient.put(updateUser)).thenReturn(() -> Mono.empty());
+        when(httpClient.put(updateUser)).thenReturn(Mono.empty());
       }
 
       @Test
@@ -95,7 +94,7 @@ class UpdateUserTest {
       @BeforeEach
       void given() {
         when(httpClient.put(updateUser))
-            .thenReturn(() -> Mono.error(ApiException.of("user is not existing.")));
+            .thenReturn(Mono.error(ApiException.of("user is not existing.")));
       }
 
       @Test
