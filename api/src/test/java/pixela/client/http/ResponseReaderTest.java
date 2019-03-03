@@ -2,18 +2,15 @@ package pixela.client.http;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static pixela.client.http.JsonDec.decoder;
+import static pixela.client.http.Req.newReq;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Arrays;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pixela.client.ApiException;
-import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -70,26 +67,8 @@ class ResponseReaderTest {
     StepVerifier.create(mono).expectError(ApiException.class).verify();
   }
 
-  interface Req extends Request<Obj> {}
-
-  static Request<Obj> newReq() {
-    final Req mock = mock(Req.class);
-    when(mock.responseType()).thenReturn(Obj.class);
-    return mock;
-  }
-
   static Obj obj(final String value) {
     return new Obj(value);
-  }
-
-  static class Obj {
-    String value;
-
-    public Obj() {}
-
-    Obj(final String value) {
-      this.value = value;
-    }
   }
 
   static class StaticReader<T> implements HttpResponseReader<T> {
@@ -123,26 +102,6 @@ class ResponseReaderTest {
         return Mono.just(object);
       }
       return Mono.empty();
-    }
-  }
-
-  @NotNull
-  @Contract(value = " -> new", pure = true)
-  static JsonDecoder decoder() {
-    return new JsonDecoder() {
-      @Override
-      public @NotNull <T> Mono<T> decode(@NotNull final String json, @NotNull final Class<T> type) {
-        return Mono.just(readJson(json, type));
-      }
-    };
-  }
-
-  static <T> T readJson(final String json, final Class<T> type) {
-    final ObjectMapper mapper = new ObjectMapper();
-    try {
-      return mapper.readValue(json, type);
-    } catch (final IOException e) {
-      throw new UncheckedIOException(e);
     }
   }
 }
