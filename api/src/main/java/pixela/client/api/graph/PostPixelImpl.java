@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pixela.client.*;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
+import pixela.client.http.json.JsonEncoder;
 import reactor.core.publisher.Mono;
 
 public class PostPixelImpl implements PostPixel, PostPixel.OptionData {
@@ -66,10 +66,9 @@ public class PostPixelImpl implements PostPixel, PostPixel.OptionData {
   @NotNull
   @Override
   public Mono<Pixel> call() {
-    final Response<Void> response = httpClient.post(this);
-    return response
-        .toPublisher()
-        .thenReturn(new PixelRaw(quantity, optionalData).toPixel(httpClient, pixela, graph, date));
+    final Mono<Void> response = httpClient.post(this);
+    return response.thenReturn(
+        new PixelRaw(quantity, optionalData).toPixel(httpClient, pixela, graph, date));
   }
 
   @NotNull
@@ -93,7 +92,7 @@ public class PostPixelImpl implements PostPixel, PostPixel.OptionData {
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 
@@ -117,7 +116,8 @@ public class PostPixelImpl implements PostPixel, PostPixel.OptionData {
   @NotNull
   @Override
   public Mono<PostPixel> optionData(@NotNull final Object pojo) {
-    return httpClient.encodeJson(pojo).map(this::optionDataJson);
+    final JsonEncoder encoder = httpClient.encoder();
+    return encoder.encodeObject(pojo).map(this::optionDataJson);
   }
 
   @NotNull

@@ -213,11 +213,10 @@ class UpdateGraphImplTest {
     @Nested
     class Success {
 
-      @SuppressWarnings("Convert2MethodRef")
       @BeforeEach
       void given() {
         when(graph.id()).thenReturn(GraphId.of("test-graph"));
-        when(httpClient.put(any())).thenReturn(() -> Mono.empty());
+        when(httpClient.put(any())).thenReturn(Mono.empty());
       }
 
       @Test
@@ -248,7 +247,7 @@ class UpdateGraphImplTest {
       @BeforeEach
       void given() {
         when(graph.id()).thenReturn(GraphId.of("test-graph"));
-        when(httpClient.put(any())).thenReturn(() -> Mono.error(ApiException.of("api error")));
+        when(httpClient.put(any())).thenReturn(Mono.error(ApiException.of("api error")));
       }
 
       @Test

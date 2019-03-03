@@ -23,6 +23,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import pixela.client.UserToken;
 import pixela.client.http.Post;
 import pixela.client.http.Request;
+import pixela.client.http.json.JsonEncoder;
 import reactor.adapter.JdkFlowAdapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,8 +38,7 @@ class JdkPostRequestBuilderTest {
     executorService.shutdown();
   }
 
-  private final JsonEncoder encoder =
-      JsonEncoder.forJackson(executorService, HttpClientImpl.objectMapper);
+  private final JsonEncoder encoder = new JsonCodecFactoryImpl().create(executorService);
 
   @Test
   void noBodyRequest() throws InterruptedException {
@@ -197,7 +197,7 @@ class JdkPostRequestBuilderTest {
 
     @NotNull
     @Override
-    public Class<? extends Void> responseType() {
+    public Class<Void> responseType() {
       return Void.class;
     }
 

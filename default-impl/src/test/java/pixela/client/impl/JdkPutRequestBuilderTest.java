@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import pixela.client.UserToken;
 import pixela.client.http.Put;
 import pixela.client.http.Request;
+import pixela.client.http.json.JsonEncoder;
 import reactor.adapter.JdkFlowAdapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,7 +46,7 @@ class JdkPutRequestBuilderTest {
     executor.shutdown();
   }
 
-  private final JsonEncoder encoder = JsonEncoder.forJackson(executor, HttpClientImpl.objectMapper);
+  private final JsonEncoder encoder = new JsonCodecFactoryImpl().create(executor);
 
   private static RequestConfigurer requestConfigurer(
       final Consumer<Flux<ByteBuffer>> stepVerifier) {
@@ -122,7 +123,7 @@ class JdkPutRequestBuilderTest {
 
     @NotNull
     @Override
-    public Class<? extends Void> responseType() {
+    public Class<Void> responseType() {
       return Void.class;
     }
 

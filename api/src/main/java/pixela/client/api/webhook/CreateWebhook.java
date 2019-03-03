@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Post;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class CreateWebhook implements Post<CreateWebhookResult>, Api<Webhook> {
@@ -65,9 +64,8 @@ public class CreateWebhook implements Post<CreateWebhookResult>, Api<Webhook> {
   @NotNull
   @Override
   public Mono<Webhook> call() {
-    final Response<CreateWebhookResult> response = httpClient.post(this);
+    final Mono<CreateWebhookResult> response = httpClient.post(this);
     return response
-        .toPublisher()
         .flatMap(result -> result.webhookHash(this))
         .map(WebhookHash::of)
         .map(hash -> WebhookImpl.of(httpClient, graph, hash, webhookType));
@@ -94,7 +92,7 @@ public class CreateWebhook implements Post<CreateWebhookResult>, Api<Webhook> {
 
   @NotNull
   @Override
-  public Class<? extends CreateWebhookResult> responseType() {
+  public Class<CreateWebhookResult> responseType() {
     return CreateWebhookResult.class;
   }
 

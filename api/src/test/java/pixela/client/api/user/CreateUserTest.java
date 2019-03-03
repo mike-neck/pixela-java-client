@@ -40,17 +40,16 @@ class CreateUserTest {
   void callTest_errorThenError() {
     final CreateUser createUser =
         new CreateUser(httpClient, "token", "username", YesNo.YES, YesNo.YES);
-    when(httpClient.post(createUser)).thenReturn(() -> Mono.error(new IOException("IOException")));
+    when(httpClient.post(createUser)).thenReturn(Mono.error(new IOException("IOException")));
     final Mono<Pixela> pixelaMono = createUser.call();
     StepVerifier.create(pixelaMono).expectErrorMessage("IOException").verify();
   }
 
-  @SuppressWarnings("NullableProblems")
   @Test
   void callTest_successThenPixela() {
     final CreateUser createUser =
         new CreateUser(httpClient, "token", "username", YesNo.YES, YesNo.YES);
-    when(httpClient.post(createUser)).thenReturn(Mono::empty);
+    when(httpClient.post(createUser)).thenReturn(Mono.empty());
     final Mono<Pixela> pixelaMono = createUser.call();
     StepVerifier.create(pixelaMono)
         .expectNextMatches(pixela -> pixela instanceof PixelaImpl)

@@ -27,7 +27,6 @@ import pixela.client.GraphSelfSufficient;
 import pixela.client.Pixela;
 import pixela.client.UserToken;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 class UpdateGraphImpl implements UpdateGraph.Unit {
@@ -127,8 +126,8 @@ class UpdateGraphImpl implements UpdateGraph.Unit {
   @NotNull
   @Override
   public Mono<Graph> call() {
-    final Response<Void> response = httpClient.put(this);
-    return response.toPublisher().thenReturn(SimpleGraph.of(httpClient, pixela, graph.id()));
+    final Mono<Void> response = httpClient.put(this);
+    return response.thenReturn(SimpleGraph.of(httpClient, pixela, graph.id()));
   }
 
   @NotNull

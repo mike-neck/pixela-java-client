@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client.impl;
+package pixela.client.http.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Request;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @FunctionalInterface
-interface JsonEncoder {
+public interface JsonEncoder {
 
   @NotNull
   default Mono<String> encode(@NotNull final Request<?> request) {
@@ -34,23 +29,6 @@ interface JsonEncoder {
     } else {
       return Mono.empty();
     }
-  }
-
-  @NotNull
-  static JsonEncoder forJackson(
-      @NotNull final ExecutorService executorService, @NotNull final ObjectMapper objectMapper) {
-    final Function<Object, Mono<String>> toJson =
-        object -> {
-          try {
-            final String json = objectMapper.writeValueAsString(object);
-            return Mono.just(json);
-          } catch (final IOException e) {
-            return Mono.error(e);
-          }
-        };
-    return object ->
-        Mono.defer(() -> toJson.apply(object))
-            .subscribeOn(Schedulers.fromExecutor(executorService));
   }
 
   @NotNull

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
+import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -28,8 +29,7 @@ class JdkHttpClientTest {
     executorService.shutdown();
   }
 
-  private final JsonDecoder decoder =
-      JsonDecoder.forJackson(executorService, HttpClientImpl.objectMapper);
+  private final JsonDecoder decoder = new JsonCodecFactoryImpl().create(executorService);
 
   private HttpClient httpClient;
 

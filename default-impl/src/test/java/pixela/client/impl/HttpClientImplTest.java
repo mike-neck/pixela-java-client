@@ -68,8 +68,8 @@ class HttpClientImplTest {
 
       @Test
       void then() {
-        final Response<Void> response = httpClient.post(postRequest);
-        StepVerifier.create(response.toPublisher())
+        final Mono<Void> response = httpClient.post(postRequest);
+        StepVerifier.create(response)
             .expectErrorSatisfies(
                 e ->
                     assertThat(e)
@@ -90,8 +90,8 @@ class HttpClientImplTest {
 
       @Test
       void then() {
-        final Response<Void> response = httpClient.post(postRequest);
-        StepVerifier.create(response.toPublisher())
+        final Mono<Void> response = httpClient.post(postRequest);
+        StepVerifier.create(response)
             .expectErrorSatisfies(
                 e ->
                     assertAll(
@@ -128,8 +128,8 @@ class HttpClientImplTest {
 
       @Test
       void then() {
-        final Response<Void> response = httpClient.delete(deleteRequest);
-        StepVerifier.create(response.toPublisher())
+        final Mono<Void> response = httpClient.delete(deleteRequest);
+        StepVerifier.create(response)
             .expectErrorSatisfies(
                 e ->
                     assertThat(e)
@@ -150,8 +150,8 @@ class HttpClientImplTest {
 
       @Test
       void then() {
-        final Response<Void> response = httpClient.delete(deleteRequest);
-        StepVerifier.create(response.toPublisher())
+        final Mono<Void> response = httpClient.delete(deleteRequest);
+        StepVerifier.create(response)
             .expectErrorSatisfies(
                 e ->
                     assertAll(
@@ -188,8 +188,8 @@ class HttpClientImplTest {
 
       @Test
       void then() {
-        final Response<Void> response = httpClient.get(getRequest);
-        StepVerifier.create(response.toPublisher())
+        final Mono<Void> response = httpClient.get(getRequest);
+        StepVerifier.create(response)
             .expectErrorSatisfies(
                 e ->
                     assertThat(e)
@@ -210,8 +210,8 @@ class HttpClientImplTest {
 
       @Test
       void then() {
-        final Response<Void> response = httpClient.get(getRequest);
-        StepVerifier.create(response.toPublisher())
+        final Mono<Void> response = httpClient.get(getRequest);
+        StepVerifier.create(response)
             .expectErrorSatisfies(
                 e ->
                     assertAll(

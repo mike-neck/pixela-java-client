@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Shinya Mochida
+ * Copyright 2019 Shinya Mochida
  *
  * Licensed under the Apache License,Version2.0(the"License");
  * you may not use this file except in compliance with the License.
@@ -13,38 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client.impl;
+package pixela.client.http;
 
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
-class BasicResponse {
-  @NotNull private String message = "";
-  private boolean isSuccess;
+public interface HttpResponseReader<T> {
 
   @NotNull
-  String getMessage() {
-    return message;
-  }
+  Class<T> responseType();
 
-  public void setMessage(@NotNull final String message) {
-    this.message = message;
-  }
+  boolean matchCondition(@NotNull final HttpResponse response);
 
-  boolean isIsSuccess() {
-    return isSuccess;
-  }
+  @NotNull
+  Mono<T> read(@NotNull final HttpResponse response);
 
-  public void setIsSuccess(final boolean success) {
-    isSuccess = success;
-  }
-
-  Mono<Void> emptyOrError() {
-    if (isSuccess) {
-      return Mono.empty();
-    } else {
-      return Mono.error(Response.error(message));
+  @NotNull
+  default Optional<Mono<T>> readResponse(@NotNull final HttpResponse response) {
+    if (matchCondition(response)) {
+      return Optional.of(read(response));
     }
+    return Optional.empty();
   }
 }

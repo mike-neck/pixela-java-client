@@ -69,7 +69,7 @@ public interface GetGraphSvg extends Get<String>, Api<Tuple2<Graph, String>> {
 
   @NotNull
   @Override
-  default Class<? extends String> responseType() {
+  default Class<String> responseType() {
     return String.class;
   }
 

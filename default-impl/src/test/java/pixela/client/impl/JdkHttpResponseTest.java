@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import pixela.client.http.Request;
+import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -27,8 +28,7 @@ class JdkHttpResponseTest {
   @BeforeEach
   void setup() {
     response = mock(MockHttpResponse.class);
-    final JsonDecoder decoder =
-        JsonDecoder.forJackson(executorService, HttpClientImpl.objectMapper);
+    final JsonDecoder decoder = new JsonCodecFactoryImpl().create(executorService);
     jdkHttpResponse = JdkHttpResponse.create(response, decoder);
   }
 
@@ -259,7 +259,7 @@ class JdkHttpResponseTest {
   interface Req extends Request<Model> {
     @NotNull
     @Override
-    default Class<? extends Model> responseType() {
+    default Class<Model> responseType() {
       return Model.class;
     }
   }
@@ -311,7 +311,7 @@ class JdkHttpResponseTest {
   interface VoidReq extends Request<Void> {
     @NotNull
     @Override
-    default Class<? extends Void> responseType() {
+    default Class<Void> responseType() {
       return Void.class;
     }
   }
@@ -319,7 +319,7 @@ class JdkHttpResponseTest {
   interface StringReq extends Request<String> {
     @NotNull
     @Override
-    default Class<? extends String> responseType() {
+    default Class<String> responseType() {
       return String.class;
     }
   }

@@ -99,7 +99,7 @@ class CreateWebhookTest {
       final CreateWebhook createWebhook =
           CreateWebhook.of(httpClient, pixela, graph, WebhookType.DECREMENT);
       when(httpClient.post(createWebhook))
-          .thenReturn(() -> Mono.just(CreateWebhookResult.success("test-hash", "Success.")));
+          .thenReturn(Mono.just(CreateWebhookResult.success("test-hash", "Success.")));
 
       final Mono<Webhook> mono = createWebhook.call();
 
@@ -119,7 +119,7 @@ class CreateWebhookTest {
       final CreateWebhook createWebhook =
           CreateWebhook.of(httpClient, pixela, graph, WebhookType.INCREMENT);
       when(httpClient.post(createWebhook))
-          .thenReturn(() -> Mono.just(CreateWebhookResult.failure("No such graph id.")));
+          .thenReturn(Mono.just(CreateWebhookResult.failure("No such graph id.")));
       when(pixela.usersUri()).thenReturn("/v1/users/test-user");
 
       final Mono<Webhook> mono = createWebhook.call();
@@ -141,8 +141,7 @@ class CreateWebhookTest {
     void error() {
       final CreateWebhook createWebhook =
           CreateWebhook.of(httpClient, pixela, graph, WebhookType.INCREMENT);
-      when(httpClient.post(createWebhook))
-          .thenReturn(() -> Mono.error(ApiException.of("error message")));
+      when(httpClient.post(createWebhook)).thenReturn(Mono.error(ApiException.of("error message")));
 
       final Mono<Webhook> mono = createWebhook.call();
 

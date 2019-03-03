@@ -13,27 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pixela.client.http;
+package pixela.client;
 
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
-class ApiResponse implements Response<Void> {
-  @NotNull private final String message;
-  private final boolean success;
-
-  ApiResponse(@NotNull final String message, final boolean success) {
-    this.message = message;
-    this.success = success;
-  }
+public class BasicResponse {
+  @NotNull private String message = "";
+  private boolean isSuccess;
 
   @NotNull
-  @Override
-  public Mono<Void> toPublisher() {
-    if (success) {
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(@NotNull final String message) {
+    this.message = message;
+  }
+
+  public boolean isIsSuccess() {
+    return isSuccess;
+  }
+
+  public void setIsSuccess(final boolean success) {
+    isSuccess = success;
+  }
+
+  public Mono<Void> emptyOrError() {
+    if (isSuccess) {
       return Mono.empty();
     } else {
-      return Mono.error(() -> Response.error(message));
+      return Mono.error(ApiException.of(message));
     }
   }
 }

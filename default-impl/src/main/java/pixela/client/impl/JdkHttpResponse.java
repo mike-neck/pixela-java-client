@@ -16,13 +16,16 @@
 package pixela.client.impl;
 
 import java.net.http.HttpResponse;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
+import pixela.client.ApiException;
+import pixela.client.BasicResponse;
 import pixela.client.http.Request;
-import pixela.client.http.Response;
+import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 
-class JdkHttpResponse {
+class JdkHttpResponse implements pixela.client.http.HttpResponse {
 
   @NotNull private final HttpResponse<String> response;
   @NotNull private final JsonDecoder decoder;
@@ -33,21 +36,33 @@ class JdkHttpResponse {
     this.decoder = decoder;
   }
 
+  @NotNull
+  @Contract("_, _ -> new")
   static JdkHttpResponse create(
       @NotNull final HttpResponse<String> response, @NotNull final JsonDecoder decoder) {
     return new JdkHttpResponse(response, decoder);
   }
 
+  @NotNull
+  @Override
+  public String body() {
+    return response.body();
+  }
+
+  @Override
+  public boolean isErrorResponse() {
+    return statusCode() / 100 != 2;
+  }
+
   @SuppressWarnings("unchecked")
   <T> Mono<T> readObject(final Request<T> request) {
-    final String json = response.body();
-    final int statusCode = response.statusCode();
-    final Class<? extends T> responseType = request.responseType();
-    if (statusCode / 100 != 2) {
+    final String json = body();
+    final Class<T> responseType = request.responseType();
+    if (isErrorResponse()) {
       final Mono<BasicResponse> response = decoder.decode(json, BasicResponse.class);
       return response
           .map(BasicResponse::getMessage)
-          .flatMap(message -> Mono.error(Response.error(message)));
+          .flatMap(message -> Mono.error(ApiException.of(message)));
     } else if (responseType.equals(Void.class)) {
       final Mono<BasicResponse> response = decoder.decode(json, BasicResponse.class);
       return response.flatMap(res -> (Mono<T>) res.emptyOrError());
@@ -58,6 +73,7 @@ class JdkHttpResponse {
     }
   }
 
+  @SuppressWarnings("WeakerAccess")
   @TestOnly
   int statusCode() {
     return response.statusCode();

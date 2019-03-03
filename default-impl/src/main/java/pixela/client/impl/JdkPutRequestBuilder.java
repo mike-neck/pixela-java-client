@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Put;
 import pixela.client.http.Request;
+import pixela.client.http.json.JsonEncoder;
 import reactor.core.publisher.Mono;
 
 class JdkPutRequestBuilder implements RequestBuilder<Put<?>> {

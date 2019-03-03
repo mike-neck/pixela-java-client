@@ -17,9 +17,8 @@ package pixela.client.api.graph;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -80,16 +79,9 @@ class PostPixelTest {
         () -> assertThatJson(json).node("optionalData").isAbsent());
   }
 
-  @SuppressWarnings({"UnassignedFluxMonoInstance", "Convert2MethodRef"})
   @Test
   void floatJsonWithOptionalData() {
-    doAnswer(
-            invocation -> {
-              final Object object = invocation.getArgument(0);
-              return Mono.just(toJson(object));
-            })
-        .when(httpClient)
-        .encodeJson(any());
+    when(httpClient.encoder()).thenReturn(object -> Mono.just(toJson(object)));
 
     final Map<String, String> map = Maps.immutable.of("test", "value").toMap();
 
@@ -99,6 +91,7 @@ class PostPixelTest {
             .quantity(Quantity.floating(20.12))
             .optionData(map);
 
+    @SuppressWarnings("Convert2MethodRef")
     final Mono<String> mono = postPixel.map(post -> toJson(post));
 
     StepVerifier.create(mono.log("step-verifier"))
@@ -115,22 +108,16 @@ class PostPixelTest {
         .verifyComplete();
   }
 
-  @SuppressWarnings({"UnassignedFluxMonoInstance", "Convert2MethodRef"})
   @Test
   void intJsonWithOptionalData() {
-    doAnswer(
-            invocation -> {
-              final Object object = invocation.getArgument(0);
-              return Mono.just(toJson(object));
-            })
-        .when(httpClient)
-        .encodeJson(any());
+    when(httpClient.encoder()).thenReturn(object -> Mono.just(toJson(object)));
 
     final Map<String, String> map = Maps.immutable.of("test", "value").toMap();
 
     final Mono<PostPixel> postPixel =
         pixelDate.date(LocalDate.of(2006, 1, 22)).quantity(Quantity.integer(10)).optionData(map);
 
+    @SuppressWarnings("Convert2MethodRef")
     final Mono<String> mono = postPixel.map(post -> toJson(post));
 
     StepVerifier.create(mono)

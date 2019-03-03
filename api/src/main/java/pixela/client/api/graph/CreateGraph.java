@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import pixela.client.*;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Post;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class CreateGraph implements Post<Void>, Api<Graph> {
@@ -101,19 +100,17 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
   @NotNull
   @Override
   public Mono<Graph> call() {
-    final Response<Void> response = httpClient.post(this);
-    return response
-        .toPublisher()
-        .thenReturn(
-            new NewGraph(
-                httpClient,
-                pixela,
-                GraphId.of(id),
-                GraphName.of(name),
-                GraphUnit.of(unit),
-                type,
-                color,
-                timezone));
+    final Mono<Void> response = httpClient.post(this);
+    return response.thenReturn(
+        new NewGraph(
+            httpClient,
+            pixela,
+            GraphId.of(id),
+            GraphName.of(name),
+            GraphUnit.of(unit),
+            type,
+            color,
+            timezone));
   }
 
   @NotNull
@@ -137,7 +134,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 

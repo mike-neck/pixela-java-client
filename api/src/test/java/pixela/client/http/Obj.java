@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Shinya Mochida
+ * Copyright 2019 Shinya Mochida
  *
  * Licensed under the Apache License,Version2.0(the"License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,12 @@
  */
 package pixela.client.http;
 
-import org.jetbrains.annotations.NotNull;
-import pixela.client.ApiException;
-import reactor.core.publisher.Mono;
+class Obj {
+  String value;
 
-public interface Response<T> {
+  public Obj() {}
 
-  @NotNull
-  Mono<T> toPublisher();
-
-  @NotNull
-  static Response<Void> of(@NotNull final String message, final boolean success) {
-    return new ApiResponse(message, success);
-  }
-
-  @NotNull
-  static ApiException error(@NotNull final String message) {
-    return ApiException.of(message);
+  Obj(final String value) {
+    this.value = value;
   }
 }

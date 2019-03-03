@@ -23,7 +23,6 @@ import pixela.client.UserToken;
 import pixela.client.Username;
 import pixela.client.http.Delete;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class DeleteUser implements Delete<Void>, Api<Void> {
@@ -51,8 +50,7 @@ public class DeleteUser implements Delete<Void>, Api<Void> {
   @NotNull
   @Override
   public Mono<Void> call() {
-    final Response<Void> response = httpClient.delete(this);
-    return response.toPublisher();
+    return httpClient.delete(this);
   }
 
   @NotNull
@@ -74,7 +72,7 @@ public class DeleteUser implements Delete<Void>, Api<Void> {
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 

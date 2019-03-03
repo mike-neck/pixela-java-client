@@ -22,6 +22,7 @@ import pixela.client.http.Delete;
 import pixela.client.http.Get;
 import pixela.client.http.Post;
 import pixela.client.http.Put;
+import pixela.client.http.json.JsonEncoder;
 import reactor.core.publisher.Mono;
 
 class JdkRequestBuilder {

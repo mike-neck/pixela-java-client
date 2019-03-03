@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.http.Post;
 import pixela.client.http.Request;
+import pixela.client.http.json.JsonEncoder;
 import reactor.core.publisher.Mono;
 
 class JdkPostRequestBuilder implements RequestBuilder<Post<?>> {

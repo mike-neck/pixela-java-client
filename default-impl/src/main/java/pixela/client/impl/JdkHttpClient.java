@@ -23,6 +23,7 @@ import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import org.jetbrains.annotations.NotNull;
 import pixela.client.PixelaClientConfig;
+import pixela.client.http.json.JsonDecoder;
 import reactor.core.publisher.Mono;
 
 class JdkHttpClient {

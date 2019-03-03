@@ -26,7 +26,6 @@ import pixela.client.Pixela;
 import pixela.client.UserToken;
 import pixela.client.http.Delete;
 import pixela.client.http.HttpClient;
-import pixela.client.http.Response;
 import reactor.core.publisher.Mono;
 
 public class DeletePixel implements Delete<Void>, Api<Graph> {
@@ -60,8 +59,8 @@ public class DeletePixel implements Delete<Void>, Api<Graph> {
   @NotNull
   @Override
   public Mono<Graph> call() {
-    final Response<Void> response = httpClient.delete(this);
-    return response.toPublisher().then(Mono.just(graph));
+    final Mono<Void> response = httpClient.delete(this);
+    return response.then(Mono.just(graph));
   }
 
   @NotNull
@@ -80,7 +79,7 @@ public class DeletePixel implements Delete<Void>, Api<Graph> {
 
   @NotNull
   @Override
-  public Class<? extends Void> responseType() {
+  public Class<Void> responseType() {
     return Void.class;
   }
 
