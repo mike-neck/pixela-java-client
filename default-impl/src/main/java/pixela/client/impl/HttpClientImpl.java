@@ -22,7 +22,6 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
-import pixela.client.ApiException;
 import pixela.client.AutoCloseables;
 import pixela.client.PixelaClientConfig;
 import pixela.client.http.*;
@@ -71,6 +70,7 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
     return jdkRequestBuilder.encodeJson(object);
   }
 
+  @NotNull
   @Override
   public JsonEncoder encoder() {
     return jdkRequestBuilder::encodeJson;
@@ -82,6 +82,7 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
     return httpClient.decodeJson(json, type);
   }
 
+  @NotNull
   @Override
   public JsonDecoder decoder() {
     return httpClient::decodeJson;
@@ -104,9 +105,8 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
   @Override
   public <T> Mono<T> get(@NotNull final Get<T> getRequest) {
     final Mono<HttpRequest> httpRequest = jdkRequestBuilder.get(getRequest);
-    final Mono<JdkHttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
-    final Mono<T> mono = response.flatMap(res -> res.readObject(getRequest));
-    return mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(getRequest)).cache();
+    final Mono<HttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
+    return readResponse(getRequest, response);
   }
 
   @SuppressWarnings("Duplicates")
@@ -114,9 +114,8 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
   @Override
   public <T> Mono<T> post(@NotNull final Post<T> postRequest) {
     final Mono<HttpRequest> httpRequest = jdkRequestBuilder.post(postRequest);
-    final Mono<JdkHttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
-    final Mono<T> mono = response.flatMap(res -> res.readObject(postRequest));
-    return mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(postRequest)).cache();
+    final Mono<HttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
+    return readResponse(postRequest, response);
   }
 
   @SuppressWarnings("Duplicates")
@@ -124,9 +123,8 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
   @Override
   public <T> Mono<T> put(@NotNull final Put<T> putRequest) {
     final Mono<HttpRequest> httpRequest = jdkRequestBuilder.put(putRequest);
-    final Mono<JdkHttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
-    final Mono<T> mono = response.flatMap(res -> res.readObject(putRequest));
-    return mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(putRequest)).cache();
+    final Mono<HttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
+    return readResponse(putRequest, response);
   }
 
   @SuppressWarnings("Duplicates")
@@ -134,9 +132,8 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
   @Override
   public <T> Mono<T> delete(@NotNull final Delete<T> deleteRequest) {
     final Mono<HttpRequest> delete = jdkRequestBuilder.delete(deleteRequest);
-    final Mono<JdkHttpResponse> response = delete.flatMap(httpClient::sendRequest);
-    final Mono<T> mono = response.flatMap(res -> res.readObject(deleteRequest));
-    return mono.onErrorMap(ApiException.class, e -> e.appendDebugInfo(deleteRequest)).cache();
+    final Mono<HttpResponse> response = delete.flatMap(httpClient::sendRequest);
+    return readResponse(deleteRequest, response);
   }
 
   @Override

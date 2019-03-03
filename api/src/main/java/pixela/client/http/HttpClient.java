@@ -18,6 +18,7 @@ package pixela.client.http;
 import java.net.URI;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
+import pixela.client.ApiException;
 import pixela.client.http.json.JsonDecoder;
 import pixela.client.http.json.JsonEncoder;
 import reactor.core.publisher.Mono;
@@ -35,6 +36,7 @@ public interface HttpClient extends AutoCloseable {
   @NotNull
   Mono<String> encodeJson(@NotNull Object object);
 
+  @NotNull
   JsonEncoder encoder();
 
   /**
@@ -50,7 +52,17 @@ public interface HttpClient extends AutoCloseable {
   @NotNull
   <T> Mono<T> decodeJson(@NotNull String json, @NotNull final Class<T> type);
 
+  @NotNull
   JsonDecoder decoder();
+
+  @NotNull
+  default <T> Mono<T> readResponse(
+      @NotNull final Request<T> request, @NotNull final Mono<HttpResponse> response) {
+    return response
+        .flatMap(res -> ResponseReader.create(request, decoder()).read(res))
+        .onErrorMap(ApiException.class, e -> e.appendDebugInfo(request))
+        .cache();
+  }
 
   @NotNull
   <T> Mono<T> runAsync(@NotNull final Supplier<? extends T> supplier);

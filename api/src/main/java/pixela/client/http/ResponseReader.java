@@ -48,6 +48,7 @@ class ResponseReader<T> {
             new StringResponseReader<>(request)));
   }
 
+  @NotNull
   Mono<T> read(@NotNull final HttpResponse response) {
     return readers
         .stream()
