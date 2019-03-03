@@ -71,14 +71,38 @@ public interface HttpClient extends AutoCloseable {
   URI baseUri();
 
   @NotNull
-  <T> Mono<T> get(@NotNull final Get<T> getRequest);
+  default <T> Mono<T> get(@NotNull final Get<T> request) {
+    final Mono<HttpResponse> response = runGet(request);
+    return readResponse(request, response);
+  }
 
   @NotNull
-  <T> Mono<T> post(@NotNull final Post<T> postRequest);
+  <T> Mono<HttpResponse> runGet(@NotNull final Get<T> getRequest);
 
   @NotNull
-  <T> Mono<T> put(@NotNull final Put<T> putRequest);
+  default <T> Mono<T> post(@NotNull final Post<T> request) {
+    final Mono<HttpResponse> response = runPost(request);
+    return readResponse(request, response);
+  }
 
   @NotNull
-  <T> Mono<T> delete(@NotNull final Delete<T> deleteRequest);
+  <T> Mono<HttpResponse> runPost(@NotNull final Post<T> postRequest);
+
+  @NotNull
+  default <T> Mono<T> put(@NotNull final Put<T> request) {
+    final Mono<HttpResponse> response = runPut(request);
+    return readResponse(request, response);
+  }
+
+  @NotNull
+  <T> Mono<HttpResponse> runPut(@NotNull final Put<T> putRequest);
+
+  @NotNull
+  default <T> Mono<T> delete(@NotNull final Delete<T> request) {
+    final Mono<HttpResponse> response = runDelete(request);
+    return readResponse(request, response);
+  }
+
+  @NotNull
+  <T> Mono<HttpResponse> runDelete(@NotNull final Delete<T> deleteRequest);
 }

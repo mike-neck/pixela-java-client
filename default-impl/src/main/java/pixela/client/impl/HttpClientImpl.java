@@ -100,40 +100,32 @@ class HttpClientImpl implements pixela.client.http.HttpClient {
     return jdkRequestBuilder.baseUri();
   }
 
-  @SuppressWarnings("Duplicates")
   @NotNull
   @Override
-  public <T> Mono<T> get(@NotNull final Get<T> getRequest) {
+  public <T> Mono<HttpResponse> runGet(@NotNull final Get<T> getRequest) {
     final Mono<HttpRequest> httpRequest = jdkRequestBuilder.get(getRequest);
-    final Mono<HttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
-    return readResponse(getRequest, response);
+    return httpRequest.flatMap(httpClient::sendRequest);
   }
 
-  @SuppressWarnings("Duplicates")
   @NotNull
   @Override
-  public <T> Mono<T> post(@NotNull final Post<T> postRequest) {
+  public <T> Mono<HttpResponse> runPost(@NotNull final Post<T> postRequest) {
     final Mono<HttpRequest> httpRequest = jdkRequestBuilder.post(postRequest);
-    final Mono<HttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
-    return readResponse(postRequest, response);
+    return httpRequest.flatMap(httpClient::sendRequest);
   }
 
-  @SuppressWarnings("Duplicates")
   @NotNull
   @Override
-  public <T> Mono<T> put(@NotNull final Put<T> putRequest) {
+  public <T> Mono<HttpResponse> runPut(@NotNull final Put<T> putRequest) {
     final Mono<HttpRequest> httpRequest = jdkRequestBuilder.put(putRequest);
-    final Mono<HttpResponse> response = httpRequest.flatMap(httpClient::sendRequest);
-    return readResponse(putRequest, response);
+    return httpRequest.flatMap(httpClient::sendRequest);
   }
 
-  @SuppressWarnings("Duplicates")
   @NotNull
   @Override
-  public <T> Mono<T> delete(@NotNull final Delete<T> deleteRequest) {
+  public <T> Mono<HttpResponse> runDelete(@NotNull final Delete<T> deleteRequest) {
     final Mono<HttpRequest> delete = jdkRequestBuilder.delete(deleteRequest);
-    final Mono<HttpResponse> response = delete.flatMap(httpClient::sendRequest);
-    return readResponse(deleteRequest, response);
+    return delete.flatMap(httpClient::sendRequest);
   }
 
   @Override
