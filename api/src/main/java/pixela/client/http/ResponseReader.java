@@ -30,7 +30,7 @@ class ResponseReader<T> {
 
   @NotNull private final List<HttpResponseReader<T>> readers;
 
-  private ResponseReader(
+  ResponseReader(
       @NotNull final Function<HttpResponse, Mono<T>> defaultReader,
       @NotNull final List<HttpResponseReader<T>> readers) {
     this.defaultReader = defaultReader;

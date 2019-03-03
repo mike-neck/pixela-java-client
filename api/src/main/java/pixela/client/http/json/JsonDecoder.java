@@ -18,6 +18,7 @@ package pixela.client.http.json;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
+@FunctionalInterface
 public interface JsonDecoder {
 
   @NotNull
