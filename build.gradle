@@ -10,11 +10,11 @@ ext {
     reactorVersion = '3.2.6.RELEASE'
     jetbrainsAnnotationsVersion = '17.0.0'
     eclipseCollectionsVersion = '9.2.0'
-    mockitoVersion = '2.24.0'
+    mockitoVersion = '2.24.5'
     wiremockVersion = '2.21.0'
-    assertjVersion = '3.12.0'
+    assertjVersion = '3.12.1'
     jsonUnitAssertjVersion = '2.4.0'
-    slf4jSimpleVersion = '1.7.25'
+    slf4jSimpleVersion = '1.7.26'
     slack = has('slackNotificationUrl')? slackNotificationUrl: ''
 }
 

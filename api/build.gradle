@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven'
     id 'signing'
-    id "com.github.ben-manes.versions" version "0.20.0"
+    id "com.github.ben-manes.versions" version "0.21.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
