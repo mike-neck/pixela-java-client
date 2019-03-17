@@ -10,7 +10,7 @@ dependencies {
     gradleApi()
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.8'
 
-    testCompile 'org.junit.jupiter:junit-jupiter:5.4.0'
+    testCompile "org.junit.jupiter:junit-jupiter:5.4.1"
 }
 
 test {
