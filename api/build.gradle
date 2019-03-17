@@ -49,14 +49,14 @@ jacoco {
 }
 
 task sourcesJar(type: Jar, group: 'publish') {
-    classifier = 'sources'
+    archiveClassifier.set('sources')
     from project.sourceSets.main.allSource
 }
 
 task javadocJar(type: Jar, group: 'publish') {
     dependsOn 'javadoc'
     from tasks.javadoc
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
 }
 
 if (canPublish) {
