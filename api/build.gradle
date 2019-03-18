@@ -59,48 +59,6 @@ task javadocJar(type: Jar, group: 'publish') {
     archiveClassifier.set('javadoc')
 }
 
-if (canPublish) {
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment {MavenDeployment deployment ->
-                    signing.signPom(deployment)
-                }
-                repository(url: sonatypeUrl) {
-                    authentication userName: sonatypeUsername, password: sonatypePassword
-                }
-                pom.project {
-                    name('pixela-java-client-api')
-                    packaging 'jar'
-                    description 'pixela-java-client API'
-                    url 'https://github.com/mike-neck/pixela-java-client'
-    
-                    scm {
-                        connection 'scm:git:https://github.com/mike-neck/pixela-java-client'
-                        developerConnection 'scm:git:https://github.com/mike-neck/pixela-java-client'
-                        url 'https://github.com/mike-neck/pixela-java-client'
-                    }
-    
-                    licenses {
-                        license {
-                            name 'The Apache Software License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-    
-                    developers {
-                        developer {
-                            id 'mikeneck'
-                            name 'Shinya Mochida'
-                            email 'jkrt3333[at]gmail.com'
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 signing {
     sign(project.configurations.archives)
 }
@@ -111,3 +69,4 @@ artifacts {
 }
 
 apply from: rootProject.file('dep.gradle')
+apply from: rootProject.file('upload.gradle')
