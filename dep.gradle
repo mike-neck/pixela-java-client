@@ -12,7 +12,7 @@ dependencyUpdates.resolutionStrategy {
                     [ptn: 'alpha', pred: contains],
                     [ptn: 'beta', pred: contains],
                     [ptn: 'rc', pred: contains],
-                    [ptn: '.+\\.M\\p{Digit}$', pred: { String p -> {
+                    [ptn: '.+[\\.-]M\\p{Digit}$', pred: { String p -> {
                         String ver -> ver.matches(p)
                     } }]
             ]
