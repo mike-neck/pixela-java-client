@@ -33,7 +33,7 @@ class UsernameTest {
     final Instant now = Instant.now(Clock.systemUTC());
     final long seed = now.getEpochSecond();
     final Random random = new Random(seed);
-    return Stream.generate(() -> Klass.random(random))
+    return Stream.generate(() -> Klass.random(31, random))
         .limit(100L)
         .map(
             string ->

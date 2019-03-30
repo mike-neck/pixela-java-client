@@ -43,12 +43,12 @@ enum Klass {
   abstract Range range();
 
   @NotNull
-  static String random(final Random random) {
+  static String random(final int len, final Random random) {
     final StringBuilder stringBuilder = new StringBuilder();
     final String firstChar = Choice.choices(LOWER.range()).random(random);
     stringBuilder.append(firstChar);
 
-    final int length = random.nextInt(31) + 1;
+    final int length = random.nextInt(len) + 1;
     final Choices choices = Choice.choices(LOWER.range(), NUMBER.range(), HYPHEN.range());
     Stream.generate(() -> choices.random(random)).limit(length).forEach(stringBuilder::append);
     return stringBuilder.toString();
