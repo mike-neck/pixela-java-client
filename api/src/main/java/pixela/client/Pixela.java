@@ -64,7 +64,7 @@ public interface Pixela {
 
   @NotNull
   default PostPixel.PixelDate postPixel(@NotNull final String graphId) {
-    return postPixel(GraphId.of(graphId));
+    return postPixel(GraphId.validated(graphId));
   }
 
   @NotNull
@@ -72,7 +72,7 @@ public interface Pixela {
 
   @NotNull
   default Graph graph(@NotNull final String graphId) {
-    return graph(GraphId.of(graphId));
+    return graph(GraphId.validated(graphId));
   }
 
   @NotNull

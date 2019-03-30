@@ -15,10 +15,17 @@
  */
 package pixela.client;
 
+import java.util.Objects;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class GraphId {
+
+  // language=regexp
+  private static final String VALID = "^[a-z][a-z0-9-]{1,16}";
+
+  private static final Pattern PATTERN = Pattern.compile(VALID);
 
   @NotNull private final String value;
 
@@ -30,6 +37,16 @@ public class GraphId {
   @NotNull
   public static GraphId of(@NotNull final String value) {
     return new GraphId(value);
+  }
+
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  @NotNull
+  public static GraphId validated(@NotNull final String value) {
+    Objects.requireNonNull(value);
+    if (PATTERN.matcher(value).matches()) {
+      return of(value);
+    }
+    throw ApiException.of("invalid graph-id");
   }
 
   @NotNull

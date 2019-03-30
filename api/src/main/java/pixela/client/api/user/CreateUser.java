@@ -20,10 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import pixela.client.Api;
-import pixela.client.Pixela;
-import pixela.client.UserToken;
-import pixela.client.YesNo;
+import pixela.client.*;
 import pixela.client.http.HttpClient;
 import pixela.client.http.Post;
 import reactor.core.publisher.Mono;
@@ -34,15 +31,15 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
 
   @NotNull private final HttpClient httpClient;
 
-  @NotNull private final String token;
-  @NotNull private final String username;
+  @NotNull private final UserToken token;
+  @NotNull private final pixela.client.Username username;
   @NotNull private final YesNo agreeTermsOfService;
   @NotNull private final YesNo notMinor;
 
   CreateUser(
       @NotNull final HttpClient httpClient,
-      @NotNull final String token,
-      @NotNull final String username,
+      @NotNull final UserToken token,
+      @NotNull final pixela.client.Username username,
       @NotNull final YesNo agreeTermsOfService,
       @NotNull final YesNo notMinor) {
     this.httpClient = httpClient;
@@ -54,12 +51,12 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
 
   @NotNull
   public String getToken() {
-    return token;
+    return token.tokenValue();
   }
 
   @NotNull
   public String getUsername() {
-    return username;
+    return username.value();
   }
 
   @NotNull
@@ -76,8 +73,8 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
   public String toString() {
     @SuppressWarnings("StringBufferReplaceableByString")
     final StringBuilder sb = new StringBuilder("CreateUser{");
-    sb.append("token='").append(token).append('\'');
-    sb.append(", username='").append(username).append('\'');
+    sb.append("token='").append(token.tokenValue()).append('\'');
+    sb.append(", username='").append(username.value()).append('\'');
     sb.append(", agreeTermsOfService=").append(agreeTermsOfService);
     sb.append(", notMinor=").append(notMinor);
     sb.append('}');
@@ -115,10 +112,10 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
         + ENDPOINT
         + '\n'
         + "  token:"
-        + token
+        + token.tokenValue()
         + '\n'
         + "  username:"
-        + username
+        + username.value()
         + '\n'
         + "  agreeTermsOfService:"
         + agreeTermsOfService
@@ -131,27 +128,29 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
   @Override
   public Mono<Pixela> call() {
     final Mono<Void> response = httpClient.post(this);
-    return response.thenReturn(
-        PixelaImpl.of(httpClient, UserToken.of(token), pixela.client.Username.of(username)));
+    return response.thenReturn(PixelaImpl.of(httpClient, token, username));
   }
 
   public interface Builder {
     CreateUser.Token createUser();
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Contract(pure = true)
   @NotNull
   public static CreateUser.Token builder(@NotNull final HttpClient httpClient) {
     Objects.requireNonNull(httpClient);
     return token -> {
       Objects.requireNonNull(token);
+      final UserToken userToken = UserToken.validated(token);
       return username -> {
         Objects.requireNonNull(username);
+        final pixela.client.Username name = pixela.client.Username.validated(username);
         return agreeTermsOfService -> {
           Objects.requireNonNull(agreeTermsOfService);
           return notMinor -> {
             Objects.requireNonNull(notMinor);
-            return new CreateUser(httpClient, token, username, agreeTermsOfService, notMinor);
+            return new CreateUser(httpClient, userToken, name, agreeTermsOfService, notMinor);
           };
         };
       };

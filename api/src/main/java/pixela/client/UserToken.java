@@ -16,6 +16,7 @@
 package pixela.client;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,17 +25,29 @@ public class UserToken {
   public static final String X_USER_TOKEN = "X-USER-TOKEN";
   public static final String USER_TOKEN_PROPERTY_KEY = "pixela.user_token";
 
+  private static final Pattern VALID_PATTERN = Pattern.compile("^[ -~]{8,128}$");
+
   @NotNull private final String value;
 
   private UserToken(@NotNull final String value) {
     this.value = value;
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Contract("_ -> new")
   @NotNull
   public static UserToken of(@NotNull final String value) {
     Objects.requireNonNull(value);
     return new UserToken(value);
+  }
+
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  public static UserToken validated(@NotNull final String value) {
+    Objects.requireNonNull(value);
+    if (VALID_PATTERN.matcher(value).matches()) {
+      return of(value);
+    }
+    throw ApiException.of("invalid token.");
   }
 
   @NotNull
