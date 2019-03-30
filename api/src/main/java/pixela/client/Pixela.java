@@ -63,7 +63,17 @@ public interface Pixela {
   GetGraphDefinitions getGraphDefinitions();
 
   @NotNull
+  default PostPixel.PixelDate postPixel(@NotNull final String graphId) {
+    return postPixel(GraphId.of(graphId));
+  }
+
+  @NotNull
   PostPixel.PixelDate postPixel(@NotNull final GraphId graphId);
+
+  @NotNull
+  default Graph graph(@NotNull final String graphId) {
+    return graph(GraphId.of(graphId));
+  }
 
   @NotNull
   Graph graph(@NotNull final GraphId graphId);
@@ -77,6 +87,7 @@ public interface Pixela {
     return withDefaultJavaClient(DEFAULT_CONFIG);
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @NotNull
   static PixelaClient withDefaultJavaClient(@NotNull final PixelaClientConfig config) {
     Objects.requireNonNull(config);
@@ -85,6 +96,7 @@ public interface Pixela {
     return PixelaClient.using(httpClient);
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @NotNull
   static PixelaClient usingHttpClient(@NotNull final HttpClient httpClient) {
     Objects.requireNonNull(httpClient);
