@@ -34,14 +34,14 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
 
   @NotNull private final HttpClient httpClient;
 
-  @NotNull private final String token;
+  @NotNull private final UserToken token;
   @NotNull private final String username;
   @NotNull private final YesNo agreeTermsOfService;
   @NotNull private final YesNo notMinor;
 
   CreateUser(
       @NotNull final HttpClient httpClient,
-      @NotNull final String token,
+      @NotNull final UserToken token,
       @NotNull final String username,
       @NotNull final YesNo agreeTermsOfService,
       @NotNull final YesNo notMinor) {
@@ -54,7 +54,7 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
 
   @NotNull
   public String getToken() {
-    return token;
+    return token.tokenValue();
   }
 
   @NotNull
@@ -115,7 +115,7 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
         + ENDPOINT
         + '\n'
         + "  token:"
-        + token
+        + token.tokenValue()
         + '\n'
         + "  username:"
         + username
@@ -132,26 +132,28 @@ public class CreateUser implements Post<Void>, Api<Pixela> {
   public Mono<Pixela> call() {
     final Mono<Void> response = httpClient.post(this);
     return response.thenReturn(
-        PixelaImpl.of(httpClient, UserToken.of(token), pixela.client.Username.of(username)));
+        PixelaImpl.of(httpClient, token, pixela.client.Username.of(username)));
   }
 
   public interface Builder {
     CreateUser.Token createUser();
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Contract(pure = true)
   @NotNull
   public static CreateUser.Token builder(@NotNull final HttpClient httpClient) {
     Objects.requireNonNull(httpClient);
     return token -> {
       Objects.requireNonNull(token);
+      final UserToken userToken = UserToken.validated(token);
       return username -> {
         Objects.requireNonNull(username);
         return agreeTermsOfService -> {
           Objects.requireNonNull(agreeTermsOfService);
           return notMinor -> {
             Objects.requireNonNull(notMinor);
-            return new CreateUser(httpClient, token, username, agreeTermsOfService, notMinor);
+            return new CreateUser(httpClient, userToken, username, agreeTermsOfService, notMinor);
           };
         };
       };
