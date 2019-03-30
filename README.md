@@ -5,7 +5,7 @@ pixela-java-client
 
 [![CircleCI](https://circleci.com/gh/mike-neck/pixela-java-client.svg?style=svg)](https://circleci.com/gh/mike-neck/pixela-java-client)
 [![codecov](https://codecov.io/gh/mike-neck/pixela-java-client/branch/master/graph/badge.svg)](https://codecov.io/gh/mike-neck/pixela-java-client)
-[![Maven](https://img.shields.io/badge/maven-0.2-green.svg)](https://search.maven.org/search?q=pixela)
+[![Maven](https://img.shields.io/badge/maven-0.3-green.svg)](https://search.maven.org/search?q=pixela)
 
 Requirements
 ---
@@ -24,12 +24,12 @@ Installation
 <dependency>
   <groupId>org.mikeneck.pixela</groupId>
   <artifactId>pixela-java-client-api</artifactId>
-  <version>0.1</version>
+  <version>0.3</version>
 </dependency>
 <dependency>
   <groupId>org.mikeneck.pixela</groupId>
   <artifactId>pixela-java-client-default-impl</artifactId>
-  <version>0.1</version>
+  <version>0.3</version>
 </dependency>
 ```
 
@@ -37,8 +37,8 @@ Installation
 
 ```groovy
 dependencies {
-  implementation "org.mikeneck.pixela:pixela-java-client-api:$PIXELA_CLIENT_VERSION"
-  implementation "org.mikeneck.pixela:pixela-java-client-default-impl:$PIXELA_CLIENT_VERSION"
+  implementation "org.mikeneck.pixela:pixela-java-client-api:0.3"
+  implementation "org.mikeneck.pixela:pixela-java-client-default-impl:0.3"
 }
 ```
 
