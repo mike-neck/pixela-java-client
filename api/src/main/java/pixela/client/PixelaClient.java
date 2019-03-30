@@ -52,7 +52,6 @@ public class PixelaClient implements AutoCloseable, Disposable {
     return token -> PixelaImpl.of(httpClient, UserToken.of(token), Username.of(username));
   }
 
-  @SuppressWarnings("WeakerAccess")
   @NotNull
   public Mono<Pixela> loadFromPropertiesFile() {
     final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

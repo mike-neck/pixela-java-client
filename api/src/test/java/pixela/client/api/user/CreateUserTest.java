@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pixela.client.Pixela;
 import pixela.client.UserToken;
+import pixela.client.Username;
 import pixela.client.YesNo;
 import pixela.client.http.HttpClient;
 import reactor.core.publisher.Mono;
@@ -40,7 +41,8 @@ class CreateUserTest {
   @Test
   void callTest_errorThenError() {
     final CreateUser createUser =
-        new CreateUser(httpClient, UserToken.of("token"), "username", YesNo.YES, YesNo.YES);
+        new CreateUser(
+            httpClient, UserToken.of("token"), Username.of("username"), YesNo.YES, YesNo.YES);
     when(httpClient.post(createUser)).thenReturn(Mono.error(new IOException("IOException")));
     final Mono<Pixela> pixelaMono = createUser.call();
     StepVerifier.create(pixelaMono).expectErrorMessage("IOException").verify();
@@ -49,7 +51,8 @@ class CreateUserTest {
   @Test
   void callTest_successThenPixela() {
     final CreateUser createUser =
-        new CreateUser(httpClient, UserToken.of("token"), "username", YesNo.YES, YesNo.YES);
+        new CreateUser(
+            httpClient, UserToken.of("token"), Username.of("username"), YesNo.YES, YesNo.YES);
     when(httpClient.post(createUser)).thenReturn(Mono.empty());
     final Mono<Pixela> pixelaMono = createUser.call();
     StepVerifier.create(pixelaMono)

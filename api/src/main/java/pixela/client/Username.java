@@ -15,6 +15,8 @@
  */
 package pixela.client;
 
+import java.util.Objects;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +24,12 @@ public class Username {
 
   public static final String USER_NAME_PROPERTY_KEY = "pixela.username";
 
+  private static final String VALID_NAME = "^[a-z][a-z0-9-]{1,32}$";
+  private static final Pattern PATTERN = Pattern.compile(VALID_NAME);
+
   @NotNull private final String value;
 
+  @Contract(pure = true)
   private Username(@NotNull final String value) {
     this.value = value;
   }
@@ -32,6 +38,17 @@ public class Username {
   @NotNull
   public static Username of(@NotNull final String value) {
     return new Username(value);
+  }
+
+  @NotNull
+  @Contract("!null -> new; null -> fail")
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  public static Username validated(@NotNull final String value) {
+    Objects.requireNonNull(value);
+    if (PATTERN.matcher(value).matches()) {
+      return of(value);
+    }
+    throw ApiException.of("invalid username");
   }
 
   public String value() {
