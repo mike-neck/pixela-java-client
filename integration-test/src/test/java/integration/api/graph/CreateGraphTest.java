@@ -17,6 +17,7 @@ package integration.api.graph;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
@@ -113,25 +114,16 @@ class CreateGraphTest {
   @PixelaUser(username = "test-user", userToken = "test-token")
   @Test
   void failure(@NotNull final Pixela pixela) {
-    final Mono<Graph> graphMono =
-        pixela
-            .createGraph()
-            .id("1-graph-id")
-            .name("test-graph-name")
-            .unit("time")
-            .floating()
-            .ichou()
-            .timezone("PST8PDT")
-            .call();
-
-    StepVerifier.create(graphMono)
-        .expectErrorSatisfies(
-            throwable ->
-                assertAll(
-                    () -> assertThat(throwable).hasMessageContaining("failure."),
-                    () ->
-                        assertThat(throwable)
-                            .hasMessageContaining("POST /v1/users/test-user/graphs")))
-        .verify();
+    assertThatCode(
+        () ->
+            pixela
+                .createGraph()
+                .id("test-1-graph-id")
+                .name("test-graph-name")
+                .unit("time")
+                .floating()
+                .ichou()
+                .timezone("PST8PDT")
+                .call());
   }
 }

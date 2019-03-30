@@ -33,7 +33,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
   @NotNull private final HttpClient httpClient;
   @NotNull private final Pixela pixela;
 
-  @NotNull private final String id;
+  @NotNull private final GraphId id;
   @NotNull private final String name;
   @NotNull private final String unit;
   @NotNull private final Graph.Type type;
@@ -44,7 +44,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
   private CreateGraph(
       @NotNull final HttpClient httpClient,
       @NotNull final Pixela pixela,
-      @NotNull final String id,
+      @NotNull final GraphId id,
       @NotNull final String name,
       @NotNull final String unit,
       @NotNull final Graph.Type type,
@@ -64,7 +64,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
 
   @NotNull
   public String getId() {
-    return id;
+    return id.value();
   }
 
   @NotNull
@@ -103,14 +103,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
     final Mono<Void> response = httpClient.post(this);
     return response.thenReturn(
         new NewGraph(
-            httpClient,
-            pixela,
-            GraphId.of(id),
-            GraphName.of(name),
-            GraphUnit.of(unit),
-            type,
-            color,
-            timezone));
+            httpClient, pixela, id, GraphName.of(name), GraphUnit.of(unit), type, color, timezone));
   }
 
   @NotNull
@@ -146,7 +139,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
         + Graph.PATH
         + '\n'
         + "  id: "
-        + id
+        + id.value()
         + '\n'
         + "  name: "
         + name
@@ -173,6 +166,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
     return errorRequest();
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @NotNull
   public static Id builder(@NotNull final HttpClient httpClient, @NotNull final Pixela pixela) {
     Objects.requireNonNull(httpClient, "httpClient is null");
@@ -185,6 +179,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
                         timezone ->
                             selfSufficient -> {
                               Objects.requireNonNull(id, "id is null");
+                              final GraphId graphId = GraphId.validated(id);
                               Objects.requireNonNull(name, "name is null");
                               Objects.requireNonNull(unit, "unit is null");
                               Objects.requireNonNull(type, "type is null");
@@ -192,7 +187,7 @@ public class CreateGraph implements Post<Void>, Api<Graph> {
                               return new CreateGraph(
                                   httpClient,
                                   pixela,
-                                  id,
+                                  graphId,
                                   name,
                                   unit,
                                   type,
