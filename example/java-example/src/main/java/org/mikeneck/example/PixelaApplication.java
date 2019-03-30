@@ -52,7 +52,7 @@ public class PixelaApplication {
       final CountDownLatch latch = new CountDownLatch(1);
 
       final Pixela pixela = pixelaClient.username(username).token(userToken);
-      final Graph graph = pixela.graph(GraphId.of(graphName));
+      final Graph graph = pixela.graph(graphName);
       final Throwable[] exception = new Throwable[1];
       final Disposable disposable =
           graph
