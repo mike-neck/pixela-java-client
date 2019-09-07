@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: "adoptopenjdk/openjdk11:jdk-11.28"
+      - image: "amazoncorretto:11.0.4"
 
     working_directory: ~/pixela-java-client
 
@@ -13,6 +13,10 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
             - v1-dependencies-
+
+      - run:
+          name: install gzip for amazonlinux-2
+          command: yum install -y gzip
 
       - run: ./gradlew dependencies
 
