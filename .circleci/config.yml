@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: "adoptopenjdk/openjdk11:jdk-11.28"
+      - image: "azul/zulu-openjdk-debian:11.0.4"
 
     working_directory: ~/pixela-java-client
 
