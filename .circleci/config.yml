@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: "azul/zulu-openjdk-debian:11.0.4"
+      - image: "amazoncorretto:11.0.4"
 
     working_directory: ~/pixela-java-client
 
