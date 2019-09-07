@@ -14,6 +14,10 @@ jobs:
             - v1-dependencies-{{ checksum "build.gradle" }}
             - v1-dependencies-
 
+      - run:
+          name: install gzip for amazonlinux-2
+          command: yum install -y gzip
+
       - run: ./gradlew dependencies
 
       - run:
